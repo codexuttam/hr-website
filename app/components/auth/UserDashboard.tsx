@@ -57,7 +57,7 @@ const UserDashboard: React.FC = () => {
           features: [
             { name: 'Resume Builder', href: '/resume-builder', icon: '📝' },
             { name: 'ATS Analysis', href: '/ats-tools', icon: '🎯' },
-            { name: 'Interview Prep', href: '/interview-prep', icon: '💬' },
+            { name: 'Interview Prep', href: '/interview', icon: '💬' },
             { name: 'Skill Assessment', href: '/quiz', icon: '🧠' }
           ]
         };
@@ -115,25 +115,25 @@ const UserDashboard: React.FC = () => {
             <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                {user.role === 'student' ? 'Resumes Created' : 
-                 user.role === 'recruiter' ? 'Candidates Reviewed' :
-                 user.role === 'mentor' ? 'Students Mentored' : 'Users Managed'}
+                {user.role === 'student' ? 'Resumes Created' :
+                  user.role === 'recruiter' ? 'Candidates Reviewed' :
+                    user.role === 'mentor' ? 'Students Mentored' : 'Users Managed'}
               </div>
             </div>
             <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">0</div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                {user.role === 'student' ? 'Skills Assessed' : 
-                 user.role === 'recruiter' ? 'Jobs Posted' :
-                 user.role === 'mentor' ? 'Sessions Completed' : 'System Reports'}
+                {user.role === 'student' ? 'Skills Assessed' :
+                  user.role === 'recruiter' ? 'Jobs Posted' :
+                    user.role === 'mentor' ? 'Sessions Completed' : 'System Reports'}
               </div>
             </div>
             <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
               <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">0</div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                {user.role === 'student' ? 'Interview Preps' : 
-                 user.role === 'recruiter' ? 'Interviews Scheduled' :
-                 user.role === 'mentor' ? 'Career Plans Created' : 'Platform Updates'}
+                {user.role === 'student' ? 'Interview Preps' :
+                  user.role === 'recruiter' ? 'Interviews Scheduled' :
+                    user.role === 'mentor' ? 'Career Plans Created' : 'Platform Updates'}
               </div>
             </div>
           </div>

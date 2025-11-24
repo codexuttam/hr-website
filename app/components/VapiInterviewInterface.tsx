@@ -1,0 +1,380 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import Vapi from '@vapi-ai/web';
+import { FaMicrophone, FaMicrophoneSlash, FaStop, FaSpinner } from 'react-icons/fa';
+
+interface InterviewConfig {
+    role: string;
+    experience: string;
+    techStack: string;
+    duration: number;
+}
+
+interface VapiInterviewInterfaceProps {
+    config: InterviewConfig;
+    onExit: () => void;
+}
+
+export default function VapiInterviewInterface({ config, onExit }: VapiInterviewInterfaceProps) {
+    const [vapi, setVapi] = useState<Vapi | null>(null);
+    const [isConnected, setIsConnected] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [isListening, setIsListening] = useState(false);
+    const [transcript, setTranscript] = useState<Array<{ speaker: string; text: string }>>([]);
+    const [error, setError] = useState<string | null>(null);
+    const [elapsedTime, setElapsedTime] = useState(0);
+
+    const userVideoRef = useRef<HTMLVideoElement>(null);
+    const aiVideoRef = useRef<HTMLVideoElement>(null);
+    const transcriptEndRef = useRef<HTMLDivElement>(null);
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Initialize Vapi
+    useEffect(() => {
+        const apiKey = process.env.NEXT_PUBLIC_VAPI_WEB_TOKEN;
+        if (!apiKey) {
+            console.error('Missing NEXT_PUBLIC_VAPI_WEB_TOKEN');
+            setError('Vapi Web Token is missing. Please check your environment variables.');
+            return;
+        }
+
+        const vapiInstance = new Vapi(apiKey);
+        setVapi(vapiInstance);
+
+        return () => {
+            vapiInstance.stop();
+        };
+    }, []);
+
+    // Setup user webcam
+    useEffect(() => {
+        const setupUserVideo = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false // Audio handled by Vapi
+                });
+                if (userVideoRef.current) {
+                    userVideoRef.current.srcObject = stream;
+                }
+            } catch (err) {
+                console.error('Error accessing webcam:', err);
+                setError('Could not access webcam. Please check permissions.');
+            }
+        };
+
+        setupUserVideo();
+
+        return () => {
+            if (userVideoRef.current?.srcObject) {
+                const stream = userVideoRef.current.srcObject as MediaStream;
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, []);
+
+    // Setup AI video
+    useEffect(() => {
+        if (aiVideoRef.current) {
+            aiVideoRef.current.src = '/video/Professional Interview Scene.mp4';
+            aiVideoRef.current.loop = false;
+            aiVideoRef.current.muted = true; // Muted because audio comes from Vapi
+        }
+    }, []);
+
+    // Timer
+    useEffect(() => {
+        if (isConnected) {
+            timerRef.current = setInterval(() => {
+                setElapsedTime(prev => {
+                    const newTime = prev + 1;
+                    if (newTime >= config.duration * 60) {
+                        handleEndInterview();
+                    }
+                    return newTime;
+                });
+            }, 1000);
+        }
+
+        return () => {
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
+        };
+    }, [isConnected, config.duration]);
+
+    // Vapi event listeners
+    useEffect(() => {
+        if (!vapi) return;
+
+        vapi.on('call-start', () => {
+            console.log('Call started');
+            setIsConnected(true);
+        });
+
+        vapi.on('call-end', () => {
+            console.log('Call ended');
+            setIsConnected(false);
+            setIsSpeaking(false);
+            setIsListening(false);
+        });
+
+        vapi.on('speech-start', () => {
+            console.log('AI speaking');
+            setIsSpeaking(true);
+            // Play AI video when speaking
+            if (aiVideoRef.current) {
+                aiVideoRef.current.play().catch(err => console.error('Error playing AI video:', err));
+            }
+        });
+
+        vapi.on('speech-end', () => {
+            console.log('AI stopped speaking');
+            setIsSpeaking(false);
+            // Pause AI video when not speaking
+            if (aiVideoRef.current) {
+                aiVideoRef.current.pause();
+            }
+        });
+
+        vapi.on('message', (message: any) => {
+            console.log('Message:', message);
+
+            if (message.type === 'transcript' && message.transcriptType === 'final') {
+                const speaker = message.role === 'assistant' ? 'AI Interviewer' : 'You';
+                setTranscript(prev => [...prev, { speaker, text: message.transcript }]);
+            }
+        });
+
+        vapi.on('error', (error: any) => {
+            console.error('Vapi error:', JSON.stringify(error, null, 2));
+            setError(`An error occurred: ${error.message || 'Unknown error'}`);
+        });
+
+        return () => {
+            vapi.removeAllListeners();
+        };
+    }, [vapi]);
+
+    // Auto-scroll transcript
+    useEffect(() => {
+        transcriptEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [transcript]);
+
+    const startInterview = async () => {
+        if (!vapi) return;
+
+        try {
+            setError(null);
+
+            // Create assistant configuration
+            const assistant = {
+                name: 'AI Interviewer',
+                model: {
+                    provider: 'openai' as const,
+                    model: 'gpt-4' as const,
+                    messages: [
+                        {
+                            role: 'system' as const,
+                            content: `You are an experienced technical interviewer conducting a ${config.experience} level interview for a ${config.role} position. 
+              
+The candidate's tech stack includes: ${config.techStack}.
+
+Your role:
+1. Start with a warm greeting and brief introduction
+2. Ask relevant technical and behavioral questions based on the role and experience level
+3. Listen carefully to responses and ask follow-up questions
+4. Maintain a professional yet friendly tone
+5. The interview will last ${config.duration} minutes
+6. At the end, provide brief feedback on their performance
+
+Keep questions concise and clear. Allow the candidate time to think and respond.`
+                        }
+                    ],
+                    temperature: 0.7,
+                },
+                voice: {
+                    provider: 'openai' as const,
+                    voiceId: 'alloy', // Professional voice
+                },
+                transcriber: {
+                    provider: "deepgram" as const,
+                    model: "nova-2",
+                    language: "en-US" as const,
+                },
+                firstMessage: `Hello! I'm your AI interviewer today. I'll be conducting a ${config.duration}-minute interview for the ${config.role} position. Let's begin with a brief introduction - could you tell me a bit about yourself and your experience with ${config.techStack}?`,
+            };
+
+            await vapi.start(assistant);
+            setIsListening(true);
+        } catch (err) {
+            console.error('Error starting interview:', err);
+            setError('Failed to start interview. Please check your API key and try again.');
+        }
+    };
+
+    const handleEndInterview = () => {
+        if (vapi) {
+            vapi.stop();
+        }
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+        }
+    };
+
+    const formatTime = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    return (
+        <div className="h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 flex flex-col overflow-hidden">
+            <div className="max-w-7xl mx-auto w-full h-full flex flex-col">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 className="text-3xl font-bold text-white mb-2">
+                            {config.role} Interview
+                        </h1>
+                        <p className="text-gray-300">
+                            {config.experience.charAt(0).toUpperCase() + config.experience.slice(1)} Level • {config.techStack}
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <div className="bg-white/10 backdrop-blur-lg px-6 py-3 rounded-lg border border-white/20">
+                            <span className="text-2xl font-mono text-white">{formatTime(elapsedTime)}</span>
+                            <span className="text-gray-400 text-sm ml-2">/ {config.duration}:00</span>
+                        </div>
+                        <button
+                            onClick={onExit}
+                            className="px-6 py-3 rounded-lg bg-red-500/20 border border-red-500/50 text-red-300 hover:bg-red-500/30 transition-colors"
+                        >
+                            Exit
+                        </button>
+                    </div>
+                </div>
+
+                {/* Error Display */}
+                {error && (
+                    <div className="mb-6 bg-red-500/20 border border-red-500/50 rounded-lg p-4">
+                        <p className="text-red-300">{error}</p>
+                    </div>
+                )}
+
+                {/* Video Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    {/* AI Interviewer Video */}
+                    <div className="relative">
+                        <div className="bg-black rounded-2xl overflow-hidden border-4 border-purple-500/50 aspect-video">
+                            <video
+                                ref={aiVideoRef}
+                                className="w-full h-full object-cover"
+                                playsInline
+                            />
+                            {isSpeaking && (
+                                <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2 animate-pulse">
+                                    <span className="w-2 h-2 bg-white rounded-full"></span>
+                                    Speaking
+                                </div>
+                            )}
+                        </div>
+                        <div className="mt-2 text-center">
+                            <p className="text-white font-semibold">AI Interviewer</p>
+                        </div>
+                    </div>
+
+                    {/* User Video */}
+                    <div className="relative">
+                        <div className="bg-black rounded-2xl overflow-hidden border-4 border-blue-500/50 aspect-video">
+                            <video
+                                ref={userVideoRef}
+                                autoPlay
+                                playsInline
+                                muted
+                                className="w-full h-full object-cover mirror"
+                            />
+                            {isListening && (
+                                <div className="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2 animate-pulse">
+                                    <FaMicrophone className="text-sm" />
+                                    Listening
+                                </div>
+                            )}
+                        </div>
+                        <div className="mt-2 text-center">
+                            <p className="text-white font-semibold">You</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Transcript */}
+                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-6 flex-1 min-h-0 flex flex-col">
+                    <h2 className="text-xl font-bold text-white mb-4 flex-shrink-0">Interview Transcript</h2>
+                    <div className="space-y-4 overflow-y-auto pr-2 flex-1 custom-scrollbar">
+                        {transcript.length === 0 ? (
+                            <p className="text-gray-400 text-center py-8">
+                                {isConnected ? 'Conversation will appear here...' : 'Click "Start Interview" to begin'}
+                            </p>
+                        ) : (
+                            transcript.map((entry, index) => (
+                                <div
+                                    key={index}
+                                    className={`p-4 rounded-lg ${entry.speaker === 'AI Interviewer'
+                                        ? 'bg-purple-500/20 border border-purple-500/30'
+                                        : 'bg-blue-500/20 border border-blue-500/30'
+                                        }`}
+                                >
+                                    <p className="text-sm font-semibold text-white mb-1">{entry.speaker}</p>
+                                    <p className="text-gray-200">{entry.text}</p>
+                                </div>
+                            ))
+                        )}
+                        <div ref={transcriptEndRef} />
+                    </div>
+                </div>
+
+                {/* Controls */}
+                <div className="flex justify-center gap-4 mb-6">
+                    {!isConnected ? (
+                        <button
+                            onClick={startInterview}
+                            className="px-8 py-4 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold text-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-3"
+                        >
+                            <FaMicrophone />
+                            Start Interview
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleEndInterview}
+                            className="px-8 py-4 rounded-lg bg-red-500 text-white font-semibold text-lg hover:bg-red-600 transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-3"
+                        >
+                            <FaStop />
+                            End Interview
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <style jsx>{`
+        .mirror {
+          transform: scaleX(-1);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.5);
+        }
+      `}</style>
+        </div>
+    );
+}

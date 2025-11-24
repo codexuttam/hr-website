@@ -7,60 +7,8 @@ import Footer from '../components/Footer';
 
 export default function InterviewPrep() {
   const tools = [
-    {
-      id: 'cover-letter',
-      title: 'Cover Letter Generator',
-      description: 'Generate personalized cover letters based on your resume and job requirements',
-      icon: '✉️',
-      color: 'from-green-500 to-emerald-600',
-      bgColor: 'bg-green-50 dark:bg-green-900/20',
-      href: '/interview-prep/cover-letter'
-    },
-    {
-      id: 'interview-questions',
-      title: 'Interview Questions',
-      description: 'Practice common interview questions with AI-powered feedback',
-      icon: '💬',
-      color: 'from-blue-500 to-cyan-600',
-      bgColor: 'bg-blue-50 dark:bg-blue-900/20',
-      href: '/interview-prep/questions'
-    },
-    {
-      id: 'mock-interview',
-      title: 'Mock Interview',
-      description: 'Simulate real interview scenarios and get instant feedback',
-      icon: '🎯',
-      color: 'from-purple-500 to-pink-600',
-      bgColor: 'bg-purple-50 dark:bg-purple-900/20',
-      href: '/interview-prep/mock-interview'
-    },
-    {
-      id: 'behavioral',
-      title: 'Behavioral Questions',
-      description: 'Master STAR method with behavioral interview practice',
-      icon: '🌟',
-      color: 'from-yellow-500 to-orange-600',
-      bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
-      href: '/interview-prep/behavioral'
-    },
-    {
-      id: 'technical',
-      title: 'Technical Interview',
-      description: 'Prepare for technical interviews with coding challenges',
-      icon: '💻',
-      color: 'from-indigo-500 to-blue-600',
-      bgColor: 'bg-indigo-50 dark:bg-indigo-900/20',
-      href: '/code-playground'
-    },
-    {
-      id: 'salary',
-      title: 'Salary Negotiation',
-      description: 'Learn strategies and practice salary negotiation conversations',
-      icon: '💰',
-      color: 'from-teal-500 to-green-600',
-      bgColor: 'bg-teal-50 dark:bg-teal-900/20',
-      href: '/interview-prep/salary'
-    },
+
+
     {
       id: 'voice-screening',
       title: 'Voice Interview Screening',
@@ -79,14 +27,14 @@ export default function InterviewPrep() {
         <main className="py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Header Section */}
-            <div className="text-center mb-12">
+            {/* <div className="text-center mb-12">
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
                 Interview Preparation
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
                 Master your interview skills with AI-powered tools and practice sessions
               </p>
-            </div>
+            </div> */}
 
             {/* Tools Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">

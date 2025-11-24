@@ -148,39 +148,21 @@ const Header: React.FC = () => {
                 {placementDropdownOpen && (
                   <div className="absolute left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
                     <div className="py-1">
+
                       <DropdownItem
-                        href="/interview-prep"
-                        onClick={handlePlacementPrepClick}
-                        description="Prepare for interviews with AI-powered tools"
-                      >
-                        🎯 Interview Prep
-                      </DropdownItem>
-                      <DropdownItem
-                        href="#"
+                        href="/code-playground"
                         description="Practice coding problems and algorithms"
                       >
                         💻 Coding Practice
                       </DropdownItem>
                       <DropdownItem
-                        href="/interview-prep/mock"
+                        href="/interview"
                         onClick={handlePlacementPrepClick}
                         description="AI-powered mock interviews with real-time feedback"
                       >
                         🎯 Mock Interview
                       </DropdownItem>
-                      <DropdownItem
-                        href="/interview-demo"
-                        onClick={handlePlacementPrepClick}
-                        description="Test the interview system with voice AI"
-                      >
-                        🎤 Interview Demo
-                      </DropdownItem>
-                      <DropdownItem
-                        href="#"
-                        description="Aptitude and reasoning questions"
-                      >
-                        🧮 Aptitude Tests
-                      </DropdownItem>
+
                     </div>
                   </div>
                 )}
