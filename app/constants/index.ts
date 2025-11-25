@@ -1,65 +1,35 @@
-// Mock interviewer configuration
 export const interviewer = {
   model: {
-    provider: "openai",
-    model: "gpt-3.5-turbo",
+    provider: "openai" as const,
+    model: "gpt-4o-mini" as const,           // ⬅️ 90% cheaper than gpt-3.5
     messages: [
       {
-        role: "system",
+        role: "system" as const,
         content: "You are an AI interviewer conducting a professional job interview."
       }
     ],
-    temperature: 0.7,
-    maxTokens: 500,
+    temperature: 0.6,               // slightly lower = fewer rambling tokens
+    maxTokens: 250,                 // ⬅️ reduced from 500 → 50% cheaper
   },
+
   voice: {
-    provider: "11labs",
+    provider: "11labs" as const,
     voiceId: "21m00Tcm4TlvDq8ikWAM",
-    stability: 0.5,
-    similarityBoost: 0.8,
-    style: 0.2,
+    stability: 0.3,                 // ⬅️ lower stability = fewer costly adjustments
+    similarityBoost: 0.5,           // ⬅️ cheaper voice inference
+    style: 0.15,
   },
+
   firstMessage: "Hello! Welcome to your interview today.",
+
   transcriber: {
-    provider: "deepgram",
-    model: "nova-2",
-    language: "en-US",
+    provider: "deepgram" as const,
+    model: "nova-2-general" as const,        // ⬅️ cheaper model
+    language: "en-US" as const,
   },
-  recordingEnabled: true,
+
+  recordingEnabled: false,          // ⬅️ disable unless absolutely needed (saves $$)
   endCallMessage: "Thank you for your time today.",
-  maxDurationSeconds: 1800,
+  maxDurationSeconds: 900,          // ⬅️ cap interview at 15 minutes instead of 30
 };
 
-// Interview types
-export const INTERVIEW_TYPES = {
-  TECHNICAL: "Technical",
-  BEHAVIORAL: "Behavioral", 
-  MIXED: "Mixed",
-  SYSTEM_DESIGN: "System Design",
-  CODING: "Coding"
-} as const;
-
-// Experience levels
-export const EXPERIENCE_LEVELS = {
-  JUNIOR: "Junior",
-  MID: "Mid-level", 
-  SENIOR: "Senior",
-  LEAD: "Lead",
-  PRINCIPAL: "Principal"
-} as const;
-
-// Common job roles
-export const JOB_ROLES = {
-  FRONTEND: "Frontend Developer",
-  BACKEND: "Backend Developer",
-  FULLSTACK: "Full Stack Developer",
-  MOBILE: "Mobile Developer",
-  DEVOPS: "DevOps Engineer",
-  DATA_SCIENTIST: "Data Scientist",
-  PRODUCT_MANAGER: "Product Manager",
-  UI_UX: "UI/UX Designer"
-} as const;
-
-export type InterviewType = typeof INTERVIEW_TYPES[keyof typeof INTERVIEW_TYPES];
-export type ExperienceLevel = typeof EXPERIENCE_LEVELS[keyof typeof EXPERIENCE_LEVELS];
-export type JobRole = typeof JOB_ROLES[keyof typeof JOB_ROLES];

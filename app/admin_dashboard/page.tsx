@@ -89,9 +89,9 @@ const AdminDashboardPage: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
                   Manage user accounts, roles, and permissions
                 </p>
-                <button className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" disabled>
-                  Coming Soon
-                </button>
+                <a href="/admin/users" className="block w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors text-center">
+                  Manage Users
+                </a>
               </div>
 
               <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6">

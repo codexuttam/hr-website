@@ -18,10 +18,12 @@
     "env:production": "node scripts/setup-local-env.js production"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.42",
     "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.81.0",
     "@vapi-ai/web": "^2.5.0",
     "ace-builds": "^1.43.4",
+    "ai": "^5.0.101",
     "axios": "^1.13.2",
     "docx": "^9.5.1",
     "dotenv": "^17.2.3",

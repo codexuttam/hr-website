@@ -1,0 +1,6 @@
+name,email,password,role
+John Doe,john@example.com,password123,student
+Jane Smith,jane@example.com,securePass456,instructor
+Bob Johnson,bob@example.com,myPassword789,student
+Alice Williams,alice@example.com,admin2024,admin
+Mike Brown,mike@example.com,pass1234,student

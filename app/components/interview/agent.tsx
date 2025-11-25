@@ -1,23 +1,18 @@
 "use client";
-
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
 import { createFeedback } from "@/lib/actions/general.action";
-// Using any for message type to avoid import issues
-// type Message = any;
 
-// Props expected by the Agent component
 interface AgentProps {
     userName: string;
     userId: string;
     interviewId: string;
     feedbackId?: string;
-    type: string; // "interview" | "generate"
+    type: string;
     questions?: string[];
 }
 
@@ -41,6 +36,7 @@ const Agent = ({
     type,
     questions,
 }: AgentProps) => {
+
     const router = useRouter();
 
     const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -52,35 +48,35 @@ const Agent = ({
     useEffect(() => {
         const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
         const onCallEnd = () => setCallStatus(CallStatus.FINISHED);
+
         const onMessage = (msg: any) => {
             if (msg.type === "transcript" && msg.transcriptType === "final") {
                 setMessages((prev) => [...prev, { role: msg.role, content: msg.transcript }]);
             }
         };
-        const onSpeechStart = () => setIsSpeaking(true);
-        const onSpeechEnd = () => setIsSpeaking(false);
-        const onError = (err: Error) => console.error("Vapi error:", err);
 
         vapi.on("call-start", onCallStart);
         vapi.on("call-end", onCallEnd);
         vapi.on("message", onMessage);
-        vapi.on("speech-start", onSpeechStart);
-        vapi.on("speech-end", onSpeechEnd);
-        vapi.on("error", onError);
+        vapi.on("speech-start", () => setIsSpeaking(true));
+        vapi.on("speech-end", () => setIsSpeaking(false));
+        vapi.on("error", (err: Error) => console.error("Vapi error:", err));
 
         return () => {
             vapi.off("call-start", onCallStart);
             vapi.off("call-end", onCallEnd);
             vapi.off("message", onMessage);
-            vapi.off("speech-start", onSpeechStart);
-            vapi.off("speech-end", onSpeechEnd);
-            vapi.off("error", onError);
+            vapi.off("speech-start", () => setIsSpeaking(true));
+            vapi.off("speech-end", () => setIsSpeaking(false));
+            vapi.off("error", (err: Error) => console.error(err));
         };
     }, []);
 
     // ----- Update last transcript line & handle feedback -----
     useEffect(() => {
-        if (messages.length > 0) setLastMessage(messages[messages.length - 1].content);
+        if (messages.length > 0) {
+            setLastMessage(messages[messages.length - 1].content);
+        }
 
         const handleGenerateFeedback = async (msgs: SavedMessage[]) => {
             const { success, feedbackId: newId } = await createFeedback({
@@ -89,39 +85,38 @@ const Agent = ({
                 transcript: msgs,
                 feedbackId,
             });
-            if (success && newId) {
-                router.push(`/interview/${interviewId}/feedback`);
-            } else {
-                router.push("/");
-            }
+
+            if (success && newId) router.push(`/interview/${interviewId}/feedback`);
+            else router.push("/");
         };
 
         if (callStatus === CallStatus.FINISHED) {
-            if (type === "generate") {
-                router.push("/");
-            } else {
-                handleGenerateFeedback(messages);
-            }
+            if (type === "generate") router.push("/");
+            else handleGenerateFeedback(messages);
         }
     }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
 
-    // ----- Start / Stop calls -----
+    // ----- COST-OPTIMIZED handleCall -----
     const handleCall = async () => {
         setCallStatus(CallStatus.CONNECTING);
+
+        // prevent unnecessary cost
+        if (type !== "generate" && (!questions || questions.length === 0)) return;
+
         if (type === "generate") {
-            await vapi.start(
-                undefined,
-                undefined,
-                undefined,
-                process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
-                {
-                    variableValues: { username: userName, userid: userId },
-                }
-            );
-        } else {
-            const formatted = questions?.map((q) => `- ${q}`).join("\n") ?? "";
-            await vapi.start(interviewer, { variableValues: { questions: formatted } });
+            await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+                variableValues: {
+                    username: userName, // minimal token usage
+                },
+            });
+            return;
         }
+
+        const formatted = JSON.stringify(questions);
+
+        await vapi.start(interviewer, {
+            variableValues: { questions: formatted },
+        });
     };
 
     const handleDisconnect = () => {
@@ -129,11 +124,9 @@ const Agent = ({
         vapi.stop();
     };
 
-    // ----- Render UI -----
     return (
         <>
             <div className="call-view">
-                {/* AI Interviewer Card */}
                 <div className="card-interviewer">
                     <div className="avatar">
                         <Image src="/ai-avatar.png" alt="AI" width={65} height={54} className="object-cover" />
@@ -142,33 +135,49 @@ const Agent = ({
                     <h3>AI Interviewer</h3>
                 </div>
 
-                {/* User Card */}
                 <div className="card-border">
                     <div className="card-content">
-                        <Image src="/user-avatar.png" alt="You" width={539} height={539} className="rounded-full size-[120px]" />
+                        <Image
+                            src="/user-avatar.png"
+                            alt="You"
+                            width={539}
+                            height={539}
+                            className="rounded-full size-[120px]"
+                        />
                         <h3>{userName}</h3>
                     </div>
                 </div>
             </div>
 
-            {/* Transcript */}
             {messages.length > 0 && (
                 <div className="transcript-border">
                     <div className="transcript">
-                        <p key={lastMessage} className={cn("transition-opacity duration-500 opacity-0", "animate-fadeIn opacity-100")}>
+                        <p
+                            key={lastMessage}
+                            className={cn(
+                                "transition-opacity duration-500 opacity-0",
+                                "animate-fadeIn opacity-100"
+                            )}
+                        >
                             {lastMessage}
                         </p>
                     </div>
                 </div>
             )}
 
-            {/* Controls */}
             <div className="w-full flex justify-center">
                 {callStatus !== CallStatus.ACTIVE ? (
                     <button className="relative btn-call" onClick={handleCall}>
-                        <span className={cn("absolute animate-ping rounded-full opacity-75", callStatus !== CallStatus.CONNECTING && "hidden")} />
+                        <span
+                            className={cn(
+                                "absolute animate-ping rounded-full opacity-75",
+                                callStatus !== CallStatus.CONNECTING && "hidden"
+                            )}
+                        />
                         <span className="relative">
-                            {callStatus === CallStatus.INACTIVE || callStatus === CallStatus.FINISHED ? "Call" : "..."}
+                            {callStatus === CallStatus.INACTIVE || callStatus === CallStatus.FINISHED
+                                ? "Call"
+                                : "..."}
                         </span>
                     </button>
                 ) : (
