@@ -132,9 +132,25 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
   const [currentResumeId, setCurrentResumeId] = useState<number | undefined>();
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [viewMode, setViewMode] = useState<'split' | 'edit' | 'preview'>('split');
 
   const { user } = useAuth();
-  
+
+  // Handle responsive view mode
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setViewMode(prev => prev === 'split' ? 'edit' : prev);
+      } else {
+        setViewMode('split');
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Load existing resume if resumeId is provided
   useEffect(() => {
     const loadExistingResume = async () => {
@@ -159,7 +175,7 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
 
     loadExistingResume();
   }, [resumeId]);
-  
+
   // Auto-save functionality
   const { isSaving, lastSaved, lastSavedId } = useAutoSave(
     data,
@@ -182,7 +198,6 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
       setSaveStatus('saving');
     } else if (lastSaved) {
       setSaveStatus('saved');
-      // Clear the saved status after 3 seconds
       const timeout = setTimeout(() => setSaveStatus(null), 3000);
       return () => clearTimeout(timeout);
     }
@@ -198,14 +213,6 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
   const handleManualSave = async () => {
     try {
       setSaveStatus('saving');
-      console.log('Manual save started with:', {
-        hasData: !!data,
-        template,
-        hasColor: !!color,
-        userId: user?.user_id,
-        currentResumeId
-      });
-      
       const savedResume = await ResumeService.autoSave(
         data,
         template,
@@ -213,135 +220,151 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
         user?.user_id?.toString(),
         currentResumeId
       );
-      
-      console.log('Manual save successful:', savedResume);
       setCurrentResumeId(savedResume.resume_id);
       setSaveStatus('saved');
-      
-      // Show success message
       setTimeout(() => setSaveStatus(null), 3000);
     } catch (error) {
       console.error('Manual save failed:', error);
       setSaveStatus('error');
-      
-      // Show error for longer to help with debugging
       setTimeout(() => setSaveStatus(null), 5000);
     }
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
-        <div className="bg-white rounded-lg p-8 shadow-lg">
-          <div className="flex items-center gap-4">
-            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-lg font-medium text-gray-700">Loading your resume...</span>
-          </div>
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-lg font-medium text-gray-700 dark:text-gray-300">Loading your resume...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-5">
-      {onBackToTemplates && (
-        <div className="max-w-[1800px] mx-auto mb-5">
-          <button 
-            className="px-6 py-3 bg-white text-indigo-600 border-2 border-white rounded-lg text-base font-semibold cursor-pointer transition-all duration-300 hover:bg-transparent hover:text-white hover:-translate-x-1 shadow-sm"
-            onClick={onBackToTemplates}
-          >
-            ← Change Template
-          </button>
-        </div>
-      )}
+    <div className="h-screen flex flex-col bg-gray-100 dark:bg-slate-900 overflow-hidden font-sans">
+      {/* Top Bar */}
+      <div className="h-16 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between px-4 sm:px-6 z-10 shrink-0">
+        <div className="flex items-center gap-4">
+          {onBackToTemplates && (
+            <button
+              className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+              onClick={onBackToTemplates}
+              title="Back to Templates"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
+          )}
+          <h1 className="text-xl font-bold text-gray-800 dark:text-white hidden sm:block">Resume Builder</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[700px_1fr] xl:grid-cols-[800px_1fr] gap-5 max-w-[2000px] mx-auto">
-        {/* Left Side - Form */}
-        <div className="bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.2)] overflow-y-auto max-h-[calc(100vh-40px)]">
-          <Form
-            data={data}
-            setData={setData}
-            preset={colorPresets}
-            setColor={setColor}
-            selectedTemplate={template}
-            setSelectedTemplate={setTemplate}
-          />
-        </div>
-
-        {/* Right Side - Preview */}
-        <div className="bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.2)] overflow-y-auto max-h-[calc(100vh-40px)]">
-          <div className="flex justify-between items-center p-5 pb-4">
-            <div className="flex items-center gap-4">
-              <h2 className="text-2xl font-bold text-gray-800 m-0">Live Preview</h2>
-              {/* Save Status Indicator */}
-              {saveStatus && (
-                <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${
-                  saveStatus === 'saving' ? 'bg-blue-100 text-blue-700' :
-                  saveStatus === 'saved' ? 'bg-green-100 text-green-700' :
+          {/* Save Status */}
+          {saveStatus && (
+            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${saveStatus === 'saving' ? 'bg-blue-100 text-blue-700' :
+                saveStatus === 'saved' ? 'bg-green-100 text-green-700' :
                   'bg-red-100 text-red-700'
-                }`}>
-                  {saveStatus === 'saving' && (
-                    <>
-                      <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                      Saving...
-                    </>
-                  )}
-                  {saveStatus === 'saved' && (
-                    <>
-                      <div className="w-3 h-3 bg-green-600 rounded-full"></div>
-                      Saved {lastSaved && new Date(lastSaved).toLocaleTimeString()}
-                    </>
-                  )}
-                  {saveStatus === 'error' && (
-                    <>
-                      <div className="w-3 h-3 bg-red-600 rounded-full"></div>
-                      Save failed
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="flex gap-3">
-              {/* Manual Save Button */}
-              <button 
-                className="px-4 py-2 bg-blue-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-all duration-300 shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={handleManualSave}
-                disabled={isSaving}
-              >
-                💾 Save Now
-              </button>
-              
-              {/* Debug Test Buttons - Remove in production */}
-              
-              <button 
-                className={`px-5 py-2.5 text-white border-none rounded-lg text-base font-semibold cursor-pointer transition-all duration-300 shadow-md hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 ${
-                  showAISuggestions 
-                    ? 'bg-gradient-to-r from-green-600 to-teal-600 shadow-[0_6px_12px_rgba(16,185,129,0.3)]' 
-                    : 'bg-gradient-to-r from-green-500 to-teal-500'
-                }`}
-                onClick={() => setShowAISuggestions(!showAISuggestions)}
-              >
-                🤖 AI Suggestions
-              </button>
-              <DownloadDropdown data={data} templateId={template} />
-            </div>
-          </div>
-
-          {/* AI Suggestions Panel */}
-          {showAISuggestions && (
-            <div className="px-5 mb-5 animate-[slideDown_0.3s_ease]">
-              <AISuggestions 
-                resumeData={data as any} 
-                onApplySuggestion={handleApplySuggestion as any}
-              />
+              }`}>
+              {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : 'Error'}
             </div>
           )}
+        </div>
 
-          {/* Resume Preview */}
-          <div className="w-full flex justify-center">
-            <Resume data={data} color={color} selectedTemplate={template} />
+        <div className="flex items-center gap-3">
+          {/* View Toggle for Mobile */}
+          <div className="lg:hidden flex bg-gray-100 dark:bg-slate-700 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('edit')}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'edit'
+                  ? 'bg-white dark:bg-slate-600 text-indigo-600 shadow-sm'
+                  : 'text-gray-500 dark:text-gray-400'
+                }`}
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => setViewMode('preview')}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'preview'
+                  ? 'bg-white dark:bg-slate-600 text-indigo-600 shadow-sm'
+                  : 'text-gray-500 dark:text-gray-400'
+                }`}
+            >
+              Preview
+            </button>
+          </div>
+
+          <button
+            className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${showAISuggestions
+                ? 'bg-indigo-100 text-indigo-700'
+                : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            onClick={() => setShowAISuggestions(!showAISuggestions)}
+          >
+            <span>🤖</span> AI Suggestions
+          </button>
+
+          <button
+            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all"
+            onClick={handleManualSave}
+            disabled={isSaving}
+          >
+            Save
+          </button>
+
+          <DownloadDropdown data={data} templateId={template} />
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden relative">
+
+        {/* Left Panel - Form */}
+        <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${viewMode === 'preview' ? 'hidden' : 'flex'
+          } ${viewMode === 'split' ? 'w-1/2 max-w-2xl border-r border-gray-200 dark:border-slate-700' : 'w-full'}`}>
+          <div className="flex-1 overflow-hidden p-4 sm:p-6">
+            <Form
+              data={data}
+              setData={setData}
+              preset={colorPresets}
+              setColor={setColor}
+              selectedTemplate={template}
+              setSelectedTemplate={setTemplate}
+            />
           </div>
         </div>
+
+        {/* Right Panel - Preview */}
+        <div className={`flex-1 flex flex-col min-w-0 bg-gray-200 dark:bg-slate-950 transition-all duration-300 ${viewMode === 'edit' ? 'hidden' : 'flex'
+          } ${viewMode === 'split' ? 'w-1/2' : 'w-full'}`}>
+          <div className="flex-1 overflow-y-auto p-4 sm:p-8 flex justify-center">
+            <div className="w-full max-w-[210mm] min-h-[297mm] bg-white shadow-2xl origin-top transform scale-90 sm:scale-100 transition-transform">
+              <Resume data={data} color={color} selectedTemplate={template} />
+            </div>
+          </div>
+        </div>
+
+        {/* AI Suggestions Sidebar (Floating) */}
+        {showAISuggestions && (
+          <div className="absolute right-0 top-0 bottom-0 w-80 bg-white dark:bg-slate-800 shadow-2xl border-l border-gray-200 dark:border-slate-700 z-20 animate-slideLeft flex flex-col">
+            <div className="p-4 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center bg-indigo-50 dark:bg-indigo-900/20">
+              <h3 className="font-bold text-indigo-900 dark:text-indigo-100 flex items-center gap-2">
+                <span>🤖</span> AI Suggestions
+              </h3>
+              <button
+                onClick={() => setShowAISuggestions(false)}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
+              <AISuggestions
+                resumeData={data}
+                onApplySuggestion={handleApplySuggestion}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

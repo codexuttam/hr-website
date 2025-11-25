@@ -10,16 +10,16 @@ const Template4: React.FC<TemplateProps> = ({ data, color }) => {
   const { contact, objective, education, skills, languages, experience } = data;
 
   return (
-    <div className="w-[900px] mx-auto bg-white font-sans text-gray-900 flex">
+    <div className="w-[900px] mx-auto bg-white font-sans text-gray-900 flex min-h-[1000px] shadow-2xl">
       {/* ===== LEFT SIDEBAR ===== */}
       <aside
-        className="w-[35%] bg-gray-900 text-white p-6 flex flex-col justify-start items-center relative"
+        className="w-[35%] text-white p-8 flex flex-col justify-start items-center relative"
         style={{ backgroundColor: color.background }}
       >
         {/* PHOTO */}
         {contact.photoUrl && (
-          <div className="relative mb-4">
-            <div className="w-36 h-36 rounded-full border-4 border-white overflow-hidden shadow-lg">
+          <div className="relative mb-8">
+            <div className="w-40 h-40 rounded-full border-4 border-white/20 overflow-hidden shadow-xl">
               <img
                 src={contact.photoUrl}
                 alt="Profile"
@@ -30,29 +30,37 @@ const Template4: React.FC<TemplateProps> = ({ data, color }) => {
         )}
 
         {/* ABOUT ME */}
-        <section className="text-center mb-6">
-          <h3 className="text-lg font-semibold mb-2 border-b border-gray-500 inline-block">
-            About Me
+        <section className="text-center mb-8 w-full">
+          <h3 className="text-lg font-bold mb-3 border-b border-white/30 inline-block pb-1 tracking-wide">
+            ABOUT ME
           </h3>
-          <p className="text-sm text-gray-200 mt-2 leading-relaxed">{objective}</p>
+          <p className="text-sm text-white/90 mt-2 leading-relaxed text-left">{objective}</p>
         </section>
 
         {/* CONTACT */}
-        <section className="w-full mb-6">
-          <div className="space-y-2 text-sm text-gray-200">
+        <section className="w-full mb-8">
+          <h3 className="text-lg font-bold mb-3 border-b border-white/30 inline-block pb-1 tracking-wide">
+            CONTACT
+          </h3>
+          <div className="space-y-3 text-sm text-white/90">
             {contact.phone && (
-              <p className="flex items-center gap-2">
-                📞 <span>{contact.phone}</span>
+              <p className="flex items-center gap-3">
+                <span className="text-lg">📞</span> <span>{contact.phone}</span>
               </p>
             )}
             {contact.email && (
-              <p className="flex items-center gap-2">
-                ✉️ <span>{contact.email}</span>
+              <p className="flex items-center gap-3">
+                <span className="text-lg">✉️</span> <span className="break-all">{contact.email}</span>
               </p>
             )}
             {contact.linkedin && (
-              <p className="flex items-center gap-2">
-                📍 <span>{contact.linkedin}</span>
+              <p className="flex items-center gap-3">
+                <span className="text-lg">📍</span> <span>{contact.linkedin}</span>
+              </p>
+            )}
+            {contact.address && (
+              <p className="flex items-center gap-3">
+                <span className="text-lg">🏠</span> <span>{contact.address}</span>
               </p>
             )}
           </div>
@@ -60,13 +68,18 @@ const Template4: React.FC<TemplateProps> = ({ data, color }) => {
 
         {/* LANGUAGES */}
         {languages && languages.length > 0 && (
-          <section className="w-full mb-6">
-            <h4 className="text-base font-semibold border-b border-gray-500 pb-1 mb-2">
-              Language
-            </h4>
-            <ul className="list-disc list-inside text-sm text-gray-200 space-y-1">
+          <section className="w-full mb-8">
+            <h3 className="text-lg font-bold mb-3 border-b border-white/30 inline-block pb-1 tracking-wide">
+              LANGUAGES
+            </h3>
+            <ul className="space-y-2 text-sm text-white/90">
               {languages.map((l, i) => (
-                <li key={i}>{l.language}</li>
+                <li key={i} className="flex justify-between items-center">
+                  <span>{l.language}</span>
+                  <span className="text-xs opacity-75">
+                    {typeof l.level === 'number' ? '★'.repeat(l.level) : l.level}
+                  </span>
+                </li>
               ))}
             </ul>
           </section>
@@ -75,113 +88,120 @@ const Template4: React.FC<TemplateProps> = ({ data, color }) => {
         {/* EXPERTISE */}
         {skills && skills.length > 0 && (
           <section className="w-full">
-            <h4 className="text-base font-semibold border-b border-gray-500 pb-1 mb-2">
-              Expertise
-            </h4>
-            <ul className="list-disc list-inside text-sm text-gray-200 space-y-1">
-              {skills.slice(0, 6).map((s, i) => (
-                <li key={i}>{s}</li>
+            <h3 className="text-lg font-bold mb-3 border-b border-white/30 inline-block pb-1 tracking-wide">
+              EXPERTISE
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {skills.slice(0, 10).map((s, i) => (
+                <span key={i} className="bg-white/10 px-2 py-1 rounded text-xs text-white/90">
+                  {s}
+                </span>
               ))}
-            </ul>
+            </div>
           </section>
         )}
       </aside>
 
       {/* ===== MAIN CONTENT ===== */}
-      <main className="w-[65%] p-8 relative">
+      <main className="w-[65%] flex flex-col">
         {/* HEADER BANNER */}
-        <div
-          className="absolute top-0 left-0 w-full h-32"
+        <header
+          className="w-full p-10 text-white flex flex-col justify-center"
           style={{ backgroundColor: color.primary }}
-        ></div>
-
-        {/* HEADER TEXT */}
-        <header className="relative z-10 mt-10 mb-6 text-white pl-8">
-          <h1 className="text-3xl font-bold uppercase">{contact.name}</h1>
-          <h3 className="text-lg font-medium mt-1">
+        >
+          <h1 className="text-4xl font-extrabold uppercase tracking-tight leading-tight mb-2">
+            {contact.name}
+          </h1>
+          <h2 className="text-xl font-medium opacity-90 tracking-wide">
             {contact.position || "Product Designer"}
-          </h3>
+          </h2>
         </header>
 
-        {/* EXPERIENCE SECTION */}
-        {experience && experience.length > 0 && (
-          <section className="mb-6 mt-8">
-            <h2
-              className="text-lg font-semibold uppercase mb-2 border-b pb-1"
-              style={{ borderColor: color.primary, color: color.primary }}
-            >
-              Experience
-            </h2>
-            <div className="space-y-4 text-sm text-gray-800">
-              {experience.map((exp, i) => (
-                <div key={i}>
-                  <h4 className="font-semibold text-gray-900">{exp.company}</h4>
-                  <p className="text-gray-600">{exp.year}</p>
-                  <p className="text-gray-700 mt-1 leading-relaxed">
-                    {exp.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        <div className="p-10 space-y-8">
+          {/* EXPERIENCE SECTION */}
+          {experience && experience.length > 0 && (
+            <section>
+              <h2
+                className="text-xl font-bold uppercase mb-4 flex items-center gap-3"
+                style={{ color: color.primary }}
+              >
+                <span className="w-8 h-1 bg-current"></span>
+                Experience
+              </h2>
+              <div className="space-y-6">
+                {experience.map((exp, i) => (
+                  <div key={i} className="relative pl-4 border-l-2 border-gray-200">
+                    <div
+                      className="absolute -left-[9px] top-0 w-4 h-4 rounded-full border-2 bg-white"
+                      style={{ borderColor: color.primary }}
+                    ></div>
+                    <div className="mb-1">
+                      <h4 className="font-bold text-gray-900 text-lg">{exp.position}</h4>
+                      <div className="flex justify-between items-center text-sm text-gray-600 font-medium">
+                        <span>{exp.company}</span>
+                        <span>{exp.year}</span>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-sm leading-relaxed mt-2">
+                      {exp.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
-        {/* EDUCATION SECTION */}
-        {education && education.length > 0 && (
-          <section className="mb-6">
-            <h2
-              className="text-lg font-semibold uppercase mb-2 border-b pb-1"
-              style={{ borderColor: color.primary, color: color.primary }}
-            >
-              Education
-            </h2>
-            <div className="space-y-2 text-sm text-gray-800">
-              {education.map((edu, i) => (
-                <div key={i}>
-                  <p className="font-semibold text-gray-900">{edu.course}</p>
-                  <p className="text-gray-700">{edu.institution}</p>
-                  <p className="text-gray-600">{edu.year}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+          {/* EDUCATION SECTION */}
+          {education && education.length > 0 && (
+            <section>
+              <h2
+                className="text-xl font-bold uppercase mb-4 flex items-center gap-3"
+                style={{ color: color.primary }}
+              >
+                <span className="w-8 h-1 bg-current"></span>
+                Education
+              </h2>
+              <div className="space-y-5">
+                {education.map((edu, i) => (
+                  <div key={i} className="bg-gray-50 p-4 rounded-lg border-l-4" style={{ borderColor: color.primary }}>
+                    <div className="flex justify-between items-start mb-1">
+                      <h4 className="font-bold text-gray-900">{edu.course}</h4>
+                      <span className="text-sm font-medium text-gray-500 bg-white px-2 py-1 rounded shadow-sm">{edu.year}</span>
+                    </div>
+                    <p className="text-gray-700 font-medium">{edu.institution}</p>
+                    {edu.description && (
+                      <p className="text-gray-600 text-sm mt-2">{edu.description}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
-        {/* SKILLS SUMMARY */}
-        <section className="mb-4">
-          <h2
-            className="text-lg font-semibold uppercase mb-2 border-b pb-1"
-            style={{ borderColor: color.primary, color: color.primary }}
-          >
-            Skills Summary
-          </h2>
-          <div className="space-y-3">
-            <div>
-              <div className="flex justify-between text-sm font-medium">
-                <span>Design Process</span>
-                <span>78%</span>
+          {/* CERTIFICATIONS SECTION (Added as it was missing in original but present in data) */}
+          {data.certifications && data.certifications.length > 0 && (
+            <section>
+              <h2
+                className="text-xl font-bold uppercase mb-4 flex items-center gap-3"
+                style={{ color: color.primary }}
+              >
+                <span className="w-8 h-1 bg-current"></span>
+                Certifications
+              </h2>
+              <div className="grid grid-cols-1 gap-3">
+                {data.certifications.map((cert, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <span className="text-lg mt-0.5" style={{ color: color.primary }}>🏆</span>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-sm">{cert.course}</h4>
+                      <p className="text-gray-600 text-xs">{cert.institution} • {cert.year}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full"
-                  style={{ backgroundColor: color.primary, width: "78%" }}
-                ></div>
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between text-sm font-medium">
-                <span>Project Management</span>
-                <span>81%</span>
-              </div>
-              <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full"
-                  style={{ backgroundColor: color.primary, width: "81%" }}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </section>
+            </section>
+          )}
+        </div>
       </main>
     </div>
   );

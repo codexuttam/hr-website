@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ResumeData } from '../contexts/ResumeContext';
-import { generateAISuggestions, Suggestion, KeywordRecommendation, FormattingTip, AISuggestionsResponse } from '../api/aiSuggestionsApi';
+import { ResumeData } from '../types/resume';
+import { generateAISuggestions, Suggestion, KeywordRecommendation, FormattingTip } from '../api/aiSuggestionsApi';
 
 interface SuggestionsData {
   overallScore: number;
@@ -23,11 +23,10 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
   const handleGenerateSuggestions = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await generateAISuggestions(resumeData);
-      
-      // Handle the response structure - it has a 'data' property
+
       if (response.success && response.data) {
         setSuggestions({
           overallScore: response.data.overallScore,
@@ -36,7 +35,7 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
           formattingTips: response.data.formattingTips
         });
       } else {
-        // Fallback for development/testing - create mock suggestions
+        // Fallback for development/testing
         setSuggestions({
           overallScore: 75,
           suggestions: [
@@ -47,7 +46,7 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
               priority: 'high',
               title: 'Improve Professional Summary',
               description: 'Your summary could be more impactful with specific achievements.',
-              currentText: (resumeData as any).objective || '',
+              currentText: resumeData.objective || '',
               suggestedText: 'Results-driven professional with proven track record of delivering high-quality solutions and exceeding performance targets.',
               reasoning: 'Adding quantifiable achievements makes your summary more compelling to recruiters.',
               confidence: 85
@@ -76,8 +75,8 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
     } catch (err) {
       console.error('AI Suggestions error:', err);
       setError(err instanceof Error ? err.message : 'Failed to generate suggestions');
-      
-      // Show fallback suggestions even on error for development
+
+      // Fallback
       setSuggestions({
         overallScore: 65,
         suggestions: [
@@ -103,18 +102,16 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
   };
 
   const applySuggestion = (suggestion: Suggestion) => {
-    const sectionMap: Record<string, keyof ResumeData> = {
-      summary: 'summary',
-      experience: 'experience',
-      education: 'education',
-      skills: 'skills',
-      contact: 'fullName', // Default to fullName for contact suggestions
-    };
-
-    const resumeSection = sectionMap[suggestion.section];
-    if (resumeSection) {
-      onApplySuggestion(resumeSection, suggestion.suggestedText);
+    // Map 'summary' to 'objective' as per our ResumeData type
+    if (suggestion.section === 'summary' || suggestion.section === 'objective') {
+      onApplySuggestion('objective', suggestion.suggestedText);
       setAppliedSuggestions(prev => new Set([...prev, suggestion.id]));
+    } else {
+      // For complex sections like experience/education, we can't easily auto-apply
+      // because they are arrays of objects.
+      // Instead, we'll copy to clipboard.
+      navigator.clipboard.writeText(suggestion.suggestedText);
+      alert('Suggestion copied to clipboard! Please paste it in the relevant field.');
     }
   };
 
@@ -138,115 +135,102 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 h-full flex flex-col">
+      <div className="flex items-center justify-between mb-6 shrink-0">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
           🤖 AI Resume Suggestions
         </h2>
         <button
           onClick={handleGenerateSuggestions}
           disabled={isLoading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
         >
-          {isLoading ? 'Analyzing...' : 'Get AI Suggestions'}
+          {isLoading ? 'Analyzing...' : 'Analyze'}
         </button>
       </div>
 
       {error && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-600">Error: {error}</p>
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg shrink-0">
+          <p className="text-red-600 text-sm">Error: {error}</p>
         </div>
       )}
 
-      {suggestions && (
-        <div className="space-y-6">
+      {suggestions ? (
+        <div className="space-y-6 overflow-y-auto custom-scrollbar pr-2">
           {/* Overall Score */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-700 dark:to-slate-600 p-4 rounded-lg">
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-700 dark:to-slate-600 p-4 rounded-lg">
             <div className="flex items-center justify-between">
-              <span className="text-lg font-semibold text-gray-900 dark:text-white">
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">
                 Resume Score
               </span>
               <div className="flex items-center">
-                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
                   {suggestions.overallScore}
                 </span>
-                <span className="text-gray-600 dark:text-gray-300 ml-1">/100</span>
+                <span className="text-gray-600 dark:text-gray-300 ml-1 text-sm">/100</span>
               </div>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
               <div
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${suggestions.overallScore}%` }}
               ></div>
             </div>
-            {/* Show note if using fallback suggestions */}
-            {(suggestions as any).note && (
-              <div className="mt-2 text-sm text-yellow-600 dark:text-yellow-400">
-                ℹ️ {(suggestions as any).note}
-              </div>
-            )}
           </div>
 
           {/* Suggestions */}
           {suggestions.suggestions.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Improvement Suggestions
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 uppercase tracking-wider">
+                Improvements
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {suggestions.suggestions.map((suggestion) => (
                   <div
                     key={suggestion.id}
-                    className={`border rounded-lg p-4 ${getPriorityColor(suggestion.priority)}`}
+                    className={`border rounded-lg p-3 ${getPriorityColor(suggestion.priority)}`}
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center">
-                        <span className="text-lg mr-2">{getTypeIcon(suggestion.type)}</span>
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{getTypeIcon(suggestion.type)}</span>
                         <div>
-                          <h4 className="font-semibold">{suggestion.title}</h4>
-                          <span className="text-xs uppercase font-medium">
-                            {suggestion.section} • {suggestion.priority} priority
+                          <h4 className="font-semibold text-sm">{suggestion.title}</h4>
+                          <span className="text-[10px] uppercase font-bold opacity-75">
+                            {suggestion.section} • {suggestion.priority}
                           </span>
                         </div>
                       </div>
-                      <button
-                        onClick={() => applySuggestion(suggestion)}
-                        disabled={appliedSuggestions.has(suggestion.id)}
-                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                          appliedSuggestions.has(suggestion.id)
-                            ? 'bg-green-100 text-green-700 cursor-not-allowed'
-                            : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                        }`}
-                      >
-                        {appliedSuggestions.has(suggestion.id) ? '✓ Applied' : 'Apply'}
-                      </button>
                     </div>
-                    
-                    <p className="text-sm mb-3">{suggestion.description}</p>
-                    
-                    {suggestion.currentText && (
-                      <div className="mb-3">
-                        <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                          Current:
-                        </p>
-                        <p className="text-sm bg-gray-100 dark:bg-gray-700 p-2 rounded italic">
-                          "{suggestion.currentText}"
-                        </p>
+
+                    <p className="text-xs mb-2 opacity-90">{suggestion.description}</p>
+
+                    <div className="space-y-2 mb-3">
+                      {suggestion.currentText && (
+                        <div className="text-xs bg-white/50 dark:bg-black/20 p-2 rounded">
+                          <span className="font-semibold opacity-70 block mb-0.5">Current:</span>
+                          <span className="italic">"{suggestion.currentText}"</span>
+                        </div>
+                      )}
+                      <div className="text-xs bg-white dark:bg-slate-700 p-2 rounded border border-black/5 dark:border-white/10">
+                        <span className="font-semibold opacity-70 block mb-0.5">Suggested:</span>
+                        <span>"{suggestion.suggestedText}"</span>
                       </div>
-                    )}
-                    
-                    <div className="mb-3">
-                      <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                        Suggested:
-                      </p>
-                      <p className="text-sm bg-white dark:bg-slate-600 p-2 rounded border">
-                        "{suggestion.suggestedText}"
-                      </p>
                     </div>
-                    
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      💡 {suggestion.reasoning}
-                    </p>
+
+                    <button
+                      onClick={() => applySuggestion(suggestion)}
+                      disabled={appliedSuggestions.has(suggestion.id)}
+                      className={`w-full py-1.5 rounded text-xs font-medium transition-colors ${appliedSuggestions.has(suggestion.id)
+                          ? 'bg-green-100 text-green-700 cursor-not-allowed'
+                          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 shadow-sm'
+                        }`}
+                    >
+                      {appliedSuggestions.has(suggestion.id) ? '✓ Applied' : (
+                        suggestion.section === 'summary' || suggestion.section === 'objective'
+                          ? 'Apply Suggestion'
+                          : 'Copy to Clipboard'
+                      )}
+                    </button>
                   </div>
                 ))}
               </div>
@@ -256,70 +240,35 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
           {/* Keyword Recommendations */}
           {suggestions.keywordRecommendations.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Keyword Recommendations
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3 uppercase tracking-wider">
+                Keywords
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="flex flex-wrap gap-2">
                 {suggestions.keywordRecommendations.map((keyword, index) => (
-                  <div key={index} className="bg-blue-50 dark:bg-slate-700 p-3 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
+                  <div key={index} className="bg-blue-50 dark:bg-slate-700 px-2 py-1.5 rounded text-xs border border-blue-100 dark:border-slate-600">
+                    <div className="flex items-center gap-1.5">
                       <span className="font-medium text-blue-900 dark:text-blue-300">
                         {keyword.keyword}
                       </span>
-                      <span className={`text-xs px-2 py-1 rounded ${
-                        keyword.importance === 'high' ? 'bg-red-100 text-red-700' :
-                        keyword.importance === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-green-100 text-green-700'
-                      }`}>
-                        {keyword.importance}
-                      </span>
+                      <span className={`w-1.5 h-1.5 rounded-full ${keyword.importance === 'high' ? 'bg-red-500' :
+                          keyword.importance === 'medium' ? 'bg-yellow-500' :
+                            'bg-green-500'
+                        }`}></span>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
-                      Section: {keyword.section}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {keyword.context}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Formatting Tips */}
-          {suggestions.formattingTips.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Formatting Tips
-              </h3>
-              <div className="space-y-3">
-                {suggestions.formattingTips.map((tip, index) => (
-                  <div key={index} className="bg-green-50 dark:bg-slate-700 p-3 rounded-lg">
-                    <p className="font-medium text-green-900 dark:text-green-300 mb-1">
-                      📝 {tip.tip}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
-                      Section: {tip.section}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Impact: {tip.impact}
-                    </p>
                   </div>
                 ))}
               </div>
             </div>
           )}
         </div>
-      )}
-
-      {!suggestions && !isLoading && (
-        <div className="text-center py-8">
-          <div className="text-4xl mb-4">🤖</div>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Get AI-powered suggestions to improve your resume
+      ) : (
+        <div className="flex-1 flex flex-col items-center justify-center text-center p-4 opacity-60">
+          <div className="text-5xl mb-4">✨</div>
+          <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+            AI Analysis Ready
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-500">
-            Our AI will analyze your resume and provide personalized recommendations for better ATS compatibility and professional impact.
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Click "Analyze" to get personalized suggestions for your resume.
           </p>
         </div>
       )}

@@ -101,13 +101,13 @@ const Header: React.FC = () => {
               <NavLink href="/">Home</NavLink>
               {isAuthenticated && <NavLink href="/dashboard">Dashboard</NavLink>}
 
-              {/* Resume Builder Dropdown */}
+              {/* Resume & ATS Dropdown */}
               <div className="relative" ref={resumeDropdownRef}>
                 <DropdownNavLink
                   isOpen={resumeDropdownOpen}
                   onToggle={() => setResumeDropdownOpen(!resumeDropdownOpen)}
                 >
-                  Resume Builder
+                  Resume & ATS
                 </DropdownNavLink>
 
                 {resumeDropdownOpen && (
@@ -119,6 +119,13 @@ const Header: React.FC = () => {
                         description="Create professional resumes with multiple templates"
                       >
                         Resume Builder
+                      </DropdownItem>
+                      <DropdownItem
+                        href="/ats-tools"
+                        onClick={handleResumeBuilderClick}
+                        description="Optimize your resume for Applicant Tracking Systems"
+                      >
+                        ATS Tools
                       </DropdownItem>
                       {isAuthenticated && (
                         <DropdownItem
@@ -133,8 +140,6 @@ const Header: React.FC = () => {
                   </div>
                 )}
               </div>
-
-              <NavLink href="/ats-tools">ATS Tools</NavLink>
 
               {/* Placement Prep Dropdown */}
               <div className="relative" ref={placementDropdownRef}>
@@ -168,9 +173,7 @@ const Header: React.FC = () => {
                 )}
               </div>
 
-              <NavLink href="/code-playground">Code Playground</NavLink>
-
-
+              <NavLink href="/alumni">Alumni</NavLink>
 
               {/* Recruiter-specific links */}
               {canPostJobs && user?.role === 'recruiter' && (
@@ -228,30 +231,29 @@ const Header: React.FC = () => {
             <MobileNavLink href="/" onClick={handleMobileNavClick}>Home</MobileNavLink>
             {isAuthenticated && <MobileNavLink href="/dashboard" onClick={handleMobileNavClick}>Dashboard</MobileNavLink>}
 
-            {/* Resume Builder Section */}
+            {/* Resume & ATS Section */}
             <div className="px-3 py-2">
-              <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Resume Builder</div>
+              <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Resume & ATS</div>
             </div>
             <div className="ml-4 space-y-1">
               <MobileNavLink href="/resume-builder" onClick={handleMobileNavClick}>Resume Builder</MobileNavLink>
+              <MobileNavLink href="/ats-tools" onClick={handleMobileNavClick}>ATS Tools</MobileNavLink>
               {isAuthenticated && (
                 <MobileNavLink href="/my-resumes" onClick={handleMobileNavClick}>My Resumes</MobileNavLink>
               )}
             </div>
-
-            <MobileNavLink href="/ats-tools" onClick={handleMobileNavClick}>ATS Tools</MobileNavLink>
 
             {/* Placement Prep Section */}
             <div className="px-3 py-2">
               <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Placement Prep</div>
             </div>
             <div className="ml-4 space-y-1">
-              <MobileNavLink href="#" onClick={handleMobileNavClick}>💻 Coding Practice</MobileNavLink>
-              <MobileNavLink href="#" onClick={handleMobileNavClick}>🎯 Mock Interview</MobileNavLink>
+              <MobileNavLink href="/code-playground" onClick={handleMobileNavClick}>💻 Coding Practice</MobileNavLink>
+              <MobileNavLink href="/interview" onClick={handleMobileNavClick}>🎯 Mock Interview</MobileNavLink>
               <MobileNavLink href="#" onClick={handleMobileNavClick}>🧮 Aptitude Tests</MobileNavLink>
             </div>
 
-            <MobileNavLink href="/code-playground" onClick={handleMobileNavClick}>Code Playground</MobileNavLink>
+            <MobileNavLink href="/alumni" onClick={handleMobileNavClick}>🎓 Alumni</MobileNavLink>
 
             {/* Quiz Link - For students */}
             {isAuthenticated && user?.role === 'student' && (

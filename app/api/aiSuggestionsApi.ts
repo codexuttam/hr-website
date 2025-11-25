@@ -1,5 +1,5 @@
 import { API_ENDPOINTS } from '../config/api';
-import { ResumeData } from '../contexts/ResumeContext';
+import { ResumeData } from '../types/resume';
 
 // Enhanced interfaces with more detailed typing
 export interface Suggestion {
