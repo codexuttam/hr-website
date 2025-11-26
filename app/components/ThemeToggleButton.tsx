@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 
 const ThemeToggleButton: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleToggle = () => {
     console.log('Theme toggle clicked, current theme:', theme);
@@ -13,6 +18,11 @@ const ThemeToggleButton: React.FC = () => {
       console.log('Document classes after toggle:', document.documentElement.className);
     }, 100);
   };
+
+  // Prevent hydration mismatch by rendering nothing until mounted
+  if (!mounted) {
+    return <div className="w-9 h-9" />; // Placeholder to reserve space for button
+  }
 
   return (
     <div className="flex items-center gap-2">

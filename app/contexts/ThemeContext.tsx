@@ -23,25 +23,25 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>(() => {
+  const [theme, setTheme] = useState<Theme>('light');
+
+  useEffect(() => {
     // Check localStorage for saved theme preference
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme') as Theme;
-      if (savedTheme) return savedTheme;
-      
-      // Check system preference
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark';
+      if (savedTheme) {
+        setTheme(savedTheme);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('dark');
       }
     }
-    return 'light';
-  });
+  }, []);
 
   const toggleTheme = () => {
     setTheme(prevTheme => {
       const newTheme = prevTheme === 'light' ? 'dark' : 'light';
       console.log('Theme changing from', prevTheme, 'to', newTheme);
-      
+
       // Save to localStorage
       if (typeof window !== 'undefined') {
         localStorage.setItem('theme', newTheme);
@@ -54,13 +54,13 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const root = window.document.documentElement;
-      
+
       // Remove existing theme classes
       root.classList.remove('light', 'dark');
-      
+
       // Add current theme class
       root.classList.add(theme);
-      
+
       // Also set data attribute for additional styling if needed
       root.setAttribute('data-theme', theme);
     }

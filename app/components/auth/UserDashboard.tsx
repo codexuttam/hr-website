@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import RoleBadge from '../ui/RoleBadge';
 import { UserRole } from '../../contexts/AuthContext';
+import AssignedQuizzes from '../dashboard/AssignedQuizzes';
 
 const UserDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -84,6 +85,11 @@ const UserDashboard: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Assigned Quizzes - Only for Students */}
+        {user.role === 'student' && (
+          <AssignedQuizzes userId={user.user_id} />
+        )}
 
         {/* Role-specific Features */}
         <div className="mb-8">

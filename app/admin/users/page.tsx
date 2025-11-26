@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 
 interface User {
-    user_id: string;
+    user_id: string | number;
     name: string;
     email: string;
     role: 'student' | 'instructor' | 'admin';
@@ -30,6 +30,12 @@ const UserManagementPage: React.FC = () => {
         password: '',
         role: 'student' as 'student' | 'instructor' | 'admin'
     });
+
+    // Quiz Assignment State
+    const [showAssignModal, setShowAssignModal] = useState(false);
+    const [selectedUserForQuiz, setSelectedUserForQuiz] = useState<User | null>(null);
+    const [availableQuizzes, setAvailableQuizzes] = useState<any[]>([]);
+    const [selectedQuizId, setSelectedQuizId] = useState<string>("");
 
     useEffect(() => {
         loadUsers();
@@ -58,7 +64,7 @@ const UserManagementPage: React.FC = () => {
         }
     }
 
-    async function handleRoleChange(userId: string, newRole: 'student' | 'instructor' | 'admin') {
+    async function handleRoleChange(userId: string | number, newRole: 'student' | 'instructor' | 'admin') {
         try {
             const { error } = await supabase
                 .from('users')
@@ -76,7 +82,7 @@ const UserManagementPage: React.FC = () => {
         }
     }
 
-    async function handleDeleteUser(userId: string) {
+    async function handleDeleteUser(userId: string | number) {
         if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
             return;
         }
@@ -106,38 +112,24 @@ const UserManagementPage: React.FC = () => {
         }
 
         try {
-            // Create user in Supabase Auth
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-                email: newUser.email,
-                password: newUser.password,
-                options: {
-                    data: {
-                        name: newUser.name,
-                        role: newUser.role,
-                    }
-                }
+            // Call API to create user
+            const response = await fetch('/api/admin/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newUser),
             });
 
-            if (authError) throw authError;
+            const data = await response.json();
 
-            // Insert user into users table
-            const { data: userData, error: userError } = await supabase
-                .from('users')
-                .insert([
-                    {
-                        email: newUser.email,
-                        name: newUser.name,
-                        role: newUser.role,
-                    }
-                ])
-                .select()
-                .single();
-
-            if (userError) throw userError;
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to create user');
+            }
 
             // Add to local state
-            if (userData) {
-                setUsers([userData, ...users]);
+            if (data.user) {
+                setUsers([data.user, ...users]);
             }
 
             // Reset form and close modal
@@ -213,33 +205,18 @@ const UserManagementPage: React.FC = () => {
 
             for (const user of usersToAdd) {
                 try {
-                    // Create user in Supabase Auth
-                    const { data: authData, error: authError } = await supabase.auth.signUp({
-                        email: user.email,
-                        password: user.password,
-                        options: {
-                            data: {
-                                name: user.name,
-                                role: user.role,
-                            }
-                        }
+                    // Call API to create user
+                    const response = await fetch('/api/admin/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(user),
                     });
 
-                    if (authError) throw authError;
-
-                    // Insert user into users table
-                    const { error: userError } = await supabase
-                        .from('users')
-                        .insert([
-                            {
-                                email: user.email,
-                                name: user.name,
-                                role: user.role,
-                            }
-                        ]);
-
-                    if (userError && userError.code !== '23505') { // Ignore duplicate errors
-                        throw userError;
+                    if (!response.ok) {
+                        const data = await response.json();
+                        throw new Error(data.error || 'Failed to create user');
                     }
 
                     successCount++;
@@ -266,6 +243,55 @@ const UserManagementPage: React.FC = () => {
             console.error('Bulk upload failed:', error);
             alert(`Bulk upload failed: ${error.message || 'Unknown error'}`);
             setUploadProgress(0);
+        }
+    }
+
+    async function openAssignModal(user: User) {
+        setSelectedUserForQuiz(user);
+        setShowAssignModal(true);
+        setSelectedQuizId("");
+
+        try {
+            const { data, error } = await supabase
+                .from('quizzes')
+                .select('quiz_id, title')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            setAvailableQuizzes(data || []);
+        } catch (error) {
+            console.error('Error loading quizzes:', error);
+            alert('Failed to load quizzes');
+        }
+    }
+
+    async function handleAssignQuiz(e: React.FormEvent) {
+        e.preventDefault();
+        if (!selectedUserForQuiz || !selectedQuizId) return;
+
+        try {
+            const { error } = await supabase
+                .from('quiz_assignments')
+                .insert({
+                    quiz_id: parseInt(selectedQuizId),
+                    user_id: selectedUserForQuiz.user_id,
+                    status: 'assigned',
+                    assigned_at: new Date().toISOString()
+                });
+
+            if (error) {
+                if (error.code === '23505') { // Unique violation
+                    alert('This quiz is already assigned to this user.');
+                } else {
+                    throw error;
+                }
+            } else {
+                alert('Quiz assigned successfully!');
+                setShowAssignModal(false);
+            }
+        } catch (error: any) {
+            console.error('Failed to assign quiz:', error);
+            alert('Failed to assign quiz: ' + error.message);
         }
     }
 
@@ -512,6 +538,14 @@ const UserManagementPage: React.FC = () => {
                                                         >
                                                             Delete
                                                         </button>
+                                                        {user.role === 'student' && (
+                                                            <button
+                                                                onClick={() => openAssignModal(user)}
+                                                                className="ml-3 text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                                            >
+                                                                Assign Quiz
+                                                            </button>
+                                                        )}
                                                     </td>
                                                 </tr>
                                             ))}
