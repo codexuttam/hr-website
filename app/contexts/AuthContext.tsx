@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 
-export type UserRole = 'student' | 'recruiter' | 'mentor' | 'admin';
+export type UserRole = 'student' | 'admin';
 
 interface User {
   user_id: number;
@@ -79,7 +79,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const checkSession = async () => {
       try {
         console.log('Checking for existing session...');
-        
+
         // First check localStorage for instant load
         const storedUser = loadUserFromStorage();
         if (storedUser) {
@@ -87,10 +87,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           setUser(storedUser);
           setLoading(false); // Set loading to false immediately
         }
-        
+
         // Then verify with Supabase in background
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
+
         if (sessionError) {
           console.error('Session error:', sessionError);
           if (storedUser) {
@@ -100,11 +100,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           setLoading(false);
           return;
         }
-        
+
         if (session && session.user?.email) {
           console.log('Found existing session for user:', session.user.email);
           setToken(session.access_token);
-          
+
           // Fetch user profile with timeout
           const fetchProfile = async () => {
             const { data: userData, error } = await supabase
@@ -112,22 +112,44 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               .select('*')
               .eq('email', session.user.email)
               .single();
-            
+
             if (userData && !error) {
               console.log('User profile loaded:', userData.name);
               setUser(userData);
               saveUserToStorage(userData);
             } else {
-              console.log('Creating fallback user from session data');
-              const fallbackUser: User = {
-                user_id: (session.user.id && parseInt(session.user.id)) || Math.floor(Math.random() * 1000000),
-                name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
-                email: session.user.email || '',
-                role: session.user.user_metadata?.role || 'student',
-                created_at: session.user.created_at || new Date().toISOString(),
-              };
-              setUser(fallbackUser);
-              saveUserToStorage(fallbackUser);
+              console.log('User profile not found, attempting to create...');
+              try {
+                const { data: newUser, error: createError } = await supabase
+                  .from('users')
+                  .insert([{
+                    email: session.user.email,
+                    name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
+                    role: session.user.user_metadata?.role || 'student'
+                  }])
+                  .select()
+                  .single();
+
+                if (newUser && !createError) {
+                  console.log('Created missing user record:', newUser.name);
+                  setUser(newUser);
+                  saveUserToStorage(newUser);
+                } else {
+                  throw createError || new Error('Failed to create user');
+                }
+              } catch (err) {
+                console.error('Failed to auto-create user:', err);
+                // Fallback to temporary user (will fail DB operations but allow login)
+                const fallbackUser: User = {
+                  user_id: Math.floor(Math.random() * 1000000),
+                  name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
+                  email: session.user.email || '',
+                  role: session.user.user_metadata?.role || 'student',
+                  created_at: session.user.created_at || new Date().toISOString(),
+                };
+                setUser(fallbackUser);
+                saveUserToStorage(fallbackUser);
+              }
             }
           };
 
@@ -156,10 +178,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event, session?.user?.email);
-      
+
       if (session && session.user?.email) {
         setToken(session.access_token);
-        
+
         // Fetch user profile
         try {
           const { data: userData, error } = await supabase
@@ -167,7 +189,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             .select('*')
             .eq('email', session.user.email)
             .single();
-          
+
           if (userData && !error) {
             console.log('User profile loaded on auth change:', userData.name);
             setUser(userData);
@@ -176,7 +198,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.warn('User profile not found in database, creating fallback user. Error:', error?.message || 'No error details');
             // Create a fallback user object
             const fallbackUser: User = {
-              user_id: (session.user.id && parseInt(session.user.id)) || Math.floor(Math.random() * 1000000),
+              user_id: Math.floor(Math.random() * 1000000),
               name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
               email: session.user.email || '',
               role: session.user.user_metadata?.role || 'student',
@@ -189,7 +211,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           console.error('Exception while fetching user profile on auth change:', profileError);
           // Create a fallback user object
           const fallbackUser: User = {
-            user_id: (session.user.id && parseInt(session.user.id)) || Math.floor(Math.random() * 1000000),
+            user_id: Math.floor(Math.random() * 1000000),
             name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
             email: session.user.email || '',
             role: session.user.user_metadata?.role || 'student',
@@ -204,7 +226,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setToken(null);
         clearUserFromStorage();
       }
-      
+
       // Set loading to false after any auth state change
       setLoading(false);
     });
@@ -217,7 +239,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (email: string, password: string, role?: UserRole) => {
     try {
       console.log('Attempting login for:', email);
-      
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -225,7 +247,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       if (error) {
         console.error('Login error:', error);
-        
+
         // Provide helpful error messages
         if (error.message.includes('Email not confirmed')) {
           throw new Error('Please verify your email or disable email confirmation in Supabase settings');
@@ -238,12 +260,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
         throw new Error(error.message);
       }
-      
+
       console.log('Login successful for:', email);
 
       if (data.session && data.user) {
         setToken(data.session.access_token);
-        
+
         // Fetch user profile from users table with timeout
         const fetchUserProfile = async () => {
           try {
@@ -252,21 +274,40 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               .select('*')
               .eq('email', email)
               .single();
-            
+
             if (userData && !userError) {
               console.log('User profile loaded:', userData.name);
               setUser(userData);
               saveUserToStorage(userData);
               return userData;
+            } else {
+              console.log('User profile not found, attempting to create...');
+              const { data: newUser, error: createError } = await supabase
+                .from('users')
+                .insert([{
+                  email: email,
+                  name: data.user.user_metadata?.name || email.split('@')[0] || 'User',
+                  role: role || data.user.user_metadata?.role || 'student'
+                }])
+                .select()
+                .single();
+
+              if (newUser && !createError) {
+                console.log('Created missing user record:', newUser.name);
+                setUser(newUser);
+                saveUserToStorage(newUser);
+                return newUser;
+              }
+              throw createError;
             }
           } catch (err) {
-            console.warn('Error fetching user profile:', err);
+            console.warn('Error fetching/creating user profile:', err);
           }
-          
+
           // Fallback: create basic user from auth data
           console.log('Using fallback user profile');
           const basicUser: User = {
-            user_id: parseInt(data.user.id) || Math.floor(Math.random() * 1000000),
+            user_id: Math.floor(Math.random() * 1000000),
             name: data.user.user_metadata?.name || email.split('@')[0] || 'User',
             email: email,
             role: role || data.user.user_metadata?.role || 'student',
@@ -280,13 +321,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Fetch user profile with 3 second timeout
         await Promise.race([
           fetchUserProfile(),
-          new Promise((_, reject) => 
+          new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Profile fetch timeout')), 3000)
           )
         ]).catch((err) => {
           console.warn('Profile fetch timed out, using fallback');
           const basicUser: User = {
-            user_id: parseInt(data.user.id) || Math.floor(Math.random() * 1000000),
+            user_id: Math.floor(Math.random() * 1000000),
             name: data.user.user_metadata?.name || email.split('@')[0] || 'User',
             email: email,
             role: role || data.user.user_metadata?.role || 'student',
@@ -350,7 +391,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               .select('*')
               .eq('email', email)
               .single();
-            
+
             if (existingUser) {
               if (authData.session) {
                 setToken(authData.session.access_token);

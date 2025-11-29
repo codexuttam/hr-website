@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import RoleBadge from '../ui/RoleBadge';
 import { UserRole } from '../../contexts/AuthContext';
 import AssignedQuizzes from '../dashboard/AssignedQuizzes';
+import { supabase } from '@/lib/supabase';
 
 const UserDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -25,29 +26,8 @@ const UserDashboard: React.FC = () => {
             { name: 'User Management', href: '/admin/users', icon: '👥' },
             { name: 'System Analytics', href: '/admin/analytics', icon: '📊' },
             { name: 'Content Moderation', href: '/admin/content', icon: '🛡️' },
-            { name: 'Platform Settings', href: '/admin/settings', icon: '⚙️' }
-          ]
-        };
-      case 'recruiter':
-        return {
-          title: 'Recruiter Dashboard',
-          description: 'Find, evaluate, and hire the best candidates',
-          features: [
-            { name: 'ATS Tools', href: '/ats-tools', icon: '🎯' },
-            { name: 'Candidate Search', href: '/candidates', icon: '🔍' },
-            { name: 'Interview Scheduling', href: '/interviews', icon: '📅' },
-            { name: 'Job Postings', href: '/jobs', icon: '💼' }
-          ]
-        };
-      case 'mentor':
-        return {
-          title: 'Mentor Dashboard',
-          description: 'Guide and support students in their career journey',
-          features: [
-            { name: 'Student Sessions', href: '/mentor/sessions', icon: '🎓' },
-            { name: 'Career Guidance', href: '/mentor/guidance', icon: '🧭' },
-            { name: 'Resume Reviews', href: '/mentor/reviews', icon: '📄' },
-            { name: 'Mentorship Tools', href: '/mentor/tools', icon: '🛠️' }
+            { name: 'Platform Settings', href: '/admin/settings', icon: '⚙️' },
+            { name: 'Post New Drive', href: '/admin/drives/create', icon: '📢' }
           ]
         };
       case 'student':
@@ -59,7 +39,8 @@ const UserDashboard: React.FC = () => {
             { name: 'Resume Builder', href: '/resume-builder', icon: '📝' },
             { name: 'ATS Analysis', href: '/ats-tools', icon: '🎯' },
             { name: 'Interview Prep', href: '/interview', icon: '💬' },
-            { name: 'Skill Assessment', href: '/quiz', icon: '🧠' }
+            { name: 'Skill Assessment', href: '/quiz', icon: '🧠' },
+            { name: 'Placement Drives', href: '/drives', icon: '🚀' }
           ]
         };
     }
@@ -89,6 +70,73 @@ const UserDashboard: React.FC = () => {
         {/* Assigned Quizzes - Only for Students */}
         {user.role === 'student' && (
           <AssignedQuizzes userId={user.user_id} />
+        )}
+
+        {/* Resume Upload Section - Only for Students */}
+        {user.role === 'student' && (
+          <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6 mb-8">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">My Resume</h2>
+            <div className="flex items-center gap-4">
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 transition-colors">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                  </svg>
+                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">PDF, DOC, DOCX (MAX. 5MB)</p>
+                </div>
+                <input
+                  type="file"
+                  className="hidden"
+                  accept=".pdf,.doc,.docx"
+                  onChange={async (e) => {
+                    if (!e.target.files || !e.target.files[0]) return;
+
+                    const file = e.target.files[0];
+                    // Simple loading state via alert for now as we can't easily add state in this replace block without rewriting the whole component
+                    // Ideally we would use the state defined above, but let's do it inline to be safe with the replace tool
+                    const confirmUpload = window.confirm(`Upload ${file.name}?`);
+                    if (!confirmUpload) return;
+
+                    try {
+                      const fileExt = file.name.split('.').pop();
+                      const fileName = `${user?.user_id}_${Date.now()}.${fileExt}`;
+                      const filePath = `${fileName}`;
+
+                      const { error: uploadError } = await supabase.storage
+                        .from('resumes')
+                        .upload(filePath, file);
+
+                      if (uploadError) throw new Error('Storage error: ' + uploadError.message);
+
+                      const { data: { publicUrl } } = supabase.storage
+                        .from('resumes')
+                        .getPublicUrl(filePath);
+
+                      // Save to resumes table
+                      const { error: dbError } = await supabase
+                        .from('resumes')
+                        .insert([
+                          {
+                            user_id: user?.user_id,
+                            resume_name: file.name,
+                            resume_file_path: publicUrl,
+                            resume_data: {},
+                          }
+                        ]);
+
+                      if (dbError) throw new Error('Database error: ' + dbError.message);
+
+                      alert('Resume uploaded successfully!');
+                    } catch (error: any) {
+                      console.error('Error uploading resume:', error);
+                      alert('Failed to upload resume: ' + error.message);
+                    }
+                  }}
+                />
+              </label>
+            </div>
+          </div>
         )}
 
         {/* Role-specific Features */}
@@ -121,25 +169,19 @@ const UserDashboard: React.FC = () => {
             <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                {user.role === 'student' ? 'Resumes Created' :
-                  user.role === 'recruiter' ? 'Candidates Reviewed' :
-                    user.role === 'mentor' ? 'Students Mentored' : 'Users Managed'}
+                {user.role === 'student' ? 'Resumes Created' : 'Users Managed'}
               </div>
             </div>
             <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">0</div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                {user.role === 'student' ? 'Skills Assessed' :
-                  user.role === 'recruiter' ? 'Jobs Posted' :
-                    user.role === 'mentor' ? 'Sessions Completed' : 'System Reports'}
+                {user.role === 'student' ? 'Skills Assessed' : 'System Reports'}
               </div>
             </div>
             <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
               <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">0</div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
-                {user.role === 'student' ? 'Interview Preps' :
-                  user.role === 'recruiter' ? 'Interviews Scheduled' :
-                    user.role === 'mentor' ? 'Career Plans Created' : 'Platform Updates'}
+                {user.role === 'student' ? 'Interview Preps' : 'Platform Updates'}
               </div>
             </div>
           </div>

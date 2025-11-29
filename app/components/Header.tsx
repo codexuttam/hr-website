@@ -174,16 +174,7 @@ const Header: React.FC = () => {
               </div>
 
               <NavLink href="/alumni">Alumni</NavLink>
-
-              {/* Recruiter-specific links */}
-              {canPostJobs && user?.role === 'recruiter' && (
-                <NavLink href="/jobs">Jobs</NavLink>
-              )}
-
-              {/* Mentor-specific links */}
-              {canMentorStudents && user?.role === 'mentor' && (
-                <NavLink href="/mentor">Mentoring</NavLink>
-              )}
+              <NavLink href="/drives">Drives</NavLink>
 
               <NavLink href="#">Games</NavLink>
               <div className="ml-4 flex items-center space-x-3">
@@ -191,12 +182,20 @@ const Header: React.FC = () => {
                 {isAuthenticated ? (
                   <UserProfile />
                 ) : (
-                  <Link
-                    href="/auth"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors duration-200"
-                  >
-                    Login
-                  </Link>
+                  <>
+                    <Link
+                      href="/login"
+                      className="text-gray-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/register"
+                      className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors duration-200"
+                    >
+                      Register
+                    </Link>
+                  </>
                 )}
               </div>
             </div>
@@ -254,6 +253,7 @@ const Header: React.FC = () => {
             </div>
 
             <MobileNavLink href="/alumni" onClick={handleMobileNavClick}>🎓 Alumni</MobileNavLink>
+            <MobileNavLink href="/drives" onClick={handleMobileNavClick}>🚀 Placement Drives</MobileNavLink>
 
             {/* Quiz Link - For students */}
             {isAuthenticated && user?.role === 'student' && (
@@ -278,15 +278,6 @@ const Header: React.FC = () => {
                   <MobileNavLink href="/admin/settings" onClick={handleMobileNavClick}>⚙️ Settings</MobileNavLink>
                 </div>
               </>
-            )}
-
-            {/* Role-specific links */}
-            {canPostJobs && user?.role === 'recruiter' && (
-              <MobileNavLink href="/jobs" onClick={handleMobileNavClick}>Jobs</MobileNavLink>
-            )}
-
-            {canMentorStudents && user?.role === 'mentor' && (
-              <MobileNavLink href="/mentor" onClick={handleMobileNavClick}>Mentoring</MobileNavLink>
             )}
 
             <MobileNavLink href="#" onClick={handleMobileNavClick}>Games</MobileNavLink>

@@ -246,3 +246,46 @@ input:focus, select:focus, textarea:focus {
 .animate-slideDown {
   animation: slideDown 0.3s ease-out;
 }
+
+/* Additional Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Note: slideUp keyframes already exist above but might be slightly different. 
+   Reusing existing slideUp or defining a specific one for Toast if needed. 
+   The existing slideUp moves from 20px to 0. Toast usually wants from bottom (100% or more).
+*/
+@keyframes slideUpToast {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUpToast 0.3s ease-out forwards;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
