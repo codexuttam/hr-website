@@ -1,46 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Judge0 API configuration
-const JUDGE0_API_URL = 'https://judge0-ce.p.rapidapi.com';
-const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || ''; // Add your RapidAPI key in .env.local
+// Piston API configuration
+const PISTON_API_URL = 'https://emkc.org/api/v2/piston';
 
-// Language ID mapping for Judge0
-const LANGUAGE_IDS: Record<string, number> = {
-  javascript: 63,      // Node.js (12.14.0)
-  python: 71,          // Python (3.8.1)
-  java: 62,            // Java (OpenJDK 13.0.1)
-  c_cpp: 54,           // C++ (GCC 9.2.0)
-  c: 50,               // C (GCC 9.2.0)
-  csharp: 51,          // C# (Mono 6.6.0.161)
-  typescript: 74,      // TypeScript (3.7.4)
-  ruby: 72,            // Ruby (2.7.0)
-  golang: 60,          // Go (1.13.5)
-  php: 68,             // PHP (7.4.1)
-  swift: 83,           // Swift (5.2.3)
-  kotlin: 78,          // Kotlin (1.3.70)
-  rust: 73,            // Rust (1.40.0)
-  scala: 81,           // Scala (2.13.2)
-  perl: 85,            // Perl (5.28.1)
-  r: 80,               // R (4.0.0)
-  haskell: 61,         // Haskell (GHC 8.8.1)
-  lua: 64,             // Lua (5.3.5)
-  dart: 90,            // Dart (2.19.2)
-  elixir: 57,          // Elixir (1.9.4)
-  clojure: 86,         // Clojure (1.10.1)
-  fsharp: 87,          // F# (.NET Core SDK 3.1.202)
-  groovy: 88,          // Groovy (3.0.3)
-  objectivec: 79,      // Objective-C (Clang 7.0.1)
-  pascal: 67,          // Pascal (FPC 3.0.4)
-  fortran: 59,         // Fortran (GFortran 9.2.0)
-  assembly_x86: 45,    // Assembly (NASM 2.14.02)
-  cobol: 77,           // COBOL (GnuCOBOL 2.2)
-  lisp: 55,            // Common Lisp (SBCL 2.0.0)
-  d: 56,               // D (DMD 2.089.1)
-  erlang: 58,          // Erlang (OTP 22.2)
-  ocaml: 65,           // OCaml (4.09.0)
-  prolog: 69,          // Prolog (GNU Prolog 1.4.5)
-  sql: 82,             // SQL (SQLite 3.27.2)
-  vbscript: 84,        // Visual Basic.Net (vbnc 0.0.0.5943)
+// Language mapping for Piston
+// Piston requires specific versions, but we can try to use the latest available if we don't specify, 
+// or specify a version we know exists. 
+// For now, we will map to language names and let Piston pick the version or use a known one.
+const PISTON_LANGUAGE_MAP: Record<string, { language: string, version: string }> = {
+  javascript: { language: 'javascript', version: '18.15.0' },
+  typescript: { language: 'typescript', version: '5.0.3' },
+  python: { language: 'python', version: '3.10.0' },
+  java: { language: 'java', version: '15.0.2' },
+  c: { language: 'c', version: '10.2.0' },
+  c_cpp: { language: 'c++', version: '10.2.0' },
+  csharp: { language: 'csharp', version: '6.12.0' },
+  golang: { language: 'go', version: '1.16.2' },
+  rust: { language: 'rust', version: '1.68.2' },
+  php: { language: 'php', version: '8.2.3' },
+  ruby: { language: 'ruby', version: '3.0.1' },
+  swift: { language: 'swift', version: '5.3.3' },
+  kotlin: { language: 'kotlin', version: '1.8.20' },
+  scala: { language: 'scala', version: '3.2.2' },
+  perl: { language: 'perl', version: '5.36.0' },
+  r: { language: 'r', version: '4.2.3' },
+  haskell: { language: 'haskell', version: '9.0.1' },
+  lua: { language: 'lua', version: '5.4.4' },
+  dart: { language: 'dart', version: '2.19.6' },
+  elixir: { language: 'elixir', version: '1.11.3' },
+  clojure: { language: 'clojure', version: '1.10.3' },
+  fsharp: { language: 'fsharp', version: '5.0.201' },
+  groovy: { language: 'groovy', version: '3.0.7' },
+  objectivec: { language: 'objective-c', version: '10.2.0' }, // GCC
+  pascal: { language: 'pascal', version: '3.2.2' },
+  fortran: { language: 'fortran', version: '10.2.0' },
+  assembly_x86: { language: 'nasm', version: '2.15.05' },
+  cobol: { language: 'cobol', version: '3.1.2' },
+  lisp: { language: 'lisp', version: '2.1.2' },
+  d: { language: 'd', version: '10.2.0' },
+  erlang: { language: 'erlang', version: '23.0.0' },
+  ocaml: { language: 'ocaml', version: '4.12.0' },
+  prolog: { language: 'prolog', version: '8.2.4' },
+  sql: { language: 'sqlite3', version: '3.36.0' },
+  vbscript: { language: 'vbnc', version: '0.0.0.5943' },
 };
 
 export async function POST(request: NextRequest) {
@@ -58,19 +60,9 @@ export async function POST(request: NextRequest) {
     let error = '';
 
     try {
-      // Use Judge0 API for all languages
-      if (RAPIDAPI_KEY) {
-        const result = await executeWithJudge0(code, language, customInput || '');
-        output = result.output;
-        error = result.error;
-      } else {
-        // Fallback to local JavaScript execution only
-        if (language === 'javascript') {
-          output = await executeJavaScript(code);
-        } else {
-          error = 'Code execution API not configured. Please add RAPIDAPI_KEY to environment variables.';
-        }
-      }
+      const result = await executeWithPiston(code, language, customInput || '');
+      output = result.output;
+      error = result.error;
     } catch (err) {
       error = err instanceof Error ? err.message : String(err);
     }
@@ -88,53 +80,80 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Execute code using Judge0 API
-async function executeWithJudge0(
+// Execute code using Piston API
+async function executeWithPiston(
   code: string,
   language: string,
   stdin: string
 ): Promise<{ output: string; error: string }> {
-  const languageId = LANGUAGE_IDS[language];
+  const langConfig = PISTON_LANGUAGE_MAP[language];
   
-  if (!languageId) {
+  if (!langConfig) {
     return { output: '', error: `Language ${language} is not supported` };
   }
 
   try {
-    // Submit code for execution
-    const submitResponse = await fetch(`${JUDGE0_API_URL}/submissions?base64_encoded=false&wait=true`, {
+    const response = await fetch(`${PISTON_API_URL}/execute`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-RapidAPI-Key': RAPIDAPI_KEY,
-        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
       },
       body: JSON.stringify({
-        source_code: code,
-        language_id: languageId,
+        language: langConfig.language,
+        version: langConfig.version,
+        files: [
+          {
+            content: code,
+          },
+        ],
         stdin: stdin || '',
+        run_timeout: 3000,
+        compile_timeout: 10000,
       }),
     });
 
-    if (!submitResponse.ok) {
-      throw new Error(`Judge0 API error: ${submitResponse.statusText}`);
+    if (!response.ok) {
+      throw new Error(`Piston API error: ${response.statusText}`);
     }
 
-    const result = await submitResponse.json();
+    const result = await response.json();
 
-    // Check for compilation or runtime errors
-    if (result.status.id === 6) {
-      // Compilation Error
-      return { output: '', error: result.compile_output || 'Compilation error' };
-    } else if (result.status.id === 11 || result.status.id === 12 || result.status.id === 13) {
-      // Runtime Error, Time Limit Exceeded, or other errors
-      return { output: '', error: result.stderr || result.status.description };
+    // Piston response structure:
+    // {
+    //   "run": {
+    //     "stdout": "...",
+    //     "stderr": "...",
+    //     "output": "...",
+    //     "code": 0,
+    //     "signal": null
+    //   },
+    //   "compile": { // optional
+    //     "stdout": "...",
+    //     "stderr": "...",
+    //     "output": "...",
+    //     "code": 0
+    //   }
+    // }
+
+    if (result.compile && result.compile.code !== 0) {
+      return { 
+        output: '', 
+        error: result.compile.output || result.compile.stderr || 'Compilation error' 
+      };
     }
 
-    // Success
-    const output = result.stdout || 'Code executed successfully (no output)';
-    const error = result.stderr || '';
+    if (result.run && result.run.code !== 0 && !result.run.stderr) {
+       // Sometimes run code is not 0 but stderr is empty, it might be a runtime error captured in stdout or just exit code
+       // But usually stderr has the info.
+    }
 
+    const output = result.run.stdout || '';
+    const error = result.run.stderr || '';
+
+    // If there is both output and error, we might want to return both, 
+    // but the current interface expects split.
+    // Piston 'output' field in 'run' combines stdout and stderr.
+    
     return { output, error };
   } catch (err) {
     return { 
@@ -144,28 +163,5 @@ async function executeWithJudge0(
   }
 }
 
-// JavaScript execution (using Node.js) - Fallback for local development
-async function executeJavaScript(code: string): Promise<string> {
-  try {
-    // Capture console.log output
-    const logs: string[] = [];
-    const originalLog = console.log;
-    
-    console.log = (...args: any[]) => {
-      logs.push(args.map(arg => 
-        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-      ).join(' '));
-    };
-
-    // Execute code
-    // eslint-disable-next-line no-eval
-    eval(code);
-    
-    console.log = originalLog;
-    return logs.join('\n') || 'Code executed successfully (no output)';
-  } catch (err) {
-    throw new Error(`JavaScript Error: ${err instanceof Error ? err.message : String(err)}`);
-  }
-}
 
 

@@ -33,3 +33,5 @@ export const interviewer = {
   maxDurationSeconds: 900,          // ⬅️ cap interview at 15 minutes instead of 30
 };
 
+
+export const LOCAL_STORAGE_THEME_KEY = "theme";

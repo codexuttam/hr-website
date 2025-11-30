@@ -1,9 +1,13 @@
+'use client';
 import React, { createContext, useState, useEffect } from "react";
-import { LOCAL_STORAGE_THEME_KEY } from "../utils/constants";
+import { LOCAL_STORAGE_THEME_KEY } from "../constants";
 
-const ThemeContext = createContext();
+const ThemeContext = createContext({
+  isDarkMode: false,
+  toggleTheme: () => { },
+});
 
-const ThemeProvider = ({ children }) => {
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem(LOCAL_STORAGE_THEME_KEY);
     if (savedTheme) {

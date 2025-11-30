@@ -25,9 +25,11 @@
     "ace-builds": "^1.43.4",
     "ai": "^5.0.101",
     "axios": "^1.13.2",
+    "clsx": "^2.1.1",
     "docx": "^9.5.1",
     "dotenv": "^17.2.3",
     "file-saver": "^2.0.5",
+    "framer-motion": "^12.23.24",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.3",
     "mammoth": "^1.11.0",
@@ -38,7 +40,8 @@
     "react-ace": "^14.0.1",
     "react-dom": "19.2.0",
     "react-icons": "^5.5.0",
-    "react-split-pane-next": "^1.0.6"
+    "react-split-pane-next": "^1.0.6",
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

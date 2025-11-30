@@ -16,7 +16,7 @@ export default function CodePlayground() {
   const [activeTab, setActiveTab] = useState<'program' | 'debug'>('program');
   const [customInput, setCustomInput] = useState("");
   const [isRunning, setIsRunning] = useState(false);
-  
+
   // Template tracking state
   const [originalTemplate, setOriginalTemplate] = useState<string>("");
   const [showLanguageChangeDialog, setShowLanguageChangeDialog] = useState(false);
@@ -36,7 +36,7 @@ export default function CodePlayground() {
   const loadTemplate = useCallback((newLanguage: string) => {
     // Trigger fade-out effect
     setIsLoadingTemplate(true);
-    
+
     // Small delay for smooth transition
     setTimeout(() => {
       const template = getTemplate(newLanguage);
@@ -45,7 +45,7 @@ export default function CodePlayground() {
       setLanguage(newLanguage);
       setOutput(""); // Clear output when loading new template
       setActiveTab('program'); // Switch to program tab when loading template
-      
+
       // Trigger fade-in effect
       setTimeout(() => {
         setIsLoadingTemplate(false);
@@ -57,7 +57,7 @@ export default function CodePlayground() {
   const handleLanguageChange = useCallback((newLanguage: string) => {
     // Check if code has been modified from the original template
     const isModified = code !== originalTemplate;
-    
+
     if (isModified) {
       // Show confirmation dialog if code has been modified
       setPendingLanguage(newLanguage);
@@ -70,7 +70,7 @@ export default function CodePlayground() {
 
   const handleRun = useCallback(async () => {
     if (isRunning) return; // Prevent multiple simultaneous executions
-    
+
     setIsRunning(true);
     setOutput(""); // Clear previous output
     setOutput("⏳ Running code...");
@@ -82,7 +82,7 @@ export default function CodePlayground() {
         const logs: string[] = [];
         const originalLog = console.log;
         console.log = (...args: any[]) => {
-          logs.push(args.map(arg => 
+          logs.push(args.map(arg =>
             typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
           ).join(' '));
         };
@@ -111,20 +111,18 @@ export default function CodePlayground() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code, language, customInput }),
       });
-      
+
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ error: 'API request failed' }));
         throw new Error(errorData.error || 'API request failed');
       }
-      
+
       const data = await res.json();
       setOutput(data.output || data.error || "No output");
     } catch (err) {
       setOutput(`⚠️ Error executing ${language} code.\n\n` +
-        `Make sure you have the required compiler/interpreter installed:\n` +
-        `- Python: Install Python 3.x\n` +
-        `- C++: Install MinGW (g++)\n` +
-        `- Java: Install JDK\n\n` +
+        `The code execution service is currently unavailable or encountered an error.\n` +
+        `Please try again later.\n\n` +
         `Error: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setIsRunning(false);
@@ -205,20 +203,19 @@ export default function CodePlayground() {
       />
 
       {/* Main Content Area - Grid Layout */}
-      <div 
+      <div
         className="flex-1 grid grid-cols-1 overflow-hidden transition-all duration-300"
         style={{
           gridTemplateColumns: window.innerWidth >= 768 ? `${editorWidth}% ${100 - editorWidth}%` : '1fr'
         }}
       >
         {/* Editor Panel */}
-        <div 
+        <div
           id="editor-panel"
           role="tabpanel"
           aria-labelledby="program-tab"
-          className={`min-h-[400px] md:min-h-0 border-b md:border-b-0 md:border-r transition-all duration-200 ${
-            isLoadingTemplate ? 'opacity-70' : 'opacity-100'
-          } ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`}
+          className={`min-h-[400px] md:min-h-0 border-b md:border-b-0 md:border-r transition-all duration-200 ${isLoadingTemplate ? 'opacity-70' : 'opacity-100'
+            } ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`}
         >
           <AceEditorWrapper
             code={code}

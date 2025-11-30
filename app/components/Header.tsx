@@ -48,7 +48,7 @@ const Header: React.FC = () => {
   const [placementDropdownOpen, setPlacementDropdownOpen] = useState(false);
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
   const { isAuthenticated, user } = useAuth();
-  const { canAccessAdmin, canPostJobs, canMentorStudents } = useRoleAccess();
+  const { canAccessAdmin } = useRoleAccess();
   const resumeDropdownRef = useRef<HTMLDivElement>(null);
   const placementDropdownRef = useRef<HTMLDivElement>(null);
   const adminDropdownRef = useRef<HTMLDivElement>(null);
@@ -153,7 +153,6 @@ const Header: React.FC = () => {
                 {placementDropdownOpen && (
                   <div className="absolute left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
                     <div className="py-1">
-
                       <DropdownItem
                         href="/code-playground"
                         description="Practice coding problems and algorithms"
@@ -167,39 +166,38 @@ const Header: React.FC = () => {
                       >
                         🎯 Mock Interview
                       </DropdownItem>
-
                     </div>
                   </div>
                 )}
               </div>
 
+              <NavLink href="/games">Games</NavLink>
               <NavLink href="/alumni">Alumni</NavLink>
               <NavLink href="/drives">Drives</NavLink>
 
-              <NavLink href="#">Games</NavLink>
-              <div className="ml-4 flex items-center space-x-3">
-                <ThemeToggleButton />
-                {isAuthenticated ? (
-                  <UserProfile />
-                ) : (
-                  <>
-                    <Link
-                      href="/login"
-                      className="text-gray-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      href="/register"
-                      className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors duration-200"
-                    >
-                      Register
-                    </Link>
-                  </>
-                )}
-              </div>
+              <ThemeToggleButton />
+
+              {isAuthenticated ? (
+                <UserProfile />
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="text-gray-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
           </div>
+
           <div className="-mr-2 flex items-center md:hidden">
             <ThemeToggleButton />
             <button
@@ -252,6 +250,7 @@ const Header: React.FC = () => {
               <MobileNavLink href="#" onClick={handleMobileNavClick}>🧮 Aptitude Tests</MobileNavLink>
             </div>
 
+            <MobileNavLink href="/games" onClick={handleMobileNavClick}>🎮 Games</MobileNavLink>
             <MobileNavLink href="/alumni" onClick={handleMobileNavClick}>🎓 Alumni</MobileNavLink>
             <MobileNavLink href="/drives" onClick={handleMobileNavClick}>🚀 Placement Drives</MobileNavLink>
 
@@ -280,7 +279,6 @@ const Header: React.FC = () => {
               </>
             )}
 
-            <MobileNavLink href="#" onClick={handleMobileNavClick}>Games</MobileNavLink>
           </div>
         </div>
       )}

@@ -1,11 +1,11 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import RoleProtectedRoute from '../components/auth/RoleProtectedRoute';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { useAuth } from '../contexts/AuthContext';
-import RoleBadge from '../components/ui/RoleBadge';
-import { supabase } from '@/lib/supabase';
+import RoleProtectedRoute from '../../components/auth/RoleProtectedRoute';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import { useAuth } from '../../contexts/AuthContext';
+import RoleBadge from '../../components/ui/RoleBadge';
+import { supabase } from '../../lib/supabase';
 
 const AdminDashboardPage: React.FC = () => {
   const { user } = useAuth();

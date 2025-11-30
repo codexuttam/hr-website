@@ -1,12 +1,12 @@
 'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import ResumeBuilder from '../pages/ResumeBuilder';
-import TemplateSelection from '../pages/TemplateSelection';
-import ProtectedRoute from '../components/auth/ProtectedRoute';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { ResumeService } from '../services/resumeService';
+import ResumeBuilder from '../../pages/ResumeBuilder';
+import TemplateSelection from '../../pages/TemplateSelection';
+import ProtectedRoute from '../../components/auth/ProtectedRoute';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import { ResumeService } from '../../services/resumeService';
 
 function ResumeBuilderContent() {
   const [selectedTemplate, setSelectedTemplate] = useState<number>(0);
@@ -69,8 +69,8 @@ function ResumeBuilderContent() {
         {showTemplateSelection ? (
           <TemplateSelection onTemplateSelect={handleTemplateSelect} />
         ) : (
-          <ResumeBuilder 
-            selectedTemplate={selectedTemplate} 
+          <ResumeBuilder
+            selectedTemplate={selectedTemplate}
             onBackToTemplates={() => setShowTemplateSelection(true)}
             resumeId={resumeId ? parseInt(resumeId) : undefined}
           />
