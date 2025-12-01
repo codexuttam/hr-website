@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import ATSTools from '../pages/ATSTools';
-import ProtectedRoute from '../components/auth/ProtectedRoute';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import ATSTools from '../../pages/ATSTools';
+import ProtectedRoute from '../../components/auth/ProtectedRoute';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 export default function ATSToolsPage() {
   return (

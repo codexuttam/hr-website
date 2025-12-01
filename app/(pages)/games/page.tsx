@@ -34,19 +34,18 @@ const games = [
         hoverBorder: 'hover:border-purple-400 dark:hover:border-purple-600',
     },
     {
-        id: 'coming-soon-1',
-        title: 'Code Speed Racer',
-        description: 'Compete against time and others to solve coding challenges as fast as possible. (Coming Soon)',
-        href: '#',
+        id: 'roadmap',
+        title: 'AI Roadmap Generator',
+        description: 'Generate personalized learning roadmaps powered by AI. Get custom career paths, skill development plans, and project-based learning tracks.',
+        href: '/games/roadmap',
         icon: (
-            <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            <svg className="w-12 h-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
             </svg>
         ),
-        color: 'bg-gray-50 dark:bg-gray-800/50',
-        borderColor: 'border-gray-200 dark:border-gray-700',
-        hoverBorder: 'hover:border-gray-300 dark:hover:border-gray-600',
-        disabled: true,
+        color: 'bg-green-50 dark:bg-green-900/20',
+        borderColor: 'border-green-200 dark:border-green-800',
+        hoverBorder: 'hover:border-green-400 dark:hover:border-green-600',
     },
 ];
 
@@ -88,8 +87,7 @@ export default function GamesPage() {
                         <motion.div key={game.id} variants={item}>
                             <Link
                                 href={game.href}
-                                className={`block h-full relative group rounded-2xl border-2 ${game.borderColor} ${game.hoverBorder} ${game.color} p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${game.disabled ? 'cursor-not-allowed opacity-70' : ''}`}
-                                onClick={(e) => game.disabled && e.preventDefault()}
+                                className={`block h-full relative group rounded-2xl border-2 ${game.borderColor} ${game.hoverBorder} ${game.color} p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1`}
                             >
                                 <div className="flex flex-col h-full">
                                     <div className="mb-6 p-4 bg-white dark:bg-slate-900 rounded-xl w-fit shadow-sm group-hover:scale-110 transition-transform duration-300">
@@ -104,14 +102,12 @@ export default function GamesPage() {
                                         {game.description}
                                     </p>
 
-                                    {!game.disabled && (
-                                        <div className="mt-6 flex items-center text-blue-600 dark:text-blue-400 font-medium">
-                                            Play Now
-                                            <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                            </svg>
-                                        </div>
-                                    )}
+                                    <div className="mt-6 flex items-center text-blue-600 dark:text-blue-400 font-medium">
+                                        Play Now
+                                        <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        </svg>
+                                    </div>
                                 </div>
                             </Link>
                         </motion.div>

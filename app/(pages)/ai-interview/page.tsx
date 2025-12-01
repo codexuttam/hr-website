@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import VapiInterviewInterface from '@/components/VapiInterviewInterface';
+import VapiInterviewInterface from '../../components/VapiInterviewInterface';
 import { FaVideo, FaMicrophone, FaBrain, FaChartLine } from 'react-icons/fa';
 
 export default function AIInterviewPage() {

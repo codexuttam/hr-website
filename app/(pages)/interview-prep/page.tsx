@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import ProtectedRoute from '../components/auth/ProtectedRoute';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import ProtectedRoute from '../../components/auth/ProtectedRoute';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 export default function InterviewPrep() {
   const tools = [

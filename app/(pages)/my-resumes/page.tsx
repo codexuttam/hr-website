@@ -1,8 +1,8 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import SavedResumes from '../components/SavedResumes';
-import { SavedResume } from '../services/resumeService';
-import ProtectedRoute from '../components/auth/ProtectedRoute';
+import SavedResumes from '../../components/SavedResumes';
+import { SavedResume } from '../../services/resumeService';
+import ProtectedRoute from '../../components/auth/ProtectedRoute';
 
 const MyResumesPage: React.FC = () => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const MyResumesPage: React.FC = () => {
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto py-8">
-          <SavedResumes 
+          <SavedResumes
             onLoadResume={handleLoadResume}
             onCreateNew={handleCreateNew}
           />

@@ -1,12 +1,12 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import AskDoubtForm from '../components/community/AskDoubtForm';
-import PostCard from '../components/community/PostCard';
-import PostDetail from '../components/community/PostDetail';
-import Toast from '../components/ui/Toast';
-import { CommunityPost } from '../types/community';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import AskDoubtForm from '../../components/community/AskDoubtForm';
+import PostCard from '../../components/community/PostCard';
+import PostDetail from '../../components/community/PostDetail';
+import Toast from '../../components/ui/Toast';
+import { CommunityPost } from '../../types/community';
 
 export default function AlumniCommunityPage() {
     const [posts, setPosts] = useState<CommunityPost[]>([]);
@@ -105,8 +105,8 @@ export default function AlumniCommunityPage() {
                                 <button
                                     onClick={() => setFilter('all')}
                                     className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${filter === 'all'
-                                            ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-semibold border-l-4 border-indigo-600 shadow-sm'
-                                            : 'text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:pl-5'
+                                        ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-semibold border-l-4 border-indigo-600 shadow-sm'
+                                        : 'text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:pl-5'
                                         }`}
                                 >
                                     All Discussions
@@ -114,8 +114,8 @@ export default function AlumniCommunityPage() {
                                 <button
                                     onClick={() => setFilter('open')}
                                     className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${filter === 'open'
-                                            ? 'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 font-semibold border-l-4 border-yellow-500 shadow-sm'
-                                            : 'text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:pl-5'
+                                        ? 'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 font-semibold border-l-4 border-yellow-500 shadow-sm'
+                                        : 'text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:pl-5'
                                         }`}
                                 >
                                     Unresolved Doubts
@@ -123,8 +123,8 @@ export default function AlumniCommunityPage() {
                                 <button
                                     onClick={() => setFilter('resolved')}
                                     className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${filter === 'resolved'
-                                            ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 font-semibold border-l-4 border-green-500 shadow-sm'
-                                            : 'text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:pl-5'
+                                        ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 font-semibold border-l-4 border-green-500 shadow-sm'
+                                        : 'text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:pl-5'
                                         }`}
                                 >
                                     Resolved
