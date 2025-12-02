@@ -7,7 +7,7 @@ import OpenAI from "openai";
 import { RoadmapInput } from "@/types/roadmap";
 
 // Initialize AI providers
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || 'AIzaSyDLGMBHuZqJOo34xdm4ceujuqAcI0T_sGs');
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || '');
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
 });
