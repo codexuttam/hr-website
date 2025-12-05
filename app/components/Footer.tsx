@@ -35,7 +35,7 @@ const Footer: React.FC = () => {
           </p>
           <div className="mt-4 md:mt-0 md:order-2">
             <p className="text-sm text-gray-500 dark:text-gray-500">
-              Powered by <span className="text-slate-800 dark:text-white font-semibold">Readdy</span>
+              Powered by <span className="text-slate-800 dark:text-white font-semibold">Bitlance Tech Hub Pvt Ltd</span>
             </p>
           </div>
         </div>

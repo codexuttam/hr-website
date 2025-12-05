@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import CodePlayground from '../pages/CodePlayground';
-import ProtectedRoute from '../components/auth/ProtectedRoute';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import CodePlayground from '../../components/CodePlayground';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function CodePlaygroundPage() {
   return (

@@ -1,9 +1,12 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
+import { useRouter } from 'next/navigation';
 import { RoadmapInput, RoadmapOutput } from '@/types/roadmap';
+import Header from '@/components/Header';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function RoadmapPage() {
+    const router = useRouter();
     const [goal, setGoal] = useState('AI Engineer');
     const [skillLevel, setSkillLevel] = useState('Beginner');
     const [duration, setDuration] = useState('3 months');
@@ -12,14 +15,12 @@ export default function RoadmapPage() {
     const [projectHierarchy, setProjectHierarchy] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [result, setResult] = useState<RoadmapOutput | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
     const [saved, setSaved] = useState(false);
     const [isListening, setIsListening] = useState(false);
-    const [darkMode, setDarkMode] = useState(true);
-    const [showPreview, setShowPreview] = useState(false);
+    const { theme } = useTheme();
+    const darkMode = theme === 'dark';
     const [favorites, setFavorites] = useState<RoadmapOutput[]>([]);
-    const [shareLink, setShareLink] = useState('');
     const recognitionRef = useRef<any>(null);
 
     // Initialize Speech Recognition
@@ -80,7 +81,6 @@ export default function RoadmapPage() {
         e.preventDefault();
         setLoading(true);
         setError('');
-        setResult(null);
         setSaved(false);
 
         const payload: RoadmapInput = {
@@ -106,52 +106,20 @@ export default function RoadmapPage() {
             }
 
             const data = (await res.json()) as RoadmapOutput;
-            setResult(data);
-            setSaved(true);
 
-            // Show success toast
-            setTimeout(() => setSaved(false), 3000);
+            // Save to localStorage and redirect
+            const roadmapId = Date.now().toString();
+            localStorage.setItem(`roadmap_${roadmapId}`, JSON.stringify(data));
+
+            // Add to favorites automatically or just history? For now just redirect.
+            // We can also update favorites here if we want.
+
+            router.push(`/games/roadmap/view?id=${roadmapId}`);
+
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
-        } finally {
             setLoading(false);
         }
-    }
-
-    function downloadMarkdown() {
-        if (!result) return;
-        const blob = new Blob([result.ai_response], { type: 'text/markdown' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `roadmap-${goal.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.md`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-    }
-
-    function copyToClipboard() {
-        if (!result) return;
-        navigator.clipboard.writeText(result.ai_response).then(() => {
-            alert('✅ Copied to clipboard!');
-        });
-    }
-
-    function addToFavorites() {
-        if (!result) return;
-        const newFavorites = [...favorites, result];
-        setFavorites(newFavorites);
-        localStorage.setItem('favorites', JSON.stringify(newFavorites));
-        alert('⭐ Added to favorites!');
-    }
-
-    function generateShareLink() {
-        if (!result) return;
-        const link = `${window.location.origin}/roadmap?share=${btoa(JSON.stringify(result))}`;
-        setShareLink(link);
-        navigator.clipboard.writeText(link);
-        alert('🔗 Share link copied!');
     }
 
     const bgClass = darkMode ? 'bg-slate-950' : 'bg-white';
@@ -164,21 +132,11 @@ export default function RoadmapPage() {
         <div className={`min-h-screen ${bgClass} ${textClass} transition-colors duration-300`}>
             {/* Header */}
             <div className={`${darkMode ? 'bg-slate-900' : 'bg-gray-100'} border-b ${darkMode ? 'border-slate-800' : 'border-gray-200'} sticky top-0 z-40`}>
-                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                        🛣️ RoadmapAI
-                    </h1>
-                    <button
-                        onClick={() => setDarkMode(!darkMode)}
-                        className={`p-2 rounded-lg ${darkMode ? 'bg-slate-800' : 'bg-gray-200'} transition-all`}
-                    >
-                        {darkMode ? '☀️' : '🌙'}
-                    </button>
-                </div>
+                <Header />
             </div>
 
             <main className="max-w-7xl mx-auto px-6 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div>
                     {/* Input Panel */}
                     <div className="lg:col-span-1">
                         <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-gray-50 border-gray-200'} rounded-2xl border shadow-xl p-6 space-y-5 sticky top-20`}>
@@ -190,8 +148,8 @@ export default function RoadmapPage() {
                                     type="button"
                                     onClick={startVoiceInput}
                                     className={`w-full py-3 rounded-lg font-semibold transition-all ${isListening
-                                            ? 'bg-red-500 text-white animate-pulse'
-                                            : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg'
+                                        ? 'bg-red-500 text-white animate-pulse'
+                                        : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg'
                                         }`}
                                 >
                                     {isListening ? '🎤 Listening...' : '🎤 Voice Input'}
@@ -286,101 +244,8 @@ export default function RoadmapPage() {
                                 >
                                     {loading ? '✨ Generating...' : '🚀 Generate Roadmap'}
                                 </button>
-
-                                {/* Success Message */}
-                                {saved && (
-                                    <p className="text-sm text-green-400 font-medium text-center">
-                                        ✓ Saved to your history
-                                    </p>
-                                )}
                             </form>
                         </div>
-                    </div>
-
-                    {/* Output Panel */}
-                    <div className="lg:col-span-2 space-y-6">
-                        {/* Loading State */}
-                        {loading && (
-                            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-gray-50 border-gray-200'} rounded-2xl border shadow-xl p-12 text-center`}>
-                                <div className="inline-block">
-                                    <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-                                </div>
-                                <p className="mt-6 text-lg font-semibold">Generating your personalized roadmap...</p>
-                                <p className="text-gray-500 text-sm mt-2">This usually takes 10-30 seconds</p>
-                            </div>
-                        )}
-
-                        {/* Result Display */}
-                        {result && !loading && (
-                            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-gray-50 border-gray-200'} rounded-2xl border shadow-xl p-8`}>
-                                <div className="flex justify-between items-start mb-6">
-                                    <h2 className="text-3xl font-bold">Your Roadmap</h2>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => setShowPreview(!showPreview)}
-                                            className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-                                            title="Toggle preview"
-                                        >
-                                            👁️
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Markdown Content */}
-                                <div className={`${darkMode ? 'bg-slate-800' : 'bg-white'} rounded-lg p-6 mb-6 max-h-96 overflow-y-auto`}>
-                                    <div className="prose prose-sm dark:prose-invert max-w-none">
-                                        <ReactMarkdown>{result.ai_response}</ReactMarkdown>
-                                    </div>
-                                </div>
-
-                                {/* Action Buttons */}
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                                    <button
-                                        onClick={downloadMarkdown}
-                                        className="px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all duration-200"
-                                    >
-                                        📥 Download
-                                    </button>
-                                    <button
-                                        onClick={copyToClipboard}
-                                        className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all duration-200"
-                                    >
-                                        📋 Copy
-                                    </button>
-                                    <button
-                                        onClick={addToFavorites}
-                                        className="px-4 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition-all duration-200"
-                                    >
-                                        ⭐ Favorite
-                                    </button>
-                                    <button
-                                        onClick={generateShareLink}
-                                        className="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-all duration-200"
-                                    >
-                                        🔗 Share
-                                    </button>
-                                </div>
-
-                                {/* Metadata */}
-                                <details className={`p-4 rounded-lg ${darkMode ? 'bg-slate-800' : 'bg-gray-100'}`}>
-                                    <summary className="font-bold cursor-pointer">📊 View Details</summary>
-                                    <pre className="mt-3 text-xs overflow-x-auto p-3 rounded bg-slate-950 text-green-400">
-                                        {JSON.stringify(result.metadata, null, 2)}
-                                    </pre>
-                                </details>
-                            </div>
-                        )}
-
-                        {/* Empty State */}
-                        {!result && !loading && (
-                            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-gray-50 border-gray-200'} rounded-2xl border shadow-xl p-12 text-center`}>
-                                <div className="text-6xl mb-4">🎯</div>
-                                <h3 className="text-2xl font-bold mb-2">Ready to Build Your Path?</h3>
-                                <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
-                                    Fill in the form on the left and click "Generate" to create your personalized roadmap
-                                </p>
-                            </div>
-                        )}
                     </div>
                 </div>
 
@@ -393,7 +258,14 @@ export default function RoadmapPage() {
                                 <div
                                     key={i}
                                     className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-gray-50 border-gray-200'} rounded-xl border p-4 cursor-pointer hover:shadow-lg transition-all`}
-                                    onClick={() => setResult(fav)}
+                                    onClick={() => {
+                                        // For favorites, we also redirect to view page
+                                        // We need to save it to localStorage first if it's not there, or just pass ID if we had IDs.
+                                        // Since we don't have IDs for old favorites, we can generate a temp one.
+                                        const tempId = `fav_${Date.now()}_${i}`;
+                                        localStorage.setItem(`roadmap_${tempId}`, JSON.stringify(fav));
+                                        router.push(`/games/roadmap/view?id=${tempId}`);
+                                    }}
                                 >
                                     <p className="font-bold truncate">{fav.metadata?.goal || 'Saved Roadmap'}</p>
                                     <p className="text-sm text-gray-500">Level: {fav.metadata?.skill_level}</p>

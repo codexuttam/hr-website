@@ -1,6 +1,6 @@
 // Test script for n8n webhook
 const testWebhook = async () => {
-    const webhookUrl = 'https://bitlanceai.app.n8n.cloud/webhook/new-doubt';
+    const webhookUrl = 'https://bitlanceai.app.n8n.cloud/webhook/82a8081c-0484-4d1b-9ad4-03194a2eb145/webhook';
 
     const testData = {
         content: 'Test doubt: How do I prepare for system design interviews?',

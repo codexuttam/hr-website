@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     const { content, tags, user_name, user_id } = body;
 
     // Send to n8n webhook - n8n will handle database insertion
-    const response = await fetch('https://bitlanceai.app.n8n.cloud/webhook/new-doubt', {
+    const response = await fetch('https://bitlanceai.app.n8n.cloud/webhook/82a8081c-0484-4d1b-9ad4-03194a2eb145/webhook', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

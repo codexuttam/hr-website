@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Vapi from '@vapi-ai/web';
 import { FaMicrophone, FaMicrophoneSlash, FaStop, FaSpinner } from 'react-icons/fa';
+import EyeContactAnalyzer, { EyeContactRef } from './EyeContactAnalyzer';
 
 interface InterviewConfig {
     role: string;
@@ -25,10 +26,10 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
     const [error, setError] = useState<string | null>(null);
     const [elapsedTime, setElapsedTime] = useState(0);
 
-    const userVideoRef = useRef<HTMLVideoElement>(null);
     const aiVideoRef = useRef<HTMLVideoElement>(null);
     const transcriptEndRef = useRef<HTMLDivElement>(null);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const analyzerRef = useRef<EyeContactRef>(null);
 
     // Initialize Vapi
     useEffect(() => {
@@ -44,33 +45,6 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
 
         return () => {
             vapiInstance.stop();
-        };
-    }, []);
-
-    // Setup user webcam
-    useEffect(() => {
-        const setupUserVideo = async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: true,
-                    audio: false // Audio handled by Vapi
-                });
-                if (userVideoRef.current) {
-                    userVideoRef.current.srcObject = stream;
-                }
-            } catch (err) {
-                console.error('Error accessing webcam:', err);
-                setError('Could not access webcam. Please check permissions.');
-            }
-        };
-
-        setupUserVideo();
-
-        return () => {
-            if (userVideoRef.current?.srcObject) {
-                const stream = userVideoRef.current.srcObject as MediaStream;
-                stream.getTracks().forEach(track => track.stop());
-            }
         };
     }, []);
 
@@ -148,8 +122,9 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
         });
 
         vapi.on('error', (error: any) => {
-            console.error('Vapi error:', JSON.stringify(error, null, 2));
-            setError(`An error occurred: ${error.message || 'Unknown error'}`);
+            console.error('Vapi error details:', error);
+            const errorMessage = error.message || (typeof error === 'string' ? error : JSON.stringify(error));
+            setError(`An error occurred: ${errorMessage}`);
         });
 
         return () => {
@@ -173,7 +148,7 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
                 name: 'AI Interviewer',
                 model: {
                     provider: 'openai' as const,
-                    model: 'gpt-4' as const,
+                    model: 'gpt-3.5-turbo' as const,
                     messages: [
                         {
                             role: 'system' as const,
@@ -196,12 +171,7 @@ Keep questions concise and clear. Allow the candidate time to think and respond.
                 },
                 voice: {
                     provider: 'openai' as const,
-                    voiceId: 'alloy', // Professional voice
-                },
-                transcriber: {
-                    provider: "deepgram" as const,
-                    model: "nova-2",
-                    language: "en-US" as const,
+                    voiceId: 'alloy',
                 },
                 firstMessage: `Hello! I'm your AI interviewer today. I'll be conducting a ${config.duration}-minute interview for the ${config.role} position. Let's begin with a brief introduction - could you tell me a bit about yourself and your experience with ${config.techStack}?`,
             };
@@ -214,12 +184,47 @@ Keep questions concise and clear. Allow the candidate time to think and respond.
         }
     };
 
-    const handleEndInterview = () => {
+    const handleEndInterview = async () => {
         if (vapi) {
             vapi.stop();
         }
         if (timerRef.current) {
             clearInterval(timerRef.current);
+        }
+
+        // Get final stats
+        const eyeContactStats = analyzerRef.current?.getStats();
+
+        // Prepare payload
+        const payload = {
+            transcript,
+            eyeContact: {
+                percentage: eyeContactStats?.percentage || 0,
+                isLookingAtCamera: eyeContactStats?.isLookingAtCamera || false
+            },
+            config,
+            duration: elapsedTime,
+            timestamp: new Date().toISOString()
+        };
+
+        console.log('Sending interview data to n8n:', payload);
+
+        try {
+            const webhookUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL;
+            if (webhookUrl) {
+                await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
+                console.log('Successfully sent data to n8n');
+            } else {
+                console.warn('NEXT_PUBLIC_N8N_WEBHOOK_URL not set');
+            }
+        } catch (error) {
+            console.error('Error sending data to n8n:', error);
         }
     };
 
@@ -288,15 +293,9 @@ Keep questions concise and clear. Allow the candidate time to think and respond.
                     {/* User Video */}
                     <div className="relative">
                         <div className="bg-black rounded-2xl overflow-hidden border-4 border-blue-500/50 aspect-video">
-                            <video
-                                ref={userVideoRef}
-                                autoPlay
-                                playsInline
-                                muted
-                                className="w-full h-full object-cover mirror"
-                            />
+                            <EyeContactAnalyzer ref={analyzerRef} />
                             {isListening && (
-                                <div className="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2 animate-pulse">
+                                <div className="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2 animate-pulse z-20">
                                     <FaMicrophone className="text-sm" />
                                     Listening
                                 </div>

@@ -4,7 +4,7 @@ import path from "path";
 import { supabaseAdmin } from "@/lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
-import { RoadmapInput } from "@/types/roadmap";
+import { RoadmapInput, RoadmapStructure } from "@/types/roadmap";
 
 // Initialize AI providers
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || 'AIzaSyDLGMBHuZqJOo34xdm4ceujuqAcI0T_sGs');
@@ -54,6 +54,26 @@ async function callAI(prompt: string): Promise<{ text: string; provider: string 
   return { text, provider: usedProvider };
 }
 
+// Extract JSON from AI response
+function extractJSON(text: string): RoadmapStructure | null {
+  try {
+    // Look for JSON code block
+    const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
+    if (jsonMatch && jsonMatch[1]) {
+      return JSON.parse(jsonMatch[1]);
+    }
+    
+    // Try to find JSON object directly
+    const objectMatch = text.match(/\{[\s\S]*"overview"[\s\S]*\}/);
+    if (objectMatch) {
+      return JSON.parse(objectMatch[0]);
+    }
+  } catch (error) {
+    console.error("Failed to extract JSON:", error);
+  }
+  return null;
+}
+
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as RoadmapInput;
@@ -83,6 +103,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Failed to generate roadmap content" }, { status: 500 });
     }
 
+    // Extract structured JSON data
+    const structuredData = extractJSON(aiText);
+
     // Prepare metadata
     const metadata = {
       goal: body.goal,
@@ -92,6 +115,7 @@ export async function POST(req: Request) {
       extra_preferences: body.extra_preferences || null,
       generated_at: new Date().toISOString(),
       ai_provider: aiProvider,
+      has_structured_data: !!structuredData,
     };
 
     // Save to Supabase
@@ -117,6 +141,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       ai_response: aiText,
+      structured_data: structuredData,
       metadata,
     });
   } catch (err) {
@@ -155,8 +180,64 @@ function buildPrompt(body: RoadmapInput, readmeContent: string): string {
   }
 
   lines.push("");
-  lines.push("=== ROADMAP STRUCTURE ===");
-  lines.push("Generate a detailed, actionable roadmap with:");
+  lines.push("=== OUTPUT FORMAT ===");
+  lines.push("Generate a comprehensive roadmap in TWO parts:");
+  lines.push("");
+  lines.push("PART 1: JSON Structure (wrapped in ```json code block)");
+  lines.push("Provide a structured JSON object with this exact schema:");
+  lines.push(JSON.stringify({
+    overview: {
+      summary: "Brief summary of the learning journey",
+      totalWeeks: 12,
+      keyMilestones: ["milestone 1", "milestone 2"]
+    },
+    phases: [
+      {
+        title: "Foundation Phase",
+        weeks: "Week 1-4",
+        weekStart: 1,
+        weekEnd: 4,
+        description: "What this phase covers",
+        topics: ["topic 1", "topic 2", "topic 3"]
+      }
+    ],
+    weeks: [
+      {
+        week: 1,
+        title: "Week 1: Getting Started",
+        topics: ["specific topic 1", "specific topic 2"],
+        timeAllocation: "10 hours per week",
+        resources: ["resource 1", "resource 2"],
+        practicalTasks: ["task 1", "task 2"]
+      }
+    ],
+    milestones: [
+      {
+        week: 4,
+        title: "Complete Foundation",
+        description: "What to achieve",
+        criteria: ["criterion 1", "criterion 2"]
+      }
+    ],
+    resources: [
+      {
+        title: "Resource name",
+        type: "documentation",
+        url: "https://example.com",
+        description: "Brief description"
+      }
+    ],
+    assessmentCheckpoints: [
+      {
+        week: 4,
+        title: "Foundation Assessment",
+        criteria: ["what to validate"]
+      }
+    ]
+  }, null, 2));
+  lines.push("");
+  lines.push("PART 2: Detailed Markdown Explanation");
+  lines.push("After the JSON, provide a detailed markdown explanation with:");
   lines.push("");
   lines.push("1. OVERVIEW");
   lines.push("   - Brief summary of the learning journey");
@@ -185,7 +266,7 @@ function buildPrompt(body: RoadmapInput, readmeContent: string): string {
   lines.push("   - Books, courses, and documentation");
   lines.push("   - Community and networking opportunities");
   lines.push("");
-  lines.push("Format output in clean Markdown with clear sections, bullet points, and emphasis on actionability.");
+  lines.push("IMPORTANT: Start your response with the JSON in a ```json code block, then follow with the markdown explanation.");
 
   return lines.join("\n");
 }
