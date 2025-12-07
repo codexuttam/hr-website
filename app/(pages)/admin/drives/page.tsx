@@ -25,12 +25,23 @@ export default function AdminDrivesPage() {
         fetchDrives();
     }, []);
 
-    const fetchDrives = async () => {
+    const fetchDrives = async (searchTerm: string = '') => {
         try {
-            const { data, error } = await supabase
+            let query = supabase
                 .from('placement_drives')
                 .select('*')
                 .order('created_at', { ascending: false });
+
+            // If strict search is needed, we'd use .ilike() or .or()
+            // But Supabase simple filtering:
+            if (searchTerm) {
+                // Allows searching by company_name OR role
+                // Note: .or() syntax is "column.operator.value,column.operator.value"
+                // ilike is case-insensitive pattern matching
+                query = query.or(`company_name.ilike.%${searchTerm}%,role.ilike.%${searchTerm}%`);
+            }
+
+            const { data, error } = await query;
 
             if (error) throw error;
             setDrives(data || []);
@@ -67,6 +78,24 @@ export default function AdminDrivesPage() {
                     >
                         <FaPlus className="mr-2" /> Post New Drive
                     </Link>
+                </div>
+
+                {/* Search Bar */}
+                <div className="mb-6">
+                    <input
+                        type="text"
+                        placeholder="Search drives by company or role..."
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
+                        onChange={(e) => {
+                            const term = e.target.value.toLowerCase();
+                            // We'll filter the displayed drives locally. 
+                            // Since 'drives' state holds all drives, we might need a separate state for filtered drives 
+                            // or just filter during render if the list isn't huge.
+                            // For simplicity, let's assume we filter the 'drives' state directly or reloading.
+                            // Actually, better to have a filtered state.
+                            fetchDrives(term);
+                        }}
+                    />
                 </div>
 
                 {loading ? (

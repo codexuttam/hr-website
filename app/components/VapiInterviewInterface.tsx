@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Vapi from '@vapi-ai/web';
 import { FaMicrophone, FaMicrophoneSlash, FaStop, FaSpinner } from 'react-icons/fa';
 import EyeContactAnalyzer, { EyeContactRef } from './EyeContactAnalyzer';
+import { useAuth } from '../contexts/AuthContext';
 
 interface InterviewConfig {
     role: string;
@@ -19,6 +20,7 @@ interface VapiInterviewInterfaceProps {
 
 export default function VapiInterviewInterface({ config, onExit }: VapiInterviewInterfaceProps) {
     const [vapi, setVapi] = useState<Vapi | null>(null);
+    const { user } = useAuth();
     const [isConnected, setIsConnected] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [isListening, setIsListening] = useState(false);
@@ -204,27 +206,32 @@ Keep questions concise and clear. Allow the candidate time to think and respond.
             },
             config,
             duration: elapsedTime,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            userId: user?.user_id
         };
 
         console.log('Sending interview data to n8n:', payload);
 
         try {
-            const webhookUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL;
-            if (webhookUrl) {
-                await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                });
-                console.log('Successfully sent data to n8n');
-            } else {
-                console.warn('NEXT_PUBLIC_N8N_WEBHOOK_URL not set');
+            // Updated to use internal API with Gemini instead of n8n webhook
+            const response = await fetch('/api/interview/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate feedback');
             }
+
+            const data = await response.json();
+            console.log('Feedback generated successfully:', data);
+
         } catch (error) {
-            console.error('Error sending data to n8n:', error);
+            console.error('Error processing interview feedback:', error);
+            setError('Failed to save interview feedback. Please try again.');
         }
     };
 

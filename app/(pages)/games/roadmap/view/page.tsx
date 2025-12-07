@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import VisualRoadmap from '@/components/roadmap/VisualRoadmap';
 import { RoadmapOutput } from '@/types/roadmap';
@@ -8,7 +8,7 @@ import jsPDF from 'jspdf';
 import Header from '@/components/Header';
 import { useTheme } from '@/contexts/ThemeContext';
 
-export default function RoadmapViewPage() {
+function RoadmapViewContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [roadmap, setRoadmap] = useState<RoadmapOutput | null>(null);
@@ -113,7 +113,7 @@ export default function RoadmapViewPage() {
     }
 
     if (!roadmap) {
-        return null;
+        return null; // Or handle redirect
     }
 
     return (
@@ -165,5 +165,20 @@ export default function RoadmapViewPage() {
                 />
             </div>
         </div>
+    );
+}
+
+export default function RoadmapViewPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-lg font-semibold">Loading...</p>
+                </div>
+            </div>
+        }>
+            <RoadmapViewContent />
+        </Suspense>
     );
 }

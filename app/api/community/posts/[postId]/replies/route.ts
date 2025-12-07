@@ -1,9 +1,9 @@
 import { supabaseAdmin } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
-export async function GET(request: Request, { params }: { params: { postId: string } }) {
+export async function GET(request: Request, context: { params: Promise<{ postId: string }> }) {
   const supabase = supabaseAdmin;
-  const { postId } = params;
+  const { postId } = await context.params;
 
   const { data, error } = await supabase
     .from('community_replies')

@@ -14,6 +14,7 @@ const AdminDashboardPage: React.FC = () => {
     totalQuizzes: 0,
     totalResumes: 0,
     totalAttempts: 0,
+    totalApplications: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -23,11 +24,12 @@ const AdminDashboardPage: React.FC = () => {
 
   async function loadStats() {
     try {
-      const [usersRes, quizzesRes, resumesRes, attemptsRes] = await Promise.all([
+      const [usersRes, quizzesRes, resumesRes, attemptsRes, applicationsRes] = await Promise.all([
         supabase.from('users').select('user_id', { count: 'exact', head: true }),
         supabase.from('quizzes').select('quiz_id', { count: 'exact', head: true }),
         supabase.from('resumes').select('resume_id', { count: 'exact', head: true }),
         supabase.from('attempts').select('attempt_id', { count: 'exact', head: true }),
+        supabase.from('drive_applications').select('id', { count: 'exact', head: true }),
       ]);
 
       setStats({
@@ -35,6 +37,7 @@ const AdminDashboardPage: React.FC = () => {
         totalQuizzes: quizzesRes.count || 0,
         totalResumes: resumesRes.count || 0,
         totalAttempts: attemptsRes.count || 0,
+        totalApplications: applicationsRes.count || 0,
       });
     } catch (error) {
       console.error('Failed to load stats:', error);
@@ -145,6 +148,19 @@ const AdminDashboardPage: React.FC = () => {
                   Coming Soon
                 </button>
               </div>
+
+              <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6">
+                <div className="text-3xl mb-3">🚀</div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  Placement Drives
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
+                  Create and manage placement drives and applications
+                </p>
+                <a href="/admin/drives" className="block w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-center">
+                  Manage Drives
+                </a>
+              </div>
             </div>
 
             {/* Quick Stats */}
@@ -155,7 +171,7 @@ const AdminDashboardPage: React.FC = () => {
               {loading ? (
                 <div className="text-center py-8 text-gray-500">Loading stats...</div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                   <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                       {stats.totalUsers}
@@ -179,6 +195,12 @@ const AdminDashboardPage: React.FC = () => {
                       {stats.totalAttempts}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-300">Quiz Attempts</div>
+                  </div>
+                  <div className="text-center p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                    <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                      {stats.totalApplications}
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-300">Drive Applications</div>
                   </div>
                 </div>
               )}

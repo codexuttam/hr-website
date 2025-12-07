@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import CodePlayground from '../../components/CodePlayground';
+import CodePlayground from '@/components/CodePlayground';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';

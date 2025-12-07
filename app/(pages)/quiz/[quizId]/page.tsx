@@ -210,11 +210,33 @@ export default function QuizPage() {
             duration_sec: timeSec,
           },
         ]);
+        // Redirect to results dashboard
+        router.push(`/quiz/${quizId}/result`);
       } catch (err) {
         console.error("Error saving attempt:", err);
       }
+    } else {
+      setShowResults(true); // Fallback if no user (shouldn't happen due to auth check)
     }
   }
+
+  // Check if already taken
+  useEffect(() => {
+    async function checkAttempt() {
+      if (!user || !quizId) return;
+      const { data } = await supabase
+        .from('attempts')
+        .select('attempt_id')
+        .eq('user_id', user.user_id)
+        .eq('quiz_id', quizId)
+        .maybeSingle(); // Use maybeSingle to avoid 406 error if multiple exists or single requirement
+
+      if (data) {
+        router.replace(`/quiz/${quizId}/result`);
+      }
+    }
+    checkAttempt();
+  }, [user, quizId, router]);
 
   /* -------------------------------------------------------------------------- */
   /*                             LOADING & ERRORS                               */
@@ -351,10 +373,10 @@ export default function QuizPage() {
                 key={idx}
                 onClick={() => setCurrentQuestionIndex(idx)}
                 className={`p-2 rounded-lg text-sm text-center ${currentQuestionIndex === idx
-                    ? "bg-blue-600 text-white"
-                    : selectedAnswers[idx]
-                      ? "bg-green-200 text-green-900"
-                      : "bg-gray-100"
+                  ? "bg-blue-600 text-white"
+                  : selectedAnswers[idx]
+                    ? "bg-green-200 text-green-900"
+                    : "bg-gray-100"
                   }`}
               >
                 {idx + 1}
@@ -380,8 +402,8 @@ export default function QuizPage() {
                     key={i}
                     onClick={() => handleAnswerSelect(choice)}
                     className={`w-full p-4 text-left border rounded-xl ${selectedAnswers[currentQuestionIndex] === choice
-                        ? "border-blue-600 bg-blue-50"
-                        : "border-gray-300 hover:bg-gray-100"
+                      ? "border-blue-600 bg-blue-50"
+                      : "border-gray-300 hover:bg-gray-100"
                       }`}
                   >
                     <strong>{String.fromCharCode(65 + i)}.</strong> {choice}

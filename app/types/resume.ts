@@ -15,14 +15,14 @@ export interface ResumeData {
   objective?: string; // Profile Summary / About Me / Objective
 
   education: {
-  year?: string;
-  course?: string;
-  institution?: string;
-  university?: string;
-  percentage?: string | number;
-  achievements?: string;
-  description?: string; // ✅ Added this line
-}[];
+    year?: string;
+    course?: string;
+    institution?: string;
+    university?: string;
+    percentage?: string | number;
+    achievements?: string;
+    description?: string; // ✅ Added this line
+  }[];
 
 
   experience: {
@@ -36,12 +36,12 @@ export interface ResumeData {
   skills: string[];
 
   certifications: {
-  year?: string;
-  course?: string;
-  institution?: string;
-  issuer?: string;
-  description?: string;
-}[];
+    year?: string;
+    course?: string;
+    institution?: string;
+    issuer?: string;
+    description?: string;
+  }[];
 
   projects?: {
     title?: string;
@@ -73,6 +73,7 @@ export interface ResumeData {
   tools?: string[];
 
   interests?: string[];
+  color_scheme?: ResumeColor;
 }
 
 /** Type for color configuration (used in color pickers and themes) */

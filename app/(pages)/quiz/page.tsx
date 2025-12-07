@@ -93,8 +93,8 @@ export default function QuizListPage() {
           // Get best attempt for each quiz
           const bestAttempts: { [key: number]: QuizAttempt } = {};
           attempts.forEach((attempt: any) => {
-            if (!bestAttempts[attempt.quiz_id] || 
-                attempt.score > bestAttempts[attempt.quiz_id].score) {
+            if (!bestAttempts[attempt.quiz_id] ||
+              attempt.score > bestAttempts[attempt.quiz_id].score) {
               bestAttempts[attempt.quiz_id] = attempt;
             }
           });
@@ -202,7 +202,7 @@ export default function QuizListPage() {
               {assignedQuizzes.map((quiz) => {
                 const attempt = completedQuizzes[quiz.quiz_id];
                 const isCompleted = !!attempt;
-                const percentage = attempt 
+                const percentage = attempt
                   ? Math.round((attempt.score / attempt.max_score) * 100)
                   : 0;
 
@@ -212,11 +212,10 @@ export default function QuizListPage() {
                     className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
                   >
                     {/* Quiz Header */}
-                    <div className={`p-4 ${
-                      isCompleted 
-                        ? 'bg-green-50 dark:bg-green-900/20' 
+                    <div className={`p-4 ${isCompleted
+                        ? 'bg-green-50 dark:bg-green-900/20'
                         : 'bg-blue-50 dark:bg-blue-900/20'
-                    }`}>
+                      }`}>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
@@ -273,13 +272,12 @@ export default function QuizListPage() {
                         <div className="mb-4">
                           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                             <div
-                              className={`h-2 rounded-full ${
-                                percentage >= 80 
-                                  ? 'bg-green-600' 
-                                  : percentage >= 60 
-                                  ? 'bg-yellow-600' 
-                                  : 'bg-red-600'
-                              }`}
+                              className={`h-2 rounded-full ${percentage >= 80
+                                  ? 'bg-green-600'
+                                  : percentage >= 60
+                                    ? 'bg-yellow-600'
+                                    : 'bg-red-600'
+                                }`}
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
@@ -288,14 +286,19 @@ export default function QuizListPage() {
 
                       {/* Action Button */}
                       <button
-                        onClick={() => handleStartQuiz(quiz.quiz_id)}
-                        className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
-                          isCompleted
-                            ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                        onClick={() => {
+                          if (isCompleted) {
+                            router.push(`/quiz/${quiz.quiz_id}/result`);
+                          } else {
+                            handleStartQuiz(quiz.quiz_id);
+                          }
+                        }}
+                        className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${isCompleted
+                            ? 'bg-purple-600 hover:bg-purple-700 text-white'
                             : 'bg-green-600 hover:bg-green-700 text-white'
-                        }`}
+                          }`}
                       >
-                        {isCompleted ? '🔄 Retake Quiz' : '▶️ Start Quiz'}
+                        {isCompleted ? '🏆 View Leaderboard' : '▶️ Start Quiz'}
                       </button>
                     </div>
                   </div>

@@ -165,9 +165,33 @@ export default function DriveDetailsPage() {
                                     <div className="text-center py-8 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-900/30">
                                         <FaCheckCircle className="text-4xl text-green-500 mx-auto mb-3" />
                                         <h4 className="text-lg font-semibold text-green-800 dark:text-green-300">Applied Successfully</h4>
-                                        <p className="text-green-600 dark:text-green-400 text-sm mt-1">
+                                        <p className="text-green-600 dark:text-green-400 text-sm mt-1 mb-4">
                                             You have already registered for this drive.
                                         </p>
+                                        <button
+                                            onClick={async () => {
+                                                if (confirm('Are you sure you want to withdraw your application? This action cannot be undone.')) {
+                                                    try {
+                                                        const { error } = await supabase
+                                                            .from('drive_applications')
+                                                            .delete()
+                                                            .eq('drive_id', id)
+                                                            .eq('user_id', user?.user_id);
+
+                                                        if (error) throw error;
+
+                                                        setHasApplied(false);
+                                                        alert('Successfully deregistered from this drive.');
+                                                    } catch (err: any) {
+                                                        console.error('Error deregistering:', err);
+                                                        alert('Failed to deregister: ' + err.message);
+                                                    }
+                                                }
+                                            }}
+                                            className="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-300 rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/30"
+                                        >
+                                            Deregister / Withdraw
+                                        </button>
                                     </div>
                                 ) : (
                                     <form onSubmit={async (e) => {
