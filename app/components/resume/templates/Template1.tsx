@@ -7,6 +7,9 @@ interface Template0Props {
 }
 
 const Template0: React.FC<Template0Props> = ({ data, color }) => {
+  if (!data || !data.contact) {
+    return null;
+  }
   const { contact, objective, education, experience, skills, references } = data;
 
   const show = (item?: any) =>

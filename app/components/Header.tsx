@@ -195,6 +195,15 @@ const Header: React.FC = () => {
                   </Link>
                 </>
               )}
+
+              {isAuthenticated && (
+                <div className="hidden lg:flex items-center px-3 py-1 bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/30 dark:to-yellow-800/20 border border-yellow-200 dark:border-yellow-700/50 rounded-full">
+                  <span className="text-lg mr-1.5">🪙</span>
+                  <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-400">
+                    {user?.credits !== undefined ? user.credits : 0}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -220,7 +229,7 @@ const Header: React.FC = () => {
             </button>
           </div>
         </div>
-      </nav>
+      </nav >
 
       {isOpen && (
         <div className="md:hidden" id="mobile-menu">
@@ -282,7 +291,7 @@ const Header: React.FC = () => {
           </div>
         </div>
       )}
-    </header>
+    </header >
   );
 };
 

@@ -77,10 +77,10 @@ const ATSAnalyzer: React.FC = () => {
   const testAPIConnection = async () => {
     setTestingAPI(true);
     setProcessingMessage('🔧 Testing API connection...');
-    
+
     try {
       const result = await SupabaseATSService.testAPIConnection();
-      
+
       if (result.success) {
         setProcessingMessage('✅ API connection successful! ResumeATS model is ready.');
       } else {
@@ -100,7 +100,7 @@ const ATSAnalyzer: React.FC = () => {
         console.log('Loading ATS stats for user:', user.user_id);
         const response = await ATSResultService.listATSResults(undefined, user.user_id);
         console.log('ATS results response:', response);
-        
+
         const results = response.atsResults;
 
         if (results && results.length > 0) {
@@ -155,11 +155,11 @@ const ATSAnalyzer: React.FC = () => {
 
     setIsProcessing(true);
     setProcessingMessage('🔄 Processing your resume file...');
-    
+
     try {
       console.log('Starting file processing for:', file.name);
       const extractedText = await extractTextFromFile(file);
-      
+
       if (extractedText && extractedText.trim().length > 0) {
         setResumeText(extractedText);
         const wordCount = extractedText.trim().split(/\s+/).length;
@@ -215,38 +215,38 @@ const ATSAnalyzer: React.FC = () => {
   // Fallback PDF extraction method with simpler configuration
   const extractTextFromPDFFallback = async (file: File): Promise<string> => {
     console.log('Trying fallback PDF extraction method...');
-    
+
     try {
       const pdfjsLib = await import('pdfjs-dist');
-      
+
       // Use a simpler worker configuration
       pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
-      
+
       const arrayBuffer = await file.arrayBuffer();
-      
+
       // Simpler PDF loading configuration
       const pdf = await pdfjsLib.getDocument({
         data: arrayBuffer,
         verbosity: 0,
         // Minimal options to avoid compatibility issues
       }).promise;
-      
+
       let fullText = '';
-      
+
       // Try to extract text from first few pages only to avoid timeout
       const maxPages = Math.min(pdf.numPages, 5);
-      
+
       for (let i = 1; i <= maxPages; i++) {
         try {
           const page = await pdf.getPage(i);
           const textContent = await page.getTextContent();
-          
+
           if (textContent?.items) {
             const pageText = textContent.items
               .map((item: any) => item?.str || '')
               .filter(text => text.trim())
               .join(' ');
-            
+
             if (pageText.trim()) {
               fullText += pageText + '\n';
             }
@@ -256,11 +256,11 @@ const ATSAnalyzer: React.FC = () => {
           // Continue with other pages
         }
       }
-      
+
       if (fullText.trim().length === 0) {
         throw new Error('No readable text found in PDF using fallback method.');
       }
-      
+
       console.log('Fallback PDF extraction successful');
       return fullText.trim();
     } catch (error) {
@@ -284,18 +284,18 @@ const ATSAnalyzer: React.FC = () => {
   // Extract text from PDF using PDF.js (client-side)
   const extractTextFromPDF = async (file: File): Promise<string> => {
     console.log('Starting PDF text extraction for file:', file.name, 'Size:', file.size);
-    
+
     // Validate PDF header
     const isValidPDF = await validatePDFFile(file);
     if (!isValidPDF) {
       throw new Error('File does not appear to be a valid PDF. Please check the file format.');
     }
-    
+
     try {
       // Dynamic import to avoid SSR issues
       const pdfjsLib = await import('pdfjs-dist');
       console.log('PDF.js library loaded, version:', pdfjsLib.version);
-      
+
       // Set worker source with better error handling
       if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
         const workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -306,9 +306,9 @@ const ATSAnalyzer: React.FC = () => {
       console.log('Converting file to array buffer...');
       const arrayBuffer = await file.arrayBuffer();
       console.log('Array buffer created, size:', arrayBuffer.byteLength);
-      
+
       console.log('Loading PDF document...');
-      const loadingTask = pdfjsLib.getDocument({ 
+      const loadingTask = pdfjsLib.getDocument({
         data: arrayBuffer,
         // Add options to handle various PDF issues
         verbosity: 0, // Reduce console noise
@@ -316,18 +316,18 @@ const ATSAnalyzer: React.FC = () => {
         disableRange: true, // Load entire PDF at once
         disableStream: true, // Disable streaming
       });
-      
+
       const pdf = await loadingTask.promise;
       console.log('PDF loaded successfully, pages:', pdf.numPages);
-      
+
       let fullText = '';
-      
+
       for (let i = 1; i <= pdf.numPages; i++) {
         console.log(`Processing page ${i}/${pdf.numPages}...`);
         try {
           const page = await pdf.getPage(i);
           const textContent = await page.getTextContent();
-          
+
           if (textContent && textContent.items && textContent.items.length > 0) {
             const pageText = textContent.items
               .map((item: any) => {
@@ -339,7 +339,7 @@ const ATSAnalyzer: React.FC = () => {
               })
               .filter(text => text.trim().length > 0)
               .join(' ');
-            
+
             if (pageText.trim()) {
               fullText += pageText + '\n';
               console.log(`Page ${i} extracted ${pageText.length} characters`);
@@ -354,18 +354,18 @@ const ATSAnalyzer: React.FC = () => {
           // Continue with other pages
         }
       }
-      
+
       const finalText = fullText.trim();
       console.log('PDF text extraction completed. Total characters:', finalText.length);
-      
+
       if (finalText.length === 0) {
         throw new Error('No text found in PDF. This might be a scanned PDF (image-only) or the PDF is corrupted.');
       }
-      
+
       return finalText;
     } catch (error) {
       console.error('PDF extraction error details:', error);
-      
+
       if (error instanceof Error) {
         // More specific error messages based on the error type
         if (error.message.includes('Invalid PDF')) {
@@ -380,7 +380,7 @@ const ATSAnalyzer: React.FC = () => {
           throw new Error('PDF processing worker failed to load. Please check your internet connection and try again.');
         }
       }
-      
+
       throw new Error('Failed to extract text from PDF. Please try copying and pasting your resume text manually.');
     }
   };
@@ -388,17 +388,17 @@ const ATSAnalyzer: React.FC = () => {
   // Extract text from DOCX using mammoth.js (client-side)
   const extractTextFromDOCX = async (file: File): Promise<string> => {
     console.log('Starting DOCX text extraction for file:', file.name);
-    
+
     try {
       // Dynamic import to avoid SSR issues
       const mammoth = await import('mammoth');
       console.log('Mammoth library loaded successfully');
-      
+
       const arrayBuffer = await file.arrayBuffer();
       console.log('DOCX file converted to array buffer, size:', arrayBuffer.byteLength);
-      
+
       const result = await mammoth.extractRawText({ arrayBuffer });
-      
+
       if (result.messages && result.messages.length > 0) {
         console.warn('DOCX extraction warnings:', result.messages);
         // Check for critical errors in messages
@@ -407,18 +407,18 @@ const ATSAnalyzer: React.FC = () => {
           console.error('DOCX extraction errors:', errors);
         }
       }
-      
+
       const extractedText = result.value.trim();
       console.log('DOCX text extraction completed. Characters:', extractedText.length);
-      
+
       if (extractedText.length === 0) {
         throw new Error('No text found in DOCX file. The document might be empty or contain only images.');
       }
-      
+
       return extractedText;
     } catch (error) {
       console.error('Error extracting text from DOCX:', error);
-      
+
       if (error instanceof Error) {
         if (error.message.includes('Cannot read properties')) {
           throw new Error('DOCX processing library failed to load. Please refresh the page and try again.');
@@ -428,7 +428,7 @@ const ATSAnalyzer: React.FC = () => {
           throw new Error('Invalid DOCX file. The file might be corrupted or not a valid Word document.');
         }
       }
-      
+
       throw new Error('Failed to extract text from DOCX. The file might be corrupted, password-protected, or in an unsupported format. Please try copying and pasting your resume text manually.');
     }
   };
@@ -441,10 +441,10 @@ const ATSAnalyzer: React.FC = () => {
 
     setIsAnalyzing(true);
     setProcessingMessage('🔄 Analyzing your resume against the job description...');
-    
+
     try {
       let result: ATSResult;
-      
+
       try {
         // Try server-side ATS analysis first to avoid CORS issues
         result = await analyzeResumeServerSide(resumeText, jobDescription);
@@ -452,23 +452,23 @@ const ATSAnalyzer: React.FC = () => {
       } catch (serverError) {
         console.warn('Server-side analysis failed, falling back to client-side:', serverError);
         setProcessingMessage('🔄 Trying alternative analysis method...');
-        
+
         // Fallback to client-side analysis
         result = await analyzeResumeClientSide(resumeText, jobDescription);
         console.log('Client-side fallback analysis successful');
       }
-      
+
       setCurrentResult(result);
-      
+
       setProcessingMessage('💾 Saving analysis results...');
-      
+
       // Save result to database if user is authenticated
       if (user?.user_id) {
         try {
           // Skip resume saving for now to avoid foreign key constraint issues
           // We'll save the ATS result directly instead
           console.log('Skipping temporary resume creation to avoid foreign key issues...');
-          
+
           // Create a minimal resume data structure for ATS result saving
           const tempResumeData: ResumeData = {
             contact: {
@@ -494,7 +494,7 @@ const ATSAnalyzer: React.FC = () => {
 
           // Create a temporary resume first to satisfy foreign key constraint
           console.log('Creating temporary resume for ATS analysis...');
-          
+
           const resumePayload = {
             resumeData: tempResumeData,
             templateId: 1,
@@ -514,11 +514,11 @@ const ATSAnalyzer: React.FC = () => {
           }
 
           const resumeResult = await resumeResponse.json();
-          
+
           if (!resumeResult.success) {
             throw new Error(resumeResult.error || 'Failed to create resume');
           }
-          
+
           const resumeId = resumeResult.resume.resume_id;
 
           console.log('Saving ATS result with resume ID:', resumeId);
@@ -537,12 +537,12 @@ const ATSAnalyzer: React.FC = () => {
 
           const savedResult = await ATSResultService.saveATSResult(atsResultData);
           console.log('ATS result saved successfully:', savedResult);
-          
+
           // Reload stats to reflect the new analysis (with small delay to ensure DB is updated)
           setTimeout(() => {
             loadATSStats();
           }, 500);
-          
+
           setProcessingMessage('✅ Analysis completed and saved to your history!');
         } catch (saveError) {
           console.error('Failed to save ATS result:', saveError);
@@ -553,9 +553,9 @@ const ATSAnalyzer: React.FC = () => {
       } else {
         console.log('User not authenticated, skipping ATS result save');
       }
-      
+
       setActiveTab('results');
-      
+
       // Clear processing message after showing results
       setTimeout(() => setProcessingMessage(null), 3000);
     } catch (error) {
@@ -571,7 +571,7 @@ const ATSAnalyzer: React.FC = () => {
   const analyzeResumeServerSide = async (resumeText: string, jobDescription: string): Promise<ATSResult> => {
     try {
       console.log('Starting server-side ATS analysis...');
-      
+
       const response = await fetch('/api/ats-analyzer/analyze', {
         method: 'POST',
         headers: {
@@ -579,7 +579,8 @@ const ATSAnalyzer: React.FC = () => {
         },
         body: JSON.stringify({
           resumeText,
-          jobDescription
+          jobDescription,
+          userId: user?.user_id
         }),
       });
 
@@ -588,7 +589,7 @@ const ATSAnalyzer: React.FC = () => {
       }
 
       const data = await response.json();
-      
+
       if (!data.success) {
         throw new Error('Server analysis returned error');
       }
@@ -627,14 +628,14 @@ const ATSAnalyzer: React.FC = () => {
   const analyzeResumeClientSide = async (resumeText: string, jobDescription: string): Promise<ATSResult> => {
     try {
       console.log('Starting AI-powered ATS analysis with ResumeATS model...');
-      
+
       // Try Supabase ATS analysis with ResumeATS model first
       const supabaseAnalysis = await SupabaseATSService.analyzeResumeWithSupabaseATS(
-        resumeText, 
-        jobDescription, 
+        resumeText,
+        jobDescription,
         user?.user_id
       );
-      
+
       // Convert Supabase analysis to ATSResult format
       return {
         ats_id: Date.now(),
@@ -667,11 +668,11 @@ const ATSAnalyzer: React.FC = () => {
       };
     } catch (error) {
       console.warn('Supabase ATS analysis failed, trying Hugging Face fallback:', error);
-      
+
       // Fallback to Hugging Face service
       try {
         const hfAnalysis = await HuggingFaceService.analyzeResumeWithHuggingFace(resumeText, jobDescription);
-        
+
         return {
           ats_id: Date.now(),
           overall_score: hfAnalysis.overall_score,
@@ -702,7 +703,7 @@ const ATSAnalyzer: React.FC = () => {
         };
       } catch (hfError) {
         console.warn('All AI analysis methods failed, using rule-based fallback:', hfError);
-        
+
         // Final fallback to rule-based analysis
         return await analyzeResumeWithFallback(resumeText, jobDescription);
       }
@@ -713,7 +714,7 @@ const ATSAnalyzer: React.FC = () => {
   const analyzeResumeWithFallback = async (resumeText: string, jobDescription: string): Promise<ATSResult> => {
     // Extract keywords
     const keywords = extractKeywords(resumeText, jobDescription);
-    
+
     // Calculate scores
     const keywordScore = Math.min(100, (keywords.matching.length / Math.max(keywords.total, 1)) * 100);
     const formatScore = analyzeFormat(resumeText);
@@ -750,7 +751,7 @@ const ATSAnalyzer: React.FC = () => {
   // Helper function to format Supabase ATS suggestions
   const formatSupabaseSuggestions = (suggestions: any): string => {
     const formatted = [];
-    
+
     if (suggestions.high_priority?.length > 0) {
       formatted.push('🔴 HIGH PRIORITY (ResumeATS Model):');
       suggestions.high_priority.forEach((suggestion: string, index: number) => {
@@ -758,7 +759,7 @@ const ATSAnalyzer: React.FC = () => {
       });
       formatted.push('');
     }
-    
+
     if (suggestions.medium_priority?.length > 0) {
       formatted.push('🟡 MEDIUM PRIORITY:');
       suggestions.medium_priority.forEach((suggestion: string, index: number) => {
@@ -766,21 +767,21 @@ const ATSAnalyzer: React.FC = () => {
       });
       formatted.push('');
     }
-    
+
     if (suggestions.low_priority?.length > 0) {
       formatted.push('🟢 LOW PRIORITY:');
       suggestions.low_priority.forEach((suggestion: string, index: number) => {
         formatted.push(`${index + 1}. ${suggestion}`);
       });
     }
-    
+
     return formatted.join('\n');
   };
 
   // Helper function to format Hugging Face suggestions
   const formatHuggingFaceSuggestions = (suggestions: any): string => {
     const formatted = [];
-    
+
     if (suggestions.high_priority?.length > 0) {
       formatted.push('🔴 HIGH PRIORITY:');
       suggestions.high_priority.forEach((suggestion: string, index: number) => {
@@ -788,7 +789,7 @@ const ATSAnalyzer: React.FC = () => {
       });
       formatted.push('');
     }
-    
+
     if (suggestions.medium_priority?.length > 0) {
       formatted.push('🟡 MEDIUM PRIORITY:');
       suggestions.medium_priority.forEach((suggestion: string, index: number) => {
@@ -796,14 +797,14 @@ const ATSAnalyzer: React.FC = () => {
       });
       formatted.push('');
     }
-    
+
     if (suggestions.low_priority?.length > 0) {
       formatted.push('🟢 LOW PRIORITY:');
       suggestions.low_priority.forEach((suggestion: string, index: number) => {
         formatted.push(`${index + 1}. ${suggestion}`);
       });
     }
-    
+
     return formatted.join('\n');
   };
 
@@ -906,21 +907,19 @@ ${analysis.detailed_feedback}`;
         <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg mb-8">
           <button
             onClick={() => setActiveTab('upload')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'upload'
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${activeTab === 'upload'
                 ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-            }`}
+              }`}
           >
             📄 Analyze Resume
           </button>
           <button
             onClick={() => setActiveTab('results')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'results'
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${activeTab === 'results'
                 ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-            }`}
+              }`}
           >
             📊 View Results
           </button>
@@ -935,7 +934,7 @@ ${analysis.detailed_feedback}`;
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Upload a file or paste your resume text below. Your analysis will be automatically saved to your history.
               </p>
-              
+
               {/* File Upload */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -993,13 +992,12 @@ ${analysis.detailed_feedback}`;
                   </span>
                 </div>
                 {processingMessage && (
-                  <div className={`mt-3 p-3 rounded-md text-sm ${
-                    processingMessage.includes('✅') 
+                  <div className={`mt-3 p-3 rounded-md text-sm ${processingMessage.includes('✅')
                       ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800'
                       : processingMessage.includes('⚠️')
-                      ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800'
-                      : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800'
-                  }`}>
+                        ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800'
+                        : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800'
+                    }`}>
                     {processingMessage}
                   </div>
                 )}
@@ -1028,7 +1026,7 @@ ${analysis.detailed_feedback}`;
             {/* Job Description Section */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Job Description</h3>
-              
+
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Job Description <span className="text-red-500">*</span>
@@ -1062,17 +1060,16 @@ ${analysis.detailed_feedback}`;
                   '🎯 Analyze Resume'
                 )}
               </button>
-              
+
               {processingMessage && (
-                <div className={`mt-3 p-3 rounded-md text-sm ${
-                  processingMessage.includes('✅') 
+                <div className={`mt-3 p-3 rounded-md text-sm ${processingMessage.includes('✅')
                     ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800'
                     : processingMessage.includes('⚠️')
-                    ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800'
-                    : processingMessage.includes('🔄') || processingMessage.includes('💾')
-                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
-                    : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800'
-                }`}>
+                      ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800'
+                      : processingMessage.includes('🔄') || processingMessage.includes('💾')
+                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                        : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800'
+                  }`}>
                   {processingMessage}
                 </div>
               )}
@@ -1253,96 +1250,96 @@ ${analysis.detailed_feedback}`;
   );
 };
 
-  // Helper functions for client-side analysis
-  const extractKeywords = (resumeText: string, jobDescription: string) => {
-    const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'among', 'within', 'without', 'under', 'over', 'this', 'that', 'these', 'those', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'have', 'has', 'had', 'been', 'being', 'are', 'was', 'were', 'is', 'am', 'an', 'a']);
-    
-    const resumeWords = resumeText.toLowerCase()
-      .split(/\W+/)
-      .filter(word => word.length > 2 && !commonWords.has(word));
-    
-    const jobWords = jobDescription.toLowerCase()
-      .split(/\W+/)
-      .filter(word => word.length > 2 && !commonWords.has(word));
-    
-    const jobKeywords = [...new Set(jobWords)];
-    const matching = jobKeywords.filter(keyword => resumeWords.includes(keyword));
-    const missing = jobKeywords.filter(keyword => !resumeWords.includes(keyword)).slice(0, 15);
-    
-    return { 
-      matching: matching.slice(0, 20), 
-      missing: missing,
-      total: jobKeywords.length
-    };
-  };
+// Helper functions for client-side analysis
+const extractKeywords = (resumeText: string, jobDescription: string) => {
+  const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'among', 'within', 'without', 'under', 'over', 'this', 'that', 'these', 'those', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'have', 'has', 'had', 'been', 'being', 'are', 'was', 'were', 'is', 'am', 'an', 'a']);
 
-  const analyzeFormat = (resumeText: string): number => {
-    let score = 100;
-    
-    // Check for basic sections
-    if (!/contact|email|phone/i.test(resumeText)) score -= 20;
-    if (!/experience|work/i.test(resumeText)) score -= 20;
-    if (!/education|degree/i.test(resumeText)) score -= 15;
-    if (!/skills|technologies/i.test(resumeText)) score -= 15;
-    
-    // Check for good formatting indicators
-    if (resumeText.length < 500) score -= 10; // Too short
-    if (resumeText.length > 5000) score -= 10; // Too long
-    if (!/\d{4}/.test(resumeText)) score -= 10; // No dates
-    
-    return Math.max(0, score);
-  };
+  const resumeWords = resumeText.toLowerCase()
+    .split(/\W+/)
+    .filter(word => word.length > 2 && !commonWords.has(word));
 
-  const analyzeReadability = (resumeText: string): number => {
-    const sentences = resumeText.split(/[.!?]+/).filter(s => s.trim().length > 0);
-    const words = resumeText.split(/\s+/).filter(w => w.length > 0);
-    const avgWordsPerSentence = words.length / sentences.length;
-    
-    let score = 100;
-    
-    // Penalize very long or very short sentences
-    if (avgWordsPerSentence > 25) score -= 20;
-    if (avgWordsPerSentence < 8) score -= 10;
-    
-    // Check for bullet points (good for readability)
-    const bulletPoints = (resumeText.match(/[•\-\*]/g) || []).length;
-    if (bulletPoints > 5) score += 10;
-    
-    // Check for action verbs
-    const actionVerbs = ['managed', 'led', 'developed', 'created', 'implemented', 'designed', 'improved', 'increased', 'reduced', 'achieved'];
-    const actionVerbCount = actionVerbs.filter(verb => resumeText.toLowerCase().includes(verb)).length;
-    score += Math.min(20, actionVerbCount * 3);
-    
-    return Math.min(100, Math.max(0, score));
-  };
+  const jobWords = jobDescription.toLowerCase()
+    .split(/\W+/)
+    .filter(word => word.length > 2 && !commonWords.has(word));
 
-  const generateSuggestions = (keywords: any, formatScore: number, readabilityScore: number): string => {
-    const suggestions = [];
-    
-    if (keywords.matching.length < 5) {
-      suggestions.push(`• Add more relevant keywords from the job description. You're only matching ${keywords.matching.length} keywords.`);
-    }
-    
-    if (keywords.missing.length > 0) {
-      suggestions.push(`• Consider including these missing keywords: ${keywords.missing.slice(0, 5).join(', ')}`);
-    }
-    
-    if (formatScore < 80) {
-      suggestions.push('• Improve resume structure by including clear sections: Contact, Summary, Experience, Education, Skills');
-      suggestions.push('• Add dates to your experience and education entries');
-    }
-    
-    if (readabilityScore < 70) {
-      suggestions.push('• Use bullet points to improve readability');
-      suggestions.push('• Start bullet points with action verbs (managed, developed, created, etc.)');
-      suggestions.push('• Keep sentences concise and focused');
-    }
-    
-    suggestions.push('• Quantify your achievements with numbers and percentages when possible');
-    suggestions.push('• Tailor your resume for each job application by matching more keywords');
-    
-    return suggestions.join('\n');
+  const jobKeywords = [...new Set(jobWords)];
+  const matching = jobKeywords.filter(keyword => resumeWords.includes(keyword));
+  const missing = jobKeywords.filter(keyword => !resumeWords.includes(keyword)).slice(0, 15);
+
+  return {
+    matching: matching.slice(0, 20),
+    missing: missing,
+    total: jobKeywords.length
   };
+};
+
+const analyzeFormat = (resumeText: string): number => {
+  let score = 100;
+
+  // Check for basic sections
+  if (!/contact|email|phone/i.test(resumeText)) score -= 20;
+  if (!/experience|work/i.test(resumeText)) score -= 20;
+  if (!/education|degree/i.test(resumeText)) score -= 15;
+  if (!/skills|technologies/i.test(resumeText)) score -= 15;
+
+  // Check for good formatting indicators
+  if (resumeText.length < 500) score -= 10; // Too short
+  if (resumeText.length > 5000) score -= 10; // Too long
+  if (!/\d{4}/.test(resumeText)) score -= 10; // No dates
+
+  return Math.max(0, score);
+};
+
+const analyzeReadability = (resumeText: string): number => {
+  const sentences = resumeText.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  const words = resumeText.split(/\s+/).filter(w => w.length > 0);
+  const avgWordsPerSentence = words.length / sentences.length;
+
+  let score = 100;
+
+  // Penalize very long or very short sentences
+  if (avgWordsPerSentence > 25) score -= 20;
+  if (avgWordsPerSentence < 8) score -= 10;
+
+  // Check for bullet points (good for readability)
+  const bulletPoints = (resumeText.match(/[•\-\*]/g) || []).length;
+  if (bulletPoints > 5) score += 10;
+
+  // Check for action verbs
+  const actionVerbs = ['managed', 'led', 'developed', 'created', 'implemented', 'designed', 'improved', 'increased', 'reduced', 'achieved'];
+  const actionVerbCount = actionVerbs.filter(verb => resumeText.toLowerCase().includes(verb)).length;
+  score += Math.min(20, actionVerbCount * 3);
+
+  return Math.min(100, Math.max(0, score));
+};
+
+const generateSuggestions = (keywords: any, formatScore: number, readabilityScore: number): string => {
+  const suggestions = [];
+
+  if (keywords.matching.length < 5) {
+    suggestions.push(`• Add more relevant keywords from the job description. You're only matching ${keywords.matching.length} keywords.`);
+  }
+
+  if (keywords.missing.length > 0) {
+    suggestions.push(`• Consider including these missing keywords: ${keywords.missing.slice(0, 5).join(', ')}`);
+  }
+
+  if (formatScore < 80) {
+    suggestions.push('• Improve resume structure by including clear sections: Contact, Summary, Experience, Education, Skills');
+    suggestions.push('• Add dates to your experience and education entries');
+  }
+
+  if (readabilityScore < 70) {
+    suggestions.push('• Use bullet points to improve readability');
+    suggestions.push('• Start bullet points with action verbs (managed, developed, created, etc.)');
+    suggestions.push('• Keep sentences concise and focused');
+  }
+
+  suggestions.push('• Quantify your achievements with numbers and percentages when possible');
+  suggestions.push('• Tailor your resume for each job application by matching more keywords');
+
+  return suggestions.join('\n');
+};
 
 
 

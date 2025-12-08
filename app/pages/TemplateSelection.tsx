@@ -10,7 +10,8 @@ const templates = [
   { id: 6, name: 'Academic Scholar', image: '/images/resume_templates-images-6.jpg', description: 'Traditional format ideal for academic and research positions', category: 'Simple' },
   { id: 7, name: 'Designer Portfolio', image: '/images/resume_templates-images-7.jpg', description: 'Visual-focused design to showcase creative work', category: 'Creative' },
   { id: 8, name: 'Startup Dynamic', image: '/images/resume_templates-images-8.jpg', description: 'Energetic and modern design for startup culture', category: 'Creative' },
-  { id: 9, name: 'Corporate Standard', image: '/images/resume_templates-images-9.jpg', description: 'Classic professional format for large corporations', category: 'Professional' }
+  { id: 9, name: 'Corporate Standard', image: '/images/resume_templates-images-9.jpg', description: 'Classic professional format for large corporations', category: 'Professional' },
+  { id: 10, name: 'Academic Tech', image: '/images/resume_templates-images-10.jpg', description: 'Clean, serif-based layout ideal for technical and academic profiles', category: 'Professional' }
 ];
 
 const categories = ['All', 'Professional', 'Creative', 'Simple', 'Tech'];
@@ -59,8 +60,8 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({ onTemplateSelect 
               key={category}
               onClick={() => setActiveCategory(category)}
               className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${activeCategory === category
-                  ? 'bg-indigo-600 text-white shadow-lg scale-105'
-                  : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700'
+                ? 'bg-indigo-600 text-white shadow-lg scale-105'
+                : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700'
                 }`}
             >
               {category}
@@ -74,8 +75,8 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({ onTemplateSelect 
             <div
               key={template.id}
               className={`group relative bg-white dark:bg-slate-800 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-2 ${selectedTemplate === template.id
-                  ? 'ring-4 ring-indigo-500 shadow-2xl scale-[1.02]'
-                  : 'border border-gray-200 dark:border-slate-700 shadow-lg hover:shadow-xl'
+                ? 'ring-4 ring-indigo-500 shadow-2xl scale-[1.02]'
+                : 'border border-gray-200 dark:border-slate-700 shadow-lg hover:shadow-xl'
                 }`}
               onClick={() => handleSelectTemplate(template.id)}
             >

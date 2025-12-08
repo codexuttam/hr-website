@@ -7,6 +7,7 @@ interface TemplateProps {
 }
 
 const Template2: React.FC<TemplateProps> = ({ data, color }) => {
+  if (!data || !data.contact) return null;
   const { contact, objective, skills, experience, education } = data;
 
   return (
@@ -97,28 +98,28 @@ const Template2: React.FC<TemplateProps> = ({ data, color }) => {
       )}
 
       {/* ===== EDUCATION ===== */}
-{education && education.length > 0 && (
-  <section>
-    <h2
-      className="text-lg font-semibold uppercase mb-3 border-b pb-1"
-      style={{ borderColor: color.primary, color: color.primary }}
-    >
-      Education
-    </h2>
-    <div className="space-y-2 text-sm text-gray-700">
-      {education.map((edu, i) => (
-        <div key={i}>
-          <strong className="text-gray-900">{edu.course}</strong> —{" "}
-          <span className="italic">{edu.institution}</span>{" "}
-          <span className="text-gray-500">({edu.year})</span>
-          {edu.description && (
-            <p className="text-gray-700 mt-1">{edu.description}</p>
-          )}
-        </div>
-      ))}
-    </div>
-  </section>
-)}
+      {education && education.length > 0 && (
+        <section>
+          <h2
+            className="text-lg font-semibold uppercase mb-3 border-b pb-1"
+            style={{ borderColor: color.primary, color: color.primary }}
+          >
+            Education
+          </h2>
+          <div className="space-y-2 text-sm text-gray-700">
+            {education.map((edu, i) => (
+              <div key={i}>
+                <strong className="text-gray-900">{edu.course}</strong> —{" "}
+                <span className="italic">{edu.institution}</span>{" "}
+                <span className="text-gray-500">({edu.year})</span>
+                {edu.description && (
+                  <p className="text-gray-700 mt-1">{edu.description}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
     </div>
   );

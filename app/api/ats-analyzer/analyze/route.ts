@@ -1,9 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase admin client for credit updates
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export async function POST(request: NextRequest) {
   try {
-    const { resumeText, jobDescription } = await request.json();
+    const { resumeText, jobDescription, userId } = await request.json();
+
+    // Credit Check Logic
+    if (userId) {
+      if (!supabaseServiceKey) {
+        console.warn('SUPABASE_SERVICE_ROLE_KEY is missing, skipping credit check');
+      } else {
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
+        
+        // Check current credits
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('credits')
+          .eq('user_id', userId)
+          .single();
+
+        if (!userError && userData) {
+          const currentCredits = userData.credits ?? 0;
+          if (currentCredits < 5) {
+             return NextResponse.json(
+              { error: 'Insufficient credits. You need 5 credits to analyze a resume.' },
+              { status: 403 }
+            );
+          }
+          
+          // Deduct credits
+          await supabase
+            .from('users')
+            .update({ credits: currentCredits - 1 })
+            .eq('user_id', userId);
+            
+          console.log(`Deducted 1 credits from user ${userId}. Remaining: ${currentCredits - 1}`);
+        }
+      }
+    }
 
     if (!resumeText || !jobDescription) {
       return NextResponse.json(

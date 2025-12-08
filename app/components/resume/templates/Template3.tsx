@@ -7,6 +7,7 @@ interface TemplateProps {
 }
 
 const Template3: React.FC<TemplateProps> = ({ data, color }) => {
+  if (!data || !data.contact) return null;
   const { contact, objective, education, skills, experience, certifications } = data;
 
   return (

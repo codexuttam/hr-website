@@ -3,15 +3,23 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
 import { saveAs } from 'file-saver';
-import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import { ResumeService } from '../../services/resumeService';
+import { ResumeData, ResumeColor } from '../../types/resume';
 
 interface DownloadDropdownProps {
-  data: any;
+  data: ResumeData;
   templateId?: number;
+  color?: ResumeColor;
+  resumeId?: number;
 }
 
-const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 0 }) => {
+const DownloadDropdown: React.FC<DownloadDropdownProps> = ({
+  data,
+  templateId = 0,
+  color,
+  resumeId
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -42,27 +50,15 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 
     }
 
     try {
-      const resumeName = data.contact?.name || 'Untitled Resume';
-      
-      const { data: resumeData, error } = await supabase
-        .from('resumes')
-        .insert([
-          {
-            user_id: user.user_id,
-            resume_name: resumeName,
-            template_id: templateId.toString(),
-            resume_data: data,
-            is_active: true
-          }
-        ])
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error saving resume to database:', error);
-      } else {
-        console.log('Resume saved to database:', resumeData);
-      }
+      console.log('Saving resume before download...');
+      const savedResume = await ResumeService.autoSave(
+        data,
+        templateId,
+        color || { primary: '#000000', background: '#ffffff' },
+        user.user_id.toString(),
+        resumeId
+      );
+      console.log('Resume saved successfully:', savedResume);
     } catch (error) {
       console.error('Failed to save resume:', error);
     }
@@ -71,14 +67,14 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
     setIsOpen(false);
-    
+
     // Save to database when downloading
     await saveResumeToDatabase();
-    
+
     try {
       // Wait a bit for dropdown to close
       await new Promise(resolve => setTimeout(resolve, 100));
-      
+
       const element = document.getElementById('resume-preview');
       if (!element) {
         console.error('Resume element not found');
@@ -90,7 +86,7 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 
       const resumeContent = element.querySelector('.right-content') as HTMLElement;
       const originalBoxShadow = resumeContent?.style.boxShadow || '';
       const originalBorder = resumeContent?.style.border || '';
-      
+
       if (resumeContent) {
         resumeContent.style.boxShadow = 'none';
         resumeContent.style.border = 'none';
@@ -98,7 +94,7 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 
 
       console.log('Getting resume HTML...');
       const html = element.outerHTML;
-      
+
       // Restore original styles
       if (resumeContent) {
         resumeContent.style.boxShadow = originalBoxShadow;
@@ -120,7 +116,7 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 
 
       // Remove lab() color functions from styles (not supported by html2canvas)
       const cleanedStyles = styles.replace(/lab\([^)]+\)/g, '#000000');
-      
+
       // Create complete HTML document
       const completeHTML = `
         <!DOCTYPE html>
@@ -142,7 +138,7 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 
       `;
 
       console.log('Generating PDF using html2canvas and jsPDF...');
-      
+
       // Create a temporary container for rendering
       const tempContainer = document.createElement('div');
       tempContainer.innerHTML = completeHTML;
@@ -154,7 +150,7 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 
       try {
         // Wait for fonts and images to load
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         // Use html2canvas to capture the content
         const canvas = await html2canvas(tempContainer, {
           scale: 2,
@@ -175,9 +171,9 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 
 
         const imgWidth = 210; // A4 width in mm
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        
+
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-        
+
         // Download the PDF
         pdf.save(`${data.contact?.name?.replace(/\s+/g, '_') || 'resume'}.pdf`);
         console.log('PDF downloaded successfully');
@@ -196,10 +192,10 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 
   const handleDownloadDOC = async () => {
     setIsDownloading(true);
     setIsOpen(false);
-    
+
     // Save to database when downloading
     await saveResumeToDatabase();
-    
+
     try {
       const doc = new Document({
         sections: [
@@ -212,7 +208,7 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({ data, templateId = 
                 heading: HeadingLevel.HEADING_1,
                 spacing: { after: 200 },
               }),
-              
+
               // Contact Info
               new Paragraph({
                 children: [

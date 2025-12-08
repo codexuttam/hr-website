@@ -262,8 +262,8 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
           {/* Save Status */}
           {saveStatus && (
             <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${saveStatus === 'saving' ? 'bg-blue-100 text-blue-700' :
-                saveStatus === 'saved' ? 'bg-green-100 text-green-700' :
-                  'bg-red-100 text-red-700'
+              saveStatus === 'saved' ? 'bg-green-100 text-green-700' :
+                'bg-red-100 text-red-700'
               }`}>
               {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : 'Error'}
             </div>
@@ -276,8 +276,8 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
             <button
               onClick={() => setViewMode('edit')}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'edit'
-                  ? 'bg-white dark:bg-slate-600 text-indigo-600 shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400'
+                ? 'bg-white dark:bg-slate-600 text-indigo-600 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400'
                 }`}
             >
               Edit
@@ -285,8 +285,8 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
             <button
               onClick={() => setViewMode('preview')}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'preview'
-                  ? 'bg-white dark:bg-slate-600 text-indigo-600 shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400'
+                ? 'bg-white dark:bg-slate-600 text-indigo-600 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400'
                 }`}
             >
               Preview
@@ -295,8 +295,8 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
 
           <button
             className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${showAISuggestions
-                ? 'bg-indigo-100 text-indigo-700'
-                : 'text-gray-600 hover:bg-gray-100'
+              ? 'bg-indigo-100 text-indigo-700'
+              : 'text-gray-600 hover:bg-gray-100'
               }`}
             onClick={() => setShowAISuggestions(!showAISuggestions)}
           >
@@ -311,7 +311,12 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
             Save
           </button>
 
-          <DownloadDropdown data={data} templateId={template} />
+          <DownloadDropdown
+            data={data}
+            templateId={template}
+            color={color}
+            resumeId={currentResumeId}
+          />
         </div>
       </div>
 

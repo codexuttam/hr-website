@@ -10,6 +10,7 @@ interface User {
   email: string;
   role: UserRole;
   created_at: string;
+  credits?: number;
 }
 
 interface AuthContextType {
@@ -125,7 +126,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                   .insert([{
                     email: session.user.email,
                     name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
-                    role: session.user.user_metadata?.role || 'student'
+                    role: session.user.user_metadata?.role || 'student',
+                    credits: 50
                   }])
                   .select()
                   .single();
@@ -146,6 +148,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                   email: session.user.email || '',
                   role: session.user.user_metadata?.role || 'student',
                   created_at: session.user.created_at || new Date().toISOString(),
+                  credits: 50
                 };
                 setUser(fallbackUser);
                 saveUserToStorage(fallbackUser);
@@ -203,6 +206,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               email: session.user.email || '',
               role: session.user.user_metadata?.role || 'student',
               created_at: session.user.created_at || new Date().toISOString(),
+              credits: 50
             };
             setUser(fallbackUser);
             saveUserToStorage(fallbackUser);
@@ -216,6 +220,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             email: session.user.email || '',
             role: session.user.user_metadata?.role || 'student',
             created_at: session.user.created_at || new Date().toISOString(),
+            credits: 50
           };
           setUser(fallbackUser);
           saveUserToStorage(fallbackUser);
@@ -287,7 +292,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 .insert([{
                   email: email,
                   name: data.user.user_metadata?.name || email.split('@')[0] || 'User',
-                  role: role || data.user.user_metadata?.role || 'student'
+                  role: role || data.user.user_metadata?.role || 'student',
+                  credits: 50
                 }])
                 .select()
                 .single();
@@ -376,6 +382,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               email,
               name,
               role,
+              credits: 50,
               // DO NOT store password or password_hash here!
               // Supabase Auth manages passwords securely
             }

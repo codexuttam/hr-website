@@ -12,6 +12,7 @@ import Template6 from "./templates/Template7";
 import Template7 from "./templates/Template8";
 import Template8 from "./templates/Template9";
 import Template9 from "./templates/Template10";
+import Template10 from "./templates/Template11";
 
 interface ResumeProps {
   data: ResumeData;
@@ -47,6 +48,8 @@ const Resume: React.FC<ResumeProps> = ({
         return <Template8 data={data} color={color} />;
       case 9:
         return <Template9 data={data} color={color} />;
+      case 10:
+        return <Template10 data={data} color={color} />;
       default:
         return <Template0 data={data} color={color} />;
     }
