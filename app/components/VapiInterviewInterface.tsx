@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Vapi from '@vapi-ai/web';
+import { useRouter } from 'next/navigation';
 import { FaMicrophone, FaMicrophoneSlash, FaStop, FaSpinner } from 'react-icons/fa';
 import EyeContactAnalyzer, { EyeContactRef } from './EyeContactAnalyzer';
 import { useAuth } from '../contexts/AuthContext';
@@ -21,6 +22,7 @@ interface VapiInterviewInterfaceProps {
 export default function VapiInterviewInterface({ config, onExit }: VapiInterviewInterfaceProps) {
     const [vapi, setVapi] = useState<Vapi | null>(null);
     const { user } = useAuth();
+    const router = useRouter();
     const [isConnected, setIsConnected] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [isListening, setIsListening] = useState(false);
@@ -53,7 +55,7 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
     // Setup AI video
     useEffect(() => {
         if (aiVideoRef.current) {
-            aiVideoRef.current.src = '/video/Professional Interview Scene.mp4';
+            aiVideoRef.current.src = '/video/Single_Speaker_Video_Generation.mp4';
             aiVideoRef.current.loop = false;
             aiVideoRef.current.muted = true; // Muted because audio comes from Vapi
         }
@@ -154,29 +156,36 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
                     messages: [
                         {
                             role: 'system' as const,
-                            content: `You are an experienced technical interviewer conducting a ${config.experience} level interview for a ${config.role} position. 
-              
-The candidate's tech stack includes: ${config.techStack}.
+                            content: `
+                            You are an expert technical interviewer conducting a ${config.experience}-level interview for the ${config.role} position.
 
-Your role:
-1. Start with a warm greeting and brief introduction
-2. Ask relevant technical and behavioral questions based on the role and experience level
-3. Listen carefully to responses and ask follow-up questions
-4. Maintain a professional yet friendly tone
-5. The interview will last ${config.duration} minutes
-6. At the end, provide brief feedback on their performance
+                            Candidate tech stack: ${config.techStack}.
 
-Keep questions concise and clear. Allow the candidate time to think and respond.`
+                            Your responsibilities:
+                            - Start with a brief warm greeting and introduction.
+                            - Ask clear, focused technical and behavioral questions.
+                            - Ask one question at a time.
+                            - After each answer, acknowledge briefly and continue with a follow-up or next question.
+                            - Use a friendly and professional tone.
+                            - Keep responses concise.
+                            - Do NOT mention or reference interview duration at any point.
+                            - Do NOT answer on behalf of the candidate.
+
+                            At the end:
+                            - Provide a short 2–3 sentence performance summary.
+
+                            Stay strictly in the role of an interviewer.`
                         }
                     ],
-                    temperature: 0.7,
+                    temperature: 0.6,
                 },
                 voice: {
                     provider: 'openai' as const,
                     voiceId: 'alloy',
                 },
-                firstMessage: `Hello! I'm your AI interviewer today. I'll be conducting a ${config.duration}-minute interview for the ${config.role} position. Let's begin with a brief introduction - could you tell me a bit about yourself and your experience with ${config.techStack}?`,
+                firstMessage: `Hello! I'm your AI interviewer for the ${config.role} position. Let's begin — could you please introduce yourself and share your experience with ${config.techStack}?`,
             };
+
 
             await vapi.start(assistant);
             setIsListening(true);
@@ -228,6 +237,10 @@ Keep questions concise and clear. Allow the candidate time to think and respond.
 
             const data = await response.json();
             console.log('Feedback generated successfully:', data);
+
+            if (data.feedback && data.feedback.interviewId) {
+                router.push(`/interview/results/${data.feedback.interviewId}`);
+            }
 
         } catch (error) {
             console.error('Error processing interview feedback:', error);

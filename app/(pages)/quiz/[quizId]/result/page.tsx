@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useState, use } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
@@ -23,8 +23,8 @@ interface QuizStats {
     averageScore: number;
 }
 
-export default function QuizResultPage() {
-    const { quizId } = useParams();
+export default function QuizResultPage({ params }: { params: Promise<{ quizId: string }> }) {
+    const { quizId } = use(params);
     const { user } = useAuth();
     const router = useRouter();
 

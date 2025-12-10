@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { FaArrowLeft, FaDownload, FaEnvelope, FaUser } from 'react-icons/fa';
 import Link from 'next/link';
@@ -25,9 +25,8 @@ interface Drive {
     role: string;
 }
 
-export default function DriveApplicationsPage() {
-    const params = useParams();
-    const id = params.id as string;
+export default function DriveApplicationsPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const router = useRouter();
 
     const [drive, setDrive] = useState<Drive | null>(null);
@@ -206,8 +205,8 @@ export default function DriveApplicationsPage() {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${app.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                        app.status === 'accepted' ? 'bg-green-100 text-green-800' :
-                                                            app.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+                                                    app.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                                                        app.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {app.status}
                                                 </span>

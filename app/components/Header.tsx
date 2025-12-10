@@ -166,6 +166,13 @@ const Header: React.FC = () => {
                       >
                         🎯 Mock Interview
                       </DropdownItem>
+                      {/* <DropdownItem
+                        href="/coach"
+                        onClick={handlePlacementPrepClick}
+                        description="24/7 AI Mentorship for career guidance"
+                      >
+                        🤖 AI Career Coach
+                      </DropdownItem> */}
                     </div>
                   </div>
                 )}
@@ -256,6 +263,7 @@ const Header: React.FC = () => {
             <div className="ml-4 space-y-1">
               <MobileNavLink href="/code-playground" onClick={handleMobileNavClick}>💻 Coding Practice</MobileNavLink>
               <MobileNavLink href="/interview" onClick={handleMobileNavClick}>🎯 Mock Interview</MobileNavLink>
+              {/* <MobileNavLink href="/coach" onClick={handleMobileNavClick}>🤖 AI Career Coach</MobileNavLink> */}
               <MobileNavLink href="#" onClick={handleMobileNavClick}>🧮 Aptitude Tests</MobileNavLink>
             </div>
 

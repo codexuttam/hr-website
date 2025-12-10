@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import RoleBadge from '../ui/RoleBadge';
 import { UserRole } from '../../contexts/AuthContext';
 import AssignedQuizzes from '../dashboard/AssignedQuizzes';
+import InterviewHistory from '../dashboard/InterviewHistory';
 import { supabase } from '@/lib/supabase';
 
 const UserDashboard: React.FC = () => {
@@ -70,6 +71,11 @@ const UserDashboard: React.FC = () => {
         {/* Assigned Quizzes - Only for Students */}
         {user.role === 'student' && (
           <AssignedQuizzes userId={user.user_id} />
+        )}
+
+        {/* Interview History - Only for Students */}
+        {user.role === 'student' && (
+          <InterviewHistory />
         )}
 
         {/* Resume Upload Section - Only for Students */}

@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from './contexts/AuthContext';
 import { ResumeProvider, ThemeProvider } from './contexts';
-import AuthDebug from './components/auth/AuthDebug';
 import AuthErrorBoundary from './components/auth/AuthErrorBoundary';
 
 const geistSans = Geist({
@@ -40,7 +39,6 @@ export default function RootLayout({
             <AuthProvider>
               <ResumeProvider>
                 {children}
-                <AuthDebug />
               </ResumeProvider>
             </AuthProvider>
           </AuthErrorBoundary>

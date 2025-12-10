@@ -122,7 +122,7 @@ Format the output as JSON with the following structure:
                     }
                 };
 
-                const { error: interviewError } = await supabaseAdmin
+                const { data: savedInterview, error: interviewError } = await supabaseAdmin
                     .from('mock_interviews')
                     .insert({
                         student_id: userId,
@@ -130,12 +130,18 @@ Format the output as JSON with the following structure:
                         feedback: feedbackData.summary,
                         rating: rating,
                         analysis: analysisPayload
-                    });
+                    })
+                    .select()
+                    .single();
 
                 if (interviewError) {
-                    console.error("Mock Interview save error:", interviewError);
+                    console.error("Mock Interview save error details:", JSON.stringify(interviewError, null, 2));
                 } else {
-                    console.log("Successfully saved to mock_interviews");
+                    console.log("Successfully saved to mock_interviews", savedInterview);
+                    // Add ID to feedback data for frontend redirect
+                    if (savedInterview) {
+                        feedbackData.interviewId = savedInterview.id;
+                    }
                 }
             } catch (err) {
                 console.error("Error saving to mock_interviews:", err);

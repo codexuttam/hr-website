@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useState, use } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
@@ -19,11 +19,10 @@ type Quiz = {
   title: string;
 };
 
-export default function QuizPage() {
-  const params = useParams();
+export default function QuizPage({ params }: { params: Promise<{ quizId: string }> }) {
+  const { quizId } = use(params);
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
-  const quizId = params.quizId as string;
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);

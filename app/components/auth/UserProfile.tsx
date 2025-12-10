@@ -23,10 +23,17 @@ const UserProfile: React.FC = () => {
     };
   }, []);
 
-  const handleLogout = async () => {
-    setShowProfile(false);
-    await logout();
-    router.push('/login');
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      setShowProfile(false);
+      await logout();
+      // Use window.location.href to force a full page refresh and clear any client-side state
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Logout handler error:', error);
+      window.location.href = '/login';
+    }
   };
 
   if (!user) return null;
@@ -84,6 +91,7 @@ const UserProfile: React.FC = () => {
             </Link>
             <hr className="my-1 border-gray-200 dark:border-slate-700" />
             <button
+              type="button"
               onClick={handleLogout}
               className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md"
             >

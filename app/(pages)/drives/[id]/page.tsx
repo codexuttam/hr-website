@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { FaBuilding, FaMapMarkerAlt, FaMoneyBillWave, FaCalendarAlt, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
@@ -19,8 +19,8 @@ interface Drive {
     application_link?: string;
 }
 
-export default function DriveDetailsPage() {
-    const { id } = useParams();
+export default function DriveDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const router = useRouter();
     const { user, isAuthenticated } = useAuth();
     const [drive, setDrive] = useState<Drive | null>(null);
@@ -221,9 +221,11 @@ export default function DriveDetailsPage() {
 
                                             if (drive.application_link) {
                                                 alert('Registration successful! Redirecting to company portal...');
-                                                window.open(drive.application_link, '_blank');
+                                                router.push(`/drives/${id}/application-form`);
+
                                             } else {
-                                                alert('Registered successfully! You can upload your resume later from your dashboard.');
+                                                // Redirect to the detailed application form
+                                                router.push(`/drives/${id}/application-form`);
                                             }
                                         } catch (error: any) {
                                             console.error('Error registering:', error);

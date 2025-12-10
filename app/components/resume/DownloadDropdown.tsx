@@ -128,7 +128,7 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({
               body { margin: 0; padding: 0; }
               #resume-preview { background: white !important; }
               .right-content { box-shadow: none !important; border: none !important; }
-              * { color: inherit !important; }
+              * { color: #000000 !important; border-color: #000000 !important; }
             </style>
           </head>
           <body>
@@ -364,22 +364,7 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({
           >
             📄 Download as PDF
           </button>
-          <button
-            className="block w-full px-5 py-3 text-left bg-white border-none text-[15px] font-medium text-gray-800 cursor-pointer transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed border-b border-gray-200"
-            onClick={handleDownloadDOC}
-            disabled={isDownloading}
-          >
-            📝 Download as DOC
-          </button>
-          <button
-            className="block w-full px-5 py-3 text-left bg-white border-none text-[15px] font-medium text-gray-800 cursor-pointer transition-colors duration-200 hover:bg-gray-100"
-            onClick={() => {
-              window.print();
-              setIsOpen(false);
-            }}
-          >
-            🖨️ Print
-          </button>
+
         </div>
       )}
     </div>

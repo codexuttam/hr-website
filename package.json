@@ -18,14 +18,15 @@
     "env:production": "node scripts/setup-local-env.js production"
   },
   "dependencies": {
-    "@ai-sdk/google": "^2.0.42",
+    "@ai-sdk/google": "^2.0.44",
+    "@ai-sdk/react": "^2.0.109",
     "@google/generative-ai": "^0.24.1",
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/face_mesh": "^0.4.1633559619",
     "@supabase/supabase-js": "^2.86.0",
     "@vapi-ai/web": "^2.5.0",
     "ace-builds": "^1.43.4",
-    "ai": "^5.0.101",
+    "ai": "^5.0.108",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
     "docx": "^9.5.1",

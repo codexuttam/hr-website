@@ -8,10 +8,10 @@ interface ProtectedRouteProps {
   fallback?: React.ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
-  children, 
-  requiredRole, 
-  fallback 
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requiredRole,
+  fallback
 }) => {
   const { user, loading, isAuthenticated } = useAuth();
   const router = useRouter();
@@ -19,7 +19,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       // Redirect to auth page if not authenticated
-      router.push('/auth');
+      router.push('/login');
     }
   }, [loading, isAuthenticated, router]);
 
