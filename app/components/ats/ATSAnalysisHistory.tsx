@@ -28,7 +28,7 @@ const ATSAnalysisHistory: React.FC = () => {
   const loadAnalysisHistory = async () => {
     try {
       setLoading(true);
-      const historyData = await SupabaseATSService.getAnalysisHistory(user!.user_id, 20);
+      const historyData = await SupabaseATSService.getAnalysisHistory(Number(user!.user_id), 20);
       setHistory(historyData);
     } catch (error) {
       console.error('Failed to load analysis history:', error);
@@ -95,7 +95,7 @@ const ATSAnalysisHistory: React.FC = () => {
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Analysis History ({history.length})
         </h3>
-        
+
         <div className="space-y-4">
           {history.map((item) => (
             <div

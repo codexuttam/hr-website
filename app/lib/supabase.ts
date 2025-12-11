@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = (globalThis as any).supabase ?? createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
@@ -42,11 +42,16 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
+if (process.env.NODE_ENV !== 'production') {
+  (globalThis as any).supabase = supabase;
+}
+
 // Admin client with service role key for server-side operations ONLY
 // This should only be used in API routes, not in client components
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 // Only create admin client if we have a service role key (server-side only)
+// Otherwise fallback to the main instance to avoid duplicate GoTrue instances on the client
 export const supabaseAdmin = supabaseServiceRoleKey
   ? createClient(supabaseUrl, supabaseServiceRoleKey, {
       auth: {
@@ -54,9 +59,4 @@ export const supabaseAdmin = supabaseServiceRoleKey
         persistSession: false,
       },
     })
-  : createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-    });
+  : supabase;

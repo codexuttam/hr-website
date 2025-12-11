@@ -45,20 +45,24 @@ const UserManagementPage: React.FC = () => {
         try {
             setLoading(true);
             setError(null);
-            const { data, error } = await supabase
-                .from('users')
-                .select('*');
 
-            if (error) {
-                console.error('Supabase error:', error);
-                throw new Error(`Database error: ${error.message || 'Unknown error'}`);
+            // Fetch from API to bypass RLS restrictions
+            const response = await fetch('/api/admin/users', {
+                cache: 'no-store'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `Error ${response.status}: Failed to load users`);
             }
 
-            console.log('Users loaded successfully:', data?.length || 0);
-            setUsers(data || []);
+            const data = await response.json();
+
+            console.log('Users loaded successfully:', data.users?.length || 0);
+            setUsers(data.users || []);
         } catch (error: any) {
             console.error('Failed to load users:', error);
-            setError(error.message || 'Failed to load users. Please check your database connection and permissions.');
+            setError(error.message || 'Failed to load users. Please check your connection.');
         } finally {
             setLoading(false);
         }
@@ -66,19 +70,23 @@ const UserManagementPage: React.FC = () => {
 
     async function handleRoleChange(userId: string | number, newRole: 'student' | 'instructor' | 'admin') {
         try {
-            const { error } = await supabase
-                .from('users')
-                .update({ role: newRole })
-                .eq('user_id', userId);
+            const response = await fetch('/api/admin/users', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, role: newRole }),
+            });
 
-            if (error) throw error;
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to update role');
+            }
 
             // Update local state
             setUsers(users.map(u => u.user_id === userId ? { ...u, role: newRole } : u));
             alert('User role updated successfully!');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to update role:', error);
-            alert('Failed to update user role');
+            alert(`Failed to update user role: ${error.message}`);
         }
     }
 
@@ -88,18 +96,20 @@ const UserManagementPage: React.FC = () => {
         }
 
         try {
-            const { error } = await supabase
-                .from('users')
-                .delete()
-                .eq('user_id', userId);
+            const response = await fetch(`/api/admin/users?userId=${userId}`, {
+                method: 'DELETE',
+            });
 
-            if (error) throw error;
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to delete user');
+            }
 
             setUsers(users.filter(u => u.user_id !== userId));
             alert('User deleted successfully!');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to delete user:', error);
-            alert('Failed to delete user');
+            alert(`Failed to delete user: ${error.message}`);
         }
     }
 

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     
     // Delete attempt answers if there are attempts
     if (attemptIds && attemptIds.length > 0) {
-      const ids = attemptIds.map(a => a.attempt_id);
+      const ids = attemptIds.map((a: { attempt_id: number }) => a.attempt_id);
       await supabaseAdmin.from("attempt_answers").delete().in("attempt_id", ids);
     }
     

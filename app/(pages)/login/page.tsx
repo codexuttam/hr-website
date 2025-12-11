@@ -31,7 +31,7 @@ export default function LoginPage() {
 
         try {
             // Use Supabase Auth via AuthContext
-            await login(formData.email, formData.password, role);
+            await login(formData.email, formData.password);
 
             // Optional: Webhook call for analytics/tracking (non-blocking)
             fetch('https://bitlanceai.app.n8n.cloud/webhook/eduai', {
@@ -42,7 +42,6 @@ export default function LoginPage() {
                 body: JSON.stringify({
                     action: 'login',
                     email: formData.email,
-                    role: role,
                     timestamp: new Date().toISOString(),
                 }),
             }).catch(console.error);

@@ -2,7 +2,8 @@ import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 const AuthDebug: React.FC = () => {
-  const { user, token, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
   const clearToken = () => {
     localStorage.removeItem('token');
@@ -18,7 +19,7 @@ const AuthDebug: React.FC = () => {
         <div>Token: {token ? 'Present' : 'None'}</div>
         <div>User: {user ? user.name : 'None'}</div>
       </div>
-      <button 
+      <button
         onClick={clearToken}
         className="mt-2 bg-red-600 text-white px-2 py-1 rounded text-xs"
       >

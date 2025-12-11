@@ -141,9 +141,9 @@ export default function QuizPage({ params }: { params: Promise<{ quizId: string 
         .select('question_id')
         .eq('quiz_id', quizId);
 
-      if (mErr || !qmap.length) throw new Error("No questions found");
+      if (mErr || !qmap || !qmap.length) throw new Error("No questions found");
 
-      const ids = qmap.map(m => m.question_id);
+      const ids = qmap.map((m: { question_id: number }) => m.question_id);
 
       const { data: questionsData, error: qErr2 } = await supabase
         .from('questions')

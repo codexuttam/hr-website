@@ -23,8 +23,8 @@ const ATSResultHistory: React.FC<ATSResultHistoryProps> = ({ resumeId, onSelectR
       setLoading(true);
       setError(null);
       const response = await ATSResultService.listATSResults(
-        resumeId, 
-        user?.user_id
+        resumeId,
+        user?.user_id ? Number(user.user_id) : undefined
       );
       setResults(response.atsResults);
     } catch (err) {

@@ -98,7 +98,7 @@ const ATSAnalyzer: React.FC = () => {
     try {
       if (user?.user_id) {
         console.log('Loading ATS stats for user:', user.user_id);
-        const response = await ATSResultService.listATSResults(undefined, user.user_id);
+        const response = await ATSResultService.listATSResults(undefined, Number(user.user_id));
         console.log('ATS results response:', response);
 
         const results = response.atsResults;
@@ -531,7 +531,7 @@ const ATSAnalyzer: React.FC = () => {
             overallScore: result.overall_score,
             suggestions: result.suggestions,
             analysisData: result.analysis_data,
-            userId: user.user_id
+            userId: Number(user.user_id)
           };
           console.log('ATS result data to save:', atsResultData);
 
@@ -633,7 +633,7 @@ const ATSAnalyzer: React.FC = () => {
       const supabaseAnalysis = await SupabaseATSService.analyzeResumeWithSupabaseATS(
         resumeText,
         jobDescription,
-        user?.user_id
+        user?.user_id ? Number(user.user_id) : undefined
       );
 
       // Convert Supabase analysis to ATSResult format
@@ -908,8 +908,8 @@ ${analysis.detailed_feedback}`;
           <button
             onClick={() => setActiveTab('upload')}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${activeTab === 'upload'
-                ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+              ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`}
           >
             📄 Analyze Resume
@@ -917,8 +917,8 @@ ${analysis.detailed_feedback}`;
           <button
             onClick={() => setActiveTab('results')}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${activeTab === 'results'
-                ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+              ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`}
           >
             📊 View Results
@@ -993,10 +993,10 @@ ${analysis.detailed_feedback}`;
                 </div>
                 {processingMessage && (
                   <div className={`mt-3 p-3 rounded-md text-sm ${processingMessage.includes('✅')
-                      ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800'
-                      : processingMessage.includes('⚠️')
-                        ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800'
-                        : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800'
+                    ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800'
+                    : processingMessage.includes('⚠️')
+                      ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800'
+                      : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800'
                     }`}>
                     {processingMessage}
                   </div>
@@ -1063,12 +1063,12 @@ ${analysis.detailed_feedback}`;
 
               {processingMessage && (
                 <div className={`mt-3 p-3 rounded-md text-sm ${processingMessage.includes('✅')
-                    ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800'
-                    : processingMessage.includes('⚠️')
-                      ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800'
-                      : processingMessage.includes('🔄') || processingMessage.includes('💾')
-                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
-                        : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800'
+                  ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800'
+                  : processingMessage.includes('⚠️')
+                    ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800'
+                    : processingMessage.includes('🔄') || processingMessage.includes('💾')
+                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                      : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800'
                   }`}>
                   {processingMessage}
                 </div>
