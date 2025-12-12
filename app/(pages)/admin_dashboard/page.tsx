@@ -6,6 +6,7 @@ import Footer from '../../components/Footer';
 import { useAuth } from '../../contexts/AuthContext';
 import RoleBadge from '../../components/ui/RoleBadge';
 import { supabase } from '../../lib/supabase';
+import Link from 'next/link';
 
 const AdminDashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -79,9 +80,9 @@ const AdminDashboardPage: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
                   Create, edit, and manage quizzes and questions
                 </p>
-                <a href="/quiz/admin" className="block w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-center">
+                <Link href="/quiz/admin" className="block w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-center">
                   Manage Quizzes
-                </a>
+                </Link>
               </div>
 
               <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6">
@@ -157,9 +158,9 @@ const AdminDashboardPage: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
                   Create and manage placement drives and applications
                 </p>
-                <a href="/admin/drives" className="block w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-center">
+                <Link href="/admin/drives" className="block w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-center">
                   Manage Drives
-                </a>
+                </Link>
               </div>
             </div>
 

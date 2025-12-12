@@ -38,11 +38,13 @@ const UserDashboard: React.FC = () => {
           description: 'Build your career with AI-powered tools and guidance',
           features: [
             { name: 'Resume Builder', href: '/resume-builder', icon: '📝' },
-            { name: 'ATS Analysis', href: '/ats-tools', icon: '🎯' },
-            { name: 'Interview Prep', href: '/interview', icon: '💬' },
-            { name: 'Skill Assessment', href: '/quiz', icon: '🧠' },
-            { name: 'Skill Gap', href: '/skill-gap', icon: '📊' },
-            { name: 'Placement Drives', href: '/drives', icon: '🚀' }
+            { name: 'ATS Score Checker', href: '/ats-tools', icon: '✅' },
+            { name: 'Placement Preparation', href: '/drives', icon: '💼' },
+            { name: 'Code IDE', href: '/code-playground', icon: '💻' },
+            { name: 'Time Planner', href: '/dashboard', icon: '📅' },
+            { name: 'Brain Games', href: '/games', icon: '🧩' },
+            { name: 'Mock Interview', href: '/ai-interview', icon: '🎤' },
+            { name: 'AI Mentor', href: '/coach', icon: '🤖' },
           ]
         };
     }

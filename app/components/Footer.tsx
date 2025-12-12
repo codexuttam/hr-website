@@ -14,18 +14,18 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="text-sm font-semibold text-slate-700 dark:text-gray-200 tracking-wider uppercase">Features</h4>
             <ul className="mt-4 space-y-2">
-              <li><a href="#" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Resume Builder</a></li>
-              <li><a href="#" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">ATS Checker</a></li>
-              <li><a href="#" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Placement Prep</a></li>
-              <li><a href="#" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Code IDE</a></li>
+              <li><a href="/resume-builder" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Resume Builder</a></li>
+              <li><a href="/ats-tools" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">ATS Checker</a></li>
+              <li><a href="/drives" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Placement Prep</a></li>
+              <li><a href="/code-playground" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Code IDE</a></li>
             </ul>
           </div>
           <div>
             <h4 className="text-sm font-semibold text-slate-700 dark:text-gray-200 tracking-wider uppercase">Tools</h4>
             <ul className="mt-4 space-y-2">
-              <li><a href="#" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Time Planner</a></li>
-              <li><a href="#" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Brain Games</a></li>
-              <li><a href="#" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Mock Interview</a></li>
+              <li><a href="/dashboard" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Time Planner</a></li>
+              <li><a href="/games" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Brain Games</a></li>
+              <li><a href="/ai-interview" className="text-base text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">Mock Interview</a></li>
             </ul>
           </div>
         </div>

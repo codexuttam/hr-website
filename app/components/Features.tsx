@@ -1,19 +1,26 @@
+'use client';
+
 import React from 'react';
+import Link from 'next/link';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
+  href: string;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description }) => (
-  <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-all duration-300 transform hover:-translate-y-1">
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, href }) => (
+  <Link
+    href={href}
+    className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-all duration-300 transform hover:-translate-y-1 block cursor-pointer"
+  >
     <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-indigo-500 text-white mb-4">
       {icon}
     </div>
     <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{title}</h3>
     <p className="text-gray-600 dark:text-gray-400">{description}</p>
-  </div>
+  </Link>
 );
 
 const Features: React.FC = () => {
@@ -22,41 +29,49 @@ const Features: React.FC = () => {
       icon: <IconResume />,
       title: 'Resume Builder',
       description: 'AI-powered resume builder with ATS optimization and multiple templates.',
+      href: '/resume-builder',
     },
     {
       icon: <IconATS />,
       title: 'ATS Score Checker',
       description: 'Optimize your resume for ATS systems and check compatibility scores.',
+      href: '/ats-tools',
     },
     {
       icon: <IconPlacement />,
       title: 'Placement Preparation',
       description: 'Company-wise previous year questions, preparation kits and placement guidance.',
+      href: '/drives',
     },
     {
       icon: <IconCode />,
       title: 'Code IDE',
       description: 'Online coding environment with multiple programming languages.',
+      href: '/code-playground',
     },
     {
-        icon: <IconPlanner />,
-        title: 'Time Planner',
-        description: 'Smart timetable planner with progress tracking and reminders.',
+      icon: <IconPlanner />,
+      title: 'Time Planner',
+      description: 'Smart timetable planner with progress tracking and reminders.',
+      href: '/dashboard',
     },
     {
-        icon: <IconGames />,
-        title: 'Brain Games',
-        description: 'Puzzles, reasoning ability games and mental exercises.',
+      icon: <IconGames />,
+      title: 'Brain Games',
+      description: 'Puzzles, reasoning ability games and mental exercises.',
+      href: '/games',
     },
     {
-        icon: <IconInterview />,
-        title: 'Mock Interview',
-        description: 'AI-powered mock interviews with real-time feedback.',
+      icon: <IconInterview />,
+      title: 'Mock Interview',
+      description: 'AI-powered mock interviews with real-time feedback.',
+      href: '/ai-interview',
     },
     {
-        icon: <IconMentor />,
-        title: 'AI Mentor',
-        description: '24/7 AI mentor support and personalized guidance.',
+      icon: <IconMentor />,
+      title: 'AI Mentor',
+      description: '24/7 AI mentor support and personalized guidance.',
+      href: '/coach',
     }
   ];
 
