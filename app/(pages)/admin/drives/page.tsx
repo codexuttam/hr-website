@@ -27,6 +27,8 @@ export default function AdminDrivesPage() {
 
     const fetchDrives = async (searchTerm: string = '') => {
         try {
+            console.log('Fetching drives...', { searchTerm });
+
             let query = supabase
                 .from('placement_drives')
                 .select('*')
@@ -43,7 +45,12 @@ export default function AdminDrivesPage() {
 
             const { data, error } = await query;
 
-            if (error) throw error;
+            console.log('Drives fetch result:', { data, error, count: data?.length });
+
+            if (error) {
+                console.error('Supabase error fetching drives:', error);
+                throw error;
+            }
             setDrives(data || []);
         } catch (error) {
             console.error('Error fetching drives:', error);

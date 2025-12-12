@@ -3,19 +3,17 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-// Validate environment variables
-if (!supabaseUrl) {
-  console.error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable');
-}
-if (!supabaseAnonKey) {
-  console.error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable');
-}
-
 // Log environment for debugging (only in development)
 if (process.env.NODE_ENV === 'development') {
+  // Validate environment variables
+  if (!supabaseUrl) {
+    console.error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable');
+  }
+  if (!supabaseAnonKey) {
+    console.error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable');
+  }
   console.log('Supabase Configuration:', {
-    url: supabaseUrl,
-    isLocal: supabaseUrl.includes('127.0.0.1') || supabaseUrl.includes('localhost'),
+    url: supabaseUrl ? supabaseUrl.substring(0, 30) + '...' : 'NOT SET',
     hasAnonKey: !!supabaseAnonKey
   });
 }

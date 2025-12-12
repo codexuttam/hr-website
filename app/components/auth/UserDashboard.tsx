@@ -41,6 +41,7 @@ const UserDashboard: React.FC = () => {
             { name: 'ATS Analysis', href: '/ats-tools', icon: '🎯' },
             { name: 'Interview Prep', href: '/interview', icon: '💬' },
             { name: 'Skill Assessment', href: '/quiz', icon: '🧠' },
+            { name: 'Skill Gap', href: '/skill-gap', icon: '📊' },
             { name: 'Placement Drives', href: '/drives', icon: '🚀' }
           ]
         };
