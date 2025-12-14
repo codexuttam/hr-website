@@ -51,6 +51,15 @@ export const createUser = async (userData: {
   password: string;
   role?: string;
 }): Promise<DatabaseResponse<User>> => {
+  // Password strength validation
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  if (!passwordRegex.test(userData.password)) {
+    return {
+      success: false,
+      error: 'Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.'
+    };
+  }
+
   const response = await fetch(API_ENDPOINTS.DATABASE.USERS, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

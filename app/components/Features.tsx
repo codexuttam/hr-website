@@ -41,7 +41,7 @@ const Features: React.FC = () => {
       icon: <IconPlacement />,
       title: 'Placement Preparation',
       description: 'Company-wise previous year questions, preparation kits and placement guidance.',
-      href: '/drives',
+      href: '/games',
     },
     {
       icon: <IconCode />,
@@ -65,7 +65,7 @@ const Features: React.FC = () => {
       icon: <IconInterview />,
       title: 'Mock Interview',
       description: 'AI-powered mock interviews with real-time feedback.',
-      href: '/ai-interview',
+      href: '/interview',
     },
     {
       icon: <IconMentor />,

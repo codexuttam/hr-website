@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaSignInAlt, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
@@ -11,6 +11,7 @@ export default function LoginPage() {
     const { login } = useAuth();
     const [role, setRole] = useState<'student' | 'admin'>('student');
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -31,7 +32,13 @@ export default function LoginPage() {
 
         try {
             // Use Supabase Auth via AuthContext
-            await login(formData.email, formData.password);
+            const success = await login(formData.email, formData.password);
+
+            if (!success) {
+                setError('Login failed. Please try again.');
+                setIsLoading(false);
+                return;
+            }
 
             // Optional: Webhook call for analytics/tracking (non-blocking)
             fetch('https://bitlanceai.app.n8n.cloud/webhook/eduai', {
@@ -47,6 +54,7 @@ export default function LoginPage() {
             }).catch(console.error);
 
             // Redirect handled by AuthContext or manual push
+            console.log('[Login Page] Redirecting to dashboard...');
             router.push('/dashboard');
         } catch (err: any) {
             setError(err.message || 'Login failed. Please check your credentials.');
@@ -120,14 +128,21 @@ export default function LoginPage() {
                             <FaLock />
                         </div>
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             name="password"
                             required
                             placeholder="Password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 text-white placeholder-gray-500 transition-all"
+                            className="w-full pl-10 pr-12 py-3 bg-black/20 border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 text-white placeholder-gray-500 transition-all"
                         />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white cursor-pointer z-10"
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
                     </div>
 
                     <div className="flex items-center justify-between text-sm">

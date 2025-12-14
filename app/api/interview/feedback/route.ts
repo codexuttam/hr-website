@@ -2,22 +2,155 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || '');
+// API Keys
+const openaiKey = process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+const geminiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || process.env.GOOGLE_AI_API_KEY;
+
+// Initialize Gemini as fallback
+const genAI = geminiKey ? new GoogleGenerativeAI(geminiKey) : null;
+
+// Helper function to call OpenAI
+async function callOpenAI(prompt: string): Promise<string> {
+    if (!openaiKey) throw new Error('OpenAI API key not configured');
+    
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openaiKey}`
+        },
+        body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.7,
+            max_tokens: 2000
+        })
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(`OpenAI API error: ${error.error?.message || response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+}
+
+// Helper function to call Gemini with model fallbacks
+async function callGemini(prompt: string): Promise<string> {
+    if (!genAI) throw new Error('Gemini API key not configured');
+    
+    // Try multiple models - each has separate quota
+    const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-pro'];
+    
+    for (const modelName of models) {
+        try {
+            console.log(`Trying Gemini model: ${modelName}`);
+            const model = genAI.getGenerativeModel({ model: modelName });
+            const result = await model.generateContent(prompt);
+            const text = result.response.text();
+            if (text) {
+                console.log(`Gemini model ${modelName} succeeded`);
+                return text;
+            }
+        } catch (error: any) {
+            console.warn(`Gemini model ${modelName} failed:`, error.message?.substring(0, 100));
+            // Continue to next model
+        }
+    }
+    
+    throw new Error('All Gemini models failed or quota exceeded');
+}
+
+// Generate AI response with OpenAI-first, Gemini fallback
+async function generateAIResponse(prompt: string): Promise<string> {
+    // Try OpenAI first
+    if (openaiKey) {
+        try {
+            console.log('Attempting OpenAI for interview feedback...');
+            const response = await callOpenAI(prompt);
+            console.log('OpenAI succeeded');
+            return response;
+        } catch (error) {
+            console.warn('OpenAI failed, falling back to Gemini:', error);
+        }
+    }
+
+    // Fallback to Gemini
+    if (geminiKey) {
+        try {
+            console.log('Attempting Gemini for interview feedback...');
+            const response = await callGemini(prompt);
+            console.log('Gemini succeeded');
+            return response;
+        } catch (error) {
+            console.error('Gemini also failed:', error);
+            throw error;
+        }
+    }
+
+    throw new Error('No AI service configured. Please set OPENAI_API_KEY or NEXT_PUBLIC_GOOGLE_AI_API_KEY');
+}
 
 export async function POST(req: Request) {
     try {
+        // Check if any API is configured
+        if (!openaiKey && !geminiKey) {
+            console.error('No AI API key is configured');
+            return NextResponse.json(
+                { error: "AI service is not configured. Please set OPENAI_API_KEY or NEXT_PUBLIC_GOOGLE_AI_API_KEY in environment." },
+                { status: 500 }
+            );
+        }
+
         const body = await req.json();
         const { transcript, eyeContact, config, duration, userId } = body;
 
+        console.log('Received interview feedback request:', { 
+            hasTranscript: !!transcript, 
+            transcriptLength: transcript?.length,
+            hasConfig: !!config,
+            userId,
+            duration,
+            hasOpenAI: !!openaiKey,
+            hasGemini: !!geminiKey
+        });
+
         if (!transcript || !config) {
             return NextResponse.json(
-                { error: "Missing required fields" },
+                { error: "Missing required fields: transcript and config are required" },
                 { status: 400 }
             );
         }
 
-        // Construct the prompt for Gemini
+        // Credit Check & Deduction (10 credits)
+        if (userId) {
+            const { data: userData, error: userError } = await supabaseAdmin
+                .from('users')
+                .select('credits')
+                .eq('user_id', userId)
+                .single();
+
+            if (!userError && userData) {
+                const currentCredits = userData.credits ?? 0;
+                if (currentCredits < 10) {
+                     return NextResponse.json(
+                        { error: 'Insufficient credits. You need 10 credits to process interview feedback.' },
+                        { status: 403 }
+                    );
+                }
+                
+                // Deduct credits
+                await supabaseAdmin
+                    .from('users')
+                    .update({ credits: currentCredits - 10 })
+                    .eq('user_id', userId);
+                
+                console.log(`Deducted 10 credits from user ${userId} for Interview Feedback. Remaining: ${currentCredits - 10}`);
+            }
+        }
+
+        // Construct the prompt
         const prompt = `
 You are an expert technical interviewer and soft skills coach.
 Analyze the following interview data for a ${config.role} position (${config.experience} level).
@@ -27,7 +160,7 @@ Context:
 - Experience Level: ${config.experience}
 - Tech Stack: ${config.techStack}
 - Duration: ${duration} seconds
-- Eye Contact Percentage: ${eyeContact.percentage.toFixed(1)}%
+- Eye Contact Percentage: ${eyeContact?.percentage?.toFixed(1) || 0}%
 
 Transcript:
 ${JSON.stringify(transcript, null, 2)}
@@ -51,11 +184,8 @@ Format the output as JSON with the following structure:
 }
 `;
 
-        // Generate content using Gemini
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-        const result = await model.generateContent(prompt);
-        const response = result.response;
-        const text = response.text();
+        // Generate content using OpenAI or Gemini
+        const text = await generateAIResponse(prompt);
 
         // Extract JSON from the response
         let feedbackData;
@@ -72,6 +202,10 @@ Format the output as JSON with the following structure:
         }
 
         // Save to Database
+        console.log('=== DATABASE SAVE SECTION ===');
+        console.log('userId provided:', userId);
+        console.log('Has service role key:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+        
         if (userId) {
             // 1. Log to ai_mentor_logs (keep existing logging)
             const { error: logError } = await supabaseAdmin
@@ -135,9 +269,16 @@ Format the output as JSON with the following structure:
                     .single();
 
                 if (interviewError) {
-                    console.error("Mock Interview save error details:", JSON.stringify(interviewError, null, 2));
+                    console.error("Mock Interview save error:", {
+                        code: interviewError.code,
+                        message: interviewError.message,
+                        details: interviewError.details,
+                        hint: interviewError.hint,
+                        hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+                        userId: userId
+                    });
                 } else {
-                    console.log("Successfully saved to mock_interviews", savedInterview);
+                    console.log("Successfully saved to mock_interviews, ID:", savedInterview?.id);
                     // Add ID to feedback data for frontend redirect
                     if (savedInterview) {
                         feedbackData.interviewId = savedInterview.id;
@@ -145,9 +286,14 @@ Format the output as JSON with the following structure:
                 }
             } catch (err) {
                 console.error("Error saving to mock_interviews:", err);
+                // Don't fail the request, just log the error
+                // Feedback was still generated successfully
             }
+        } else {
+            console.log("No userId provided, skipping database save");
         }
 
+        // Always return success if we got to this point - feedback was generated
         return NextResponse.json({
             success: true,
             feedback: feedbackData
@@ -155,8 +301,22 @@ Format the output as JSON with the following structure:
 
     } catch (error: any) {
         console.error("Feedback generation error:", error);
+        console.error("Error stack:", error.stack);
+        
+        // Provide more specific error messages
+        let errorMessage = "Failed to generate feedback";
+        if (error.message?.includes('API_KEY')) {
+            errorMessage = "AI service API key is invalid or missing";
+        } else if (error.message?.includes('quota')) {
+            errorMessage = "AI service quota exceeded. Please try again later.";
+        } else if (error.message?.includes('network')) {
+            errorMessage = "Network error connecting to AI service";
+        } else if (error.message) {
+            errorMessage = error.message;
+        }
+        
         return NextResponse.json(
-            { error: error.message || "Failed to generate feedback" },
+            { error: errorMessage, details: error.message },
             { status: 500 }
         );
     }

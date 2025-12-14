@@ -3,14 +3,16 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 import { FaPaperPlane, FaArrowLeft, FaFileUpload } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function ApplicationFormPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
+    const { user } = useAuth();
     const [loading, setLoading] = useState(false);
-    const [driveDescription, setDriveDescription] = useState<string>('');
+    const [driveDetails, setDriveDetails] = useState<{ description: string, company_name: string, role: string } | null>(null);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -34,13 +36,13 @@ export default function ApplicationFormPage({ params }: { params: Promise<{ id: 
             try {
                 const { data, error } = await supabase
                     .from('placement_drives')
-                    .select('description')
+                    .select('description, company_name, role')
                     .eq('id', id)
                     .single();
 
                 if (error) throw error;
                 if (data) {
-                    setDriveDescription(data.description);
+                    setDriveDetails(data);
                 }
             } catch (error) {
                 console.error('Error fetching drive details:', error);
@@ -67,8 +69,17 @@ export default function ApplicationFormPage({ params }: { params: Promise<{ id: 
             data.append('Email', formData.email);
             data.append('Phone', formData.phone);
             data.append('Years of experience', formData.experience);
-            if (driveDescription) {
-                data.append('Job Description', driveDescription);
+
+            // Internal IDs for backend processing
+            data.append('drive_id', id);
+            if (user?.user_id) {
+                data.append('user_id', String(user.user_id));
+            }
+
+            if (driveDetails) {
+                data.append('Job Description', driveDetails.description);
+                data.append('Company Name', driveDetails.company_name);
+                data.append('Role', driveDetails.role);
             }
 
             if (files.length > 0) {

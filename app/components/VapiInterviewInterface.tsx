@@ -231,20 +231,27 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
                 body: JSON.stringify(payload),
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                throw new Error('Failed to generate feedback');
+                console.error('API Error:', data);
+                throw new Error(data.error || data.details || 'Failed to generate feedback');
             }
 
-            const data = await response.json();
             console.log('Feedback generated successfully:', data);
 
             if (data.feedback && data.feedback.interviewId) {
                 router.push(`/interview/results/${data.feedback.interviewId}`);
+            } else if (data.feedback) {
+                // Feedback generated but not saved to DB - still show success
+                console.log('Feedback generated but no interviewId returned');
+                setError('Interview completed! Feedback was generated but could not be saved to history.');
             }
 
         } catch (error) {
             console.error('Error processing interview feedback:', error);
-            setError('Failed to save interview feedback. Please try again.');
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            setError(`Failed to save interview feedback: ${errorMessage}`);
         }
     };
 

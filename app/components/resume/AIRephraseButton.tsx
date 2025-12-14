@@ -7,11 +7,52 @@ interface AIRephraseButtonProps {
   onApply: (newText: string) => void;
 }
 
+// API Keys
+const openaiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+const geminiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY;
+
 const AIRephraseButton: React.FC<AIRephraseButtonProps> = ({ text, section, onApply }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Call OpenAI
+  const callOpenAI = async (prompt: string): Promise<string> => {
+    if (!openaiKey) throw new Error('OpenAI API key not configured');
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${openaiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.7,
+        max_tokens: 1000
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+  };
+
+  // Call Gemini
+  const callGemini = async (prompt: string): Promise<string> => {
+    if (!geminiKey) throw new Error('Gemini API key not configured');
+
+    const genAI = new GoogleGenerativeAI(geminiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const result = await model.generateContent(prompt);
+    return result.response.text();
+  };
 
   const generateSuggestions = async () => {
     if (!text || text.trim().length < 10) {
@@ -23,55 +64,44 @@ const AIRephraseButton: React.FC<AIRephraseButtonProps> = ({ text, section, onAp
     setError(null);
     setSuggestions([]);
 
-    try {
-      // Use Google Generative AI SDK
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || 'Api key not found';
-      
-      if (!apiKey || apiKey === 'your-api-key-here') {
-        throw new Error('Google AI API key not configured. Please add NEXT_PUBLIC_GOOGLE_AI_API_KEY to .env.local');
-      }
-
-      console.log('Using API key:', apiKey.substring(0, 10) + '...');
-      
-      const genAI = new GoogleGenerativeAI(apiKey);
-      
-      const prompt = `You are a professional resume writer. Rephrase the following ${section} section text to make it more professional, impactful, and ATS-friendly. Provide 3 different variations. Keep the same meaning but improve clarity, use action verbs, and quantify achievements where possible.
+    const prompt = `You are a professional resume writer. Rephrase the following ${section} section text to make it more professional, impactful, and ATS-friendly. Provide 3 different variations. Keep the same meaning but improve clarity, use action verbs, and quantify achievements where possible.
 
 Original text: "${text}"
 
 Provide 3 rephrased versions, each on a new line, numbered 1-3.`;
 
-      // Try multiple model versions
-      const models = ['gemini-2.5-flash'];
-      
+    try {
       let generatedText = '';
-      let lastError: Error | null = null;
 
-      for (const modelName of models) {
+      // Try OpenAI first
+      if (openaiKey) {
         try {
-          console.log('Trying model:', modelName);
-          const model = genAI.getGenerativeModel({ model: modelName });
-          
-          const result = await model.generateContent(prompt);
-          const response = await result.response;
-          generatedText = response.text();
-          
-          if (generatedText) {
-            console.log('Successfully used model:', modelName);
-            break;
-          }
+          console.log('Attempting OpenAI for AI Rephrase...');
+          generatedText = await callOpenAI(prompt);
+          console.log('OpenAI succeeded for AI Rephrase');
         } catch (err) {
-          lastError = err as Error;
-          console.log(`Model ${modelName} failed:`, err);
+          console.warn('OpenAI failed, falling back to Gemini:', err);
+        }
+      }
+
+      // Fallback to Gemini
+      if (!generatedText && geminiKey) {
+        try {
+          console.log('Attempting Gemini for AI Rephrase...');
+          generatedText = await callGemini(prompt);
+          console.log('Gemini succeeded for AI Rephrase');
+        } catch (err) {
+          console.error('Gemini also failed:', err);
+          throw err;
         }
       }
 
       if (!generatedText) {
-        throw lastError || new Error('All model attempts failed');
+        throw new Error('No AI service available. Please configure NEXT_PUBLIC_OPENAI_API_KEY or NEXT_PUBLIC_GOOGLE_AI_API_KEY');
       }
 
       console.log('Generated text:', generatedText);
-      
+
       // Parse the numbered suggestions
       const lines = generatedText.split('\n').filter((line: string) => line.trim());
       const parsedSuggestions = lines
@@ -86,12 +116,12 @@ Provide 3 rephrased versions, each on a new line, numbered 1-3.`;
       } else {
         setSuggestions(parsedSuggestions.slice(0, 3));
       }
-      
+
       setShowSuggestions(true);
     } catch (err) {
       console.error('AI Rephrase Error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to generate suggestions';
-      setError(`${errorMessage}. Please check your API key in .env.local`);
+      setError(`${errorMessage}. Please check your API keys in .env.local`);
     } finally {
       setIsLoading(false);
     }
@@ -141,7 +171,7 @@ Provide 3 rephrased versions, each on a new line, numbered 1-3.`;
               ✕
             </button>
           </div>
-          
+
           <div className="space-y-3">
             {suggestions.map((suggestion, index) => (
               <div

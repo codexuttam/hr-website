@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaArrowRight } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaArrowRight, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { supabase } from '@/lib/supabase';
 
 export default function RegisterPage() {
@@ -17,6 +17,8 @@ export default function RegisterPage() {
         confirmPassword: ''
     });
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -32,6 +34,13 @@ export default function RegisterPage() {
 
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
+            setIsLoading(false);
+            return;
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        if (!passwordRegex.test(formData.password)) {
+            setError('Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.');
             setIsLoading(false);
             return;
         }
@@ -171,14 +180,24 @@ export default function RegisterPage() {
                             <FaLock />
                         </div>
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             name="password"
                             required
                             placeholder="Password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 text-white placeholder-gray-500 transition-all"
+                            className="w-full pl-10 pr-12 py-3 bg-black/20 border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 text-white placeholder-gray-500 transition-all"
                         />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white cursor-pointer z-10"
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                        <p className="text-xs text-gray-400 mt-1 pl-1">
+                            Must contain: 8+ chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+                        </p>
                     </div>
 
                     <div className="relative group">
@@ -186,14 +205,21 @@ export default function RegisterPage() {
                             <FaLock />
                         </div>
                         <input
-                            type="password"
+                            type={showConfirmPassword ? "text" : "password"}
                             name="confirmPassword"
                             required
                             placeholder="Confirm Password"
                             value={formData.confirmPassword}
                             onChange={handleChange}
-                            className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 text-white placeholder-gray-500 transition-all"
+                            className="w-full pl-10 pr-12 py-3 bg-black/20 border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 text-white placeholder-gray-500 transition-all"
                         />
+                        <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white cursor-pointer z-10"
+                        >
+                            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
                     </div>
 
                     <button

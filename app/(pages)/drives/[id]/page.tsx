@@ -172,13 +172,23 @@ export default function DriveDetailsPage({ params }: { params: Promise<{ id: str
                                             onClick={async () => {
                                                 if (confirm('Are you sure you want to withdraw your application? This action cannot be undone.')) {
                                                     try {
-                                                        const { error } = await supabase
-                                                            .from('drive_applications')
-                                                            .delete()
-                                                            .eq('drive_id', id)
-                                                            .eq('user_id', user?.user_id);
+                                                        // Use server-side API to bypass RLS issues
+                                                        const response = await fetch('/api/deregister-drive', {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                'Content-Type': 'application/json',
+                                                            },
+                                                            body: JSON.stringify({
+                                                                drive_id: id,
+                                                                user_id: user?.user_id,
+                                                            }),
+                                                        });
 
-                                                        if (error) throw error;
+                                                        const result = await response.json();
+
+                                                        if (!response.ok) {
+                                                            throw new Error(result.error || 'Failed to deregister');
+                                                        }
 
                                                         setHasApplied(false);
                                                         alert('Successfully deregistered from this drive.');
@@ -203,24 +213,34 @@ export default function DriveDetailsPage({ params }: { params: Promise<{ id: str
 
                                         setApplying(true);
                                         try {
-                                            const { error } = await supabase
-                                                .from('drive_applications')
-                                                .insert([
-                                                    {
-                                                        drive_id: id,
-                                                        user_id: user.user_id,
-                                                        resume_link: '', // Will be uploaded later
-                                                        cover_letter: '',
-                                                        status: drive.application_link ? 'applied_externally' : 'pending'
-                                                    }
-                                                ]);
+                                            // Use server-side API to bypass RLS issues
+                                            const response = await fetch('/api/register-drive', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({
+                                                    drive_id: id,
+                                                    user_id: user.user_id,
+                                                    status: drive.application_link ? 'applied_externally' : 'pending'
+                                                }),
+                                            });
 
-                                            if (error) throw error;
+                                            const result = await response.json();
+
+                                            if (!response.ok) {
+                                                if (result.alreadyRegistered) {
+                                                    setHasApplied(true);
+                                                    router.push(`/drives/${id}/application-form`);
+                                                    return;
+                                                }
+                                                throw new Error(result.error || 'Failed to register');
+                                            }
 
                                             setHasApplied(true);
 
                                             if (drive.application_link) {
-                                                alert('Registration successful! Redirecting to company portal...');
+                                                alert('Registration successful! Redirecting to application form...');
                                                 router.push(`/drives/${id}/application-form`);
 
                                             } else {
@@ -237,7 +257,7 @@ export default function DriveDetailsPage({ params }: { params: Promise<{ id: str
                                         {drive.application_link && (
                                             <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-4 text-sm text-blue-800 dark:text-blue-200">
                                                 <p className="font-medium mb-1">External Application Required</p>
-                                                <p>Register here to track your application, then you will be redirected to the company's portal.</p>
+                                                <p>Register here to track your application, then you will be redirected to the Form.</p>
                                             </div>
                                         )}
 

@@ -219,8 +219,8 @@ const ATSAnalyzer: React.FC = () => {
     try {
       const pdfjsLib = await import('pdfjs-dist');
 
-      // Use a simpler worker configuration
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
+      // For pdfjs-dist v5.x, use unpkg which has correct file structure
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
       const arrayBuffer = await file.arrayBuffer();
 
@@ -228,7 +228,6 @@ const ATSAnalyzer: React.FC = () => {
       const pdf = await pdfjsLib.getDocument({
         data: arrayBuffer,
         verbosity: 0,
-        // Minimal options to avoid compatibility issues
       }).promise;
 
       let fullText = '';
@@ -244,7 +243,7 @@ const ATSAnalyzer: React.FC = () => {
           if (textContent?.items) {
             const pageText = textContent.items
               .map((item: any) => item?.str || '')
-              .filter(text => text.trim())
+              .filter((text: string) => text.trim())
               .join(' ');
 
             if (pageText.trim()) {
@@ -296,9 +295,10 @@ const ATSAnalyzer: React.FC = () => {
       const pdfjsLib = await import('pdfjs-dist');
       console.log('PDF.js library loaded, version:', pdfjsLib.version);
 
-      // Set worker source with better error handling
+      // Set worker source for pdfjs-dist v5.x
       if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-        const workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+        // Use unpkg which has correct file structure for v5.x
+        const workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
         console.log('Setting PDF.js worker source:', workerSrc);
         pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
       }
@@ -310,14 +310,15 @@ const ATSAnalyzer: React.FC = () => {
       console.log('Loading PDF document...');
       const loadingTask = pdfjsLib.getDocument({
         data: arrayBuffer,
-        // Add options to handle various PDF issues
-        verbosity: 0, // Reduce console noise
-        disableFontFace: true, // Avoid font loading issues
-        disableRange: true, // Load entire PDF at once
-        disableStream: true, // Disable streaming
+        verbosity: 0,
       });
 
-      const pdf = await loadingTask.promise;
+      // Add timeout for PDF loading
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('PDF loading timeout')), 30000);
+      });
+
+      const pdf = await Promise.race([loadingTask.promise, timeoutPromise]);
       console.log('PDF loaded successfully, pages:', pdf.numPages);
 
       let fullText = '';
@@ -337,7 +338,7 @@ const ATSAnalyzer: React.FC = () => {
                 if (item && typeof item.text === 'string') return item.text;
                 return '';
               })
-              .filter(text => text.trim().length > 0)
+              .filter((text: string) => text.trim().length > 0)
               .join(' ');
 
             if (pageText.trim()) {
@@ -374,6 +375,8 @@ const ATSAnalyzer: React.FC = () => {
           throw error; // Re-throw our custom message
         } else if (error.message.includes('Cannot read properties')) {
           throw new Error('PDF processing library failed to load. Please refresh the page and try again.');
+        } else if (error.message.includes('timeout')) {
+          throw new Error('PDF processing timed out. The file might be too large or complex. Please try a smaller file or paste the text manually.');
         } else if (error.message.includes('Loading')) {
           throw new Error('Failed to load PDF. The file might be corrupted or password-protected.');
         } else if (error.message.includes('Worker')) {

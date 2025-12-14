@@ -40,9 +40,12 @@ export default function InterviewResultPage({ params }: { params: Promise<{ id: 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (id) {
-            fetchInterview();
+        // Guard against undefined or invalid IDs
+        if (!id || id === 'undefined' || id === 'null') {
+            setLoading(false);
+            return;
         }
+        fetchInterview();
     }, [id]);
 
     const fetchInterview = async () => {

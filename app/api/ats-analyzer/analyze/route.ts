@@ -2,9 +2,61 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@supabase/supabase-js';
 
+// API Keys
+const openaiKey = process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+const geminiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || process.env.GOOGLE_AI_API_KEY;
+const genAI = geminiKey ? new GoogleGenerativeAI(geminiKey) : null;
+
 // Initialize Supabase admin client for credit updates
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+// Helper function to call OpenAI
+async function callOpenAI(prompt: string): Promise<string> {
+    if (!openaiKey) throw new Error('OpenAI API key not configured');
+    
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openaiKey}`
+        },
+        body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.5,
+            max_tokens: 1500
+        })
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(`OpenAI API error: ${error.error?.message || response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+}
+
+// Helper function to call Gemini
+async function callGemini(prompt: string): Promise<string | null> {
+    if (!genAI) return null;
+    
+    const models = ['gemini-2.0-flash', 'gemini-1.5-pro-latest', 'gemini-pro'];
+    
+    for (const modelName of models) {
+        try {
+            console.log('Trying Gemini model:', modelName);
+            const model = genAI.getGenerativeModel({ model: modelName });
+            const result = await model.generateContent(prompt);
+            const text = result.response.text();
+            if (text) return text;
+        } catch (error) {
+            console.log(`Gemini model ${modelName} failed:`, error);
+        }
+    }
+    return null;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,9 +78,9 @@ export async function POST(request: NextRequest) {
 
         if (!userError && userData) {
           const currentCredits = userData.credits ?? 0;
-          if (currentCredits < 5) {
+          if (currentCredits < 10) {
              return NextResponse.json(
-              { error: 'Insufficient credits. You need 5 credits to analyze a resume.' },
+              { error: 'Insufficient credits. You need 10 credits to analyze a resume.' },
               { status: 403 }
             );
           }
@@ -36,7 +88,7 @@ export async function POST(request: NextRequest) {
           // Deduct credits
           await supabase
             .from('users')
-            .update({ credits: currentCredits - 1 })
+            .update({ credits: currentCredits - 10 })
             .eq('user_id', userId);
             
           console.log(`Deducted 1 credits from user ${userId}. Remaining: ${currentCredits - 1}`);
@@ -51,22 +103,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Try AI analysis first
-    try {
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || 'AIzaSyCq0PKLdwdR7E-2BWDmBjCV_Svfb2yZKhI';
-      
-      if (apiKey && apiKey !== 'your-api-key-here') {
-        console.log('Using API key:', apiKey.substring(0, 10) + '...');
-        
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const models = ['gemini-2.5-flash', 'gemini-1.5-pro-latest', 'gemini-pro'];
-        
-        for (const modelName of models) {
-          try {
-            console.log('Trying model:', modelName);
-            const model = genAI.getGenerativeModel({ model: modelName });
-
-            const prompt = `You are an ATS analyzer. Analyze this resume against the job description.
+    const prompt = `You are an ATS analyzer. Analyze this resume against the job description.
 
 RESUME: ${resumeText.substring(0, 2000)}
 JOB: ${jobDescription.substring(0, 2000)}
@@ -81,50 +118,58 @@ Return ONLY a valid JSON object in this exact format:
 
 No additional text, explanations, or markdown formatting. Just the JSON object.`;
 
-            const result = await model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text();
-            
-            if (text) {
-              console.log('AI response received:', text.substring(0, 200) + '...');
-              try {
-                // Clean the response - remove any markdown formatting or extra text
-                let cleanText = text.trim();
-                if (cleanText.startsWith('```json')) {
-                  cleanText = cleanText.replace(/```json\n?/, '').replace(/\n?```$/, '');
-                }
-                if (cleanText.startsWith('```')) {
-                  cleanText = cleanText.replace(/```\n?/, '').replace(/\n?```$/, '');
-                }
-                
-                const analysisResult = JSON.parse(cleanText);
-                return NextResponse.json({
-                  success: true,
-                  atsResult: {
-                    ...analysisResult,
-                    analysis_data: {
-                      keyword_density: 70,
-                      readability_score: 85,
-                      format_score: 75,
-                      full_analysis: text
-                    }
-                  },
-                  saveToDatabase: true // Flag to indicate this should be saved
-                });
-              } catch (parseError) {
-                console.log('JSON parse failed:', parseError);
-                console.log('Raw AI response:', text);
-                console.log('Using fallback keyword analysis');
-                break;
-              }
-            }
-          } catch (modelError) {
-            console.log(`Model ${modelName} failed:`, modelError);
-          }
-        }
+    let aiResponse: string | null = null;
+
+    // Try OpenAI first
+    if (openaiKey) {
+      try {
+        console.log('Attempting OpenAI for ATS analysis...');
+        aiResponse = await callOpenAI(prompt);
+        console.log('OpenAI succeeded for ATS analysis');
+      } catch (error) {
+        console.warn('OpenAI failed for ATS, falling back to Gemini:', error);
       }
-    } catch (aiError) {
-      console.log('AI analysis failed:', aiError);
+    }
+
+    // Fallback to Gemini
+    if (!aiResponse && geminiKey) {
+      try {
+        console.log('Attempting Gemini for ATS analysis...');
+        aiResponse = await callGemini(prompt);
+        if (aiResponse) console.log('Gemini succeeded for ATS analysis');
+      } catch (error) {
+        console.warn('Gemini also failed for ATS:', error);
+      }
+    }
+
+    // Parse AI response if available
+    if (aiResponse) {
+      try {
+        let cleanText = aiResponse.trim();
+        if (cleanText.startsWith('```json')) {
+          cleanText = cleanText.replace(/```json\n?/, '').replace(/\n?```$/, '');
+        }
+        if (cleanText.startsWith('```')) {
+          cleanText = cleanText.replace(/```\n?/, '').replace(/\n?```$/, '');
+        }
+        
+        const analysisResult = JSON.parse(cleanText);
+        return NextResponse.json({
+          success: true,
+          atsResult: {
+            ...analysisResult,
+            analysis_data: {
+              keyword_density: 70,
+              readability_score: 85,
+              format_score: 75,
+              full_analysis: aiResponse
+            }
+          },
+          saveToDatabase: true
+        });
+      } catch (parseError) {
+        console.log('JSON parse failed, using fallback:', parseError);
+      }
     }
 
     // Fallback analysis

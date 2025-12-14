@@ -204,9 +204,9 @@ const Header: React.FC = () => {
               )}
 
               {isAuthenticated && (
-                <div className="hidden lg:flex items-center px-3 py-1 bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/30 dark:to-yellow-800/20 border border-yellow-200 dark:border-yellow-700/50 rounded-full">
-                  <span className="text-lg mr-1.5">🪙</span>
-                  <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-400">
+                <div className="hidden lg:flex items-center px-3 py-1 bg-gradient-to-r from-green-100 to-green-50 dark:from-green-900/30 dark:to-green-800/20 border border-green-200 dark:border-green-700/50 rounded-full">
+                  <span className="text-sm mr-1.5">Credits Available: </span>
+                  <span className="text-sm font-semibold text-green-700 dark:text-green-400">
                     {user?.credits !== undefined ? user.credits : 0}
                   </span>
                 </div>

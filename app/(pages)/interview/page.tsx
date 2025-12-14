@@ -19,7 +19,7 @@ const InterviewPage: React.FC = () => {
     };
 
     const handleExit = () => {
-        router.push('/');
+        router.push('/dashboard');
     };
 
     if (config) {

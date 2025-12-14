@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const Mentor: React.FC = () => {
   return (
@@ -13,25 +14,25 @@ const Mentor: React.FC = () => {
               Get 24/7 personalized guidance, career advice, and academic support. Your AI mentor is always ready to help with study planning, interview preparation, and career decisions.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-start gap-4">
-              <a
-                href="#"
+              <Link
+                href="/coach"
                 className="w-full sm:w-auto inline-block bg-indigo-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105"
               >
                 Start Chatting
-              </a>
-              <a
+              </Link>
+              <Link
                 href="#"
                 className="w-full sm:w-auto inline-block bg-transparent text-indigo-600 dark:text-indigo-400 font-semibold py-3 px-8 rounded-lg hover:text-indigo-700 dark:hover:text-indigo-300 transition-all duration-300"
               >
                 Learn More
-              </a>
+              </Link>
             </div>
           </div>
           <div className="lg:mt-0">
-            <img 
-              className="rounded-xl shadow-2xl object-cover w-full h-full" 
-              src="https://picsum.photos/seed/edumentor/600/400" 
-              alt="AI Mentor interacting with a student" 
+            <img
+              className="rounded-xl shadow-2xl object-cover w-full h-full"
+              src="https://aiwebix.com/assets/img/core-img/ai_mentor.jpg"
+              alt="AI Mentor interacting with a student"
             />
           </div>
         </div>

@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from 'react';
 import SkillForm from './SkillForm';
 import ResultView from './ResultView';

@@ -23,7 +23,7 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -64,7 +64,38 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({
     }
   };
 
+  // Helper to deduct credits
+  const deductCredits = async () => {
+    if (!user) return true;
+    try {
+      const res = await fetch('/api/credits/deduct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.user_id, amount: 10, action: 'resume_download' })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Insufficient credits');
+        return false;
+      }
+
+      // Update UI credits
+      await refreshUser();
+
+      return true;
+    } catch (err) {
+      console.error('Credit error:', err);
+      alert('Failed to check credits');
+      return false;
+    }
+  };
+
+  // Hybrid PDF - Visual design with invisible searchable text layer (works with ATS)
   const handleDownloadPDF = async () => {
+    // Check credits first
+    const hasCredits = await deductCredits();
+    if (!hasCredits) return;
+
     setIsDownloading(true);
     setIsOpen(false);
 
@@ -82,103 +113,141 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({
         return;
       }
 
-      // Temporarily hide borders and shadows for PDF
-      const resumeContent = element.querySelector('.right-content') as HTMLElement;
-      const originalBoxShadow = resumeContent?.style.boxShadow || '';
-      const originalBorder = resumeContent?.style.border || '';
+      console.log('Generating hybrid PDF (visual + searchable text)...');
 
-      if (resumeContent) {
-        resumeContent.style.boxShadow = 'none';
-        resumeContent.style.border = 'none';
-      }
+      // Clone the element to avoid modifying the original
+      const clonedElement = element.cloneNode(true) as HTMLElement;
 
-      console.log('Getting resume HTML...');
-      const html = element.outerHTML;
-
-      // Restore original styles
-      if (resumeContent) {
-        resumeContent.style.boxShadow = originalBoxShadow;
-        resumeContent.style.border = originalBorder;
-      }
-
-      // Get all stylesheets
-      const styles = Array.from(document.styleSheets)
-        .map(styleSheet => {
-          try {
-            return Array.from(styleSheet.cssRules)
-              .map(rule => rule.cssText)
-              .join('\n');
-          } catch (e) {
-            return '';
-          }
-        })
-        .join('\n');
-
-      // Remove lab() color functions from styles (not supported by html2canvas)
-      const cleanedStyles = styles.replace(/lab\([^)]+\)/g, '#000000');
-
-      // Create complete HTML document
-      const completeHTML = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="UTF-8">
-            <style>
-              ${cleanedStyles}
-              body { margin: 0; padding: 0; }
-              #resume-preview { background: white !important; }
-              .right-content { box-shadow: none !important; border: none !important; }
-              * { color: #000000 !important; border-color: #000000 !important; }
-            </style>
-          </head>
-          <body>
-            ${html}
-          </body>
-        </html>
-      `;
-
-      console.log('Generating PDF using html2canvas and jsPDF...');
-
-      // Create a temporary container for rendering
+      // Create a temporary container
       const tempContainer = document.createElement('div');
-      tempContainer.innerHTML = completeHTML;
       tempContainer.style.position = 'absolute';
       tempContainer.style.left = '-9999px';
-      tempContainer.style.width = '850px';
+      tempContainer.style.top = '0';
+      tempContainer.style.width = element.offsetWidth + 'px';
+      tempContainer.style.background = '#ffffff';
+      tempContainer.appendChild(clonedElement);
       document.body.appendChild(tempContainer);
 
-      try {
-        // Wait for fonts and images to load
-        await new Promise(resolve => setTimeout(resolve, 100));
+      // Function to inline all computed styles and fix lab() colors
+      const inlineStyles = (el: HTMLElement) => {
+        const computedStyle = window.getComputedStyle(el);
+        const importantStyles = [
+          'color', 'background-color', 'background', 'border-color',
+          'border-top-color', 'border-bottom-color', 'border-left-color', 'border-right-color',
+          'font-family', 'font-size', 'font-weight', 'line-height', 'text-align',
+          'padding', 'margin', 'width', 'height', 'display', 'flex-direction',
+          'justify-content', 'align-items', 'gap', 'border-radius', 'box-shadow'
+        ];
 
-        // Use html2canvas to capture the content
-        const canvas = await html2canvas(tempContainer, {
-          scale: 2,
+        importantStyles.forEach(prop => {
+          let value = computedStyle.getPropertyValue(prop);
+          if (value && value.includes('lab(')) {
+            value = prop === 'color' ? '#000000' : prop.includes('background') ? '#ffffff' : '#cccccc';
+          }
+          if (value && value.includes('oklch(')) {
+            value = prop === 'color' ? '#000000' : prop.includes('background') ? '#ffffff' : '#cccccc';
+          }
+          el.style.setProperty(prop, value, 'important');
+        });
+        el.style.setProperty('box-shadow', 'none', 'important');
+        Array.from(el.children).forEach(child => {
+          if (child instanceof HTMLElement) inlineStyles(child);
+        });
+      };
+
+      inlineStyles(clonedElement);
+
+      try {
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // Capture visual design as image
+        const canvas = await html2canvas(clonedElement, {
+          scale: 1.5,
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
           allowTaint: true,
-          foreignObjectRendering: false
+          foreignObjectRendering: false,
+          removeContainer: false
         });
 
-        // Create PDF with jsPDF
-        const imgData = canvas.toDataURL('image/png');
+        const imgData = canvas.toDataURL('image/jpeg', 0.75);
         const pdf = new jsPDF({
           orientation: 'portrait',
           unit: 'mm',
-          format: 'a4'
+          format: 'a4',
+          compress: true
         });
 
-        const imgWidth = 210; // A4 width in mm
+        const imgWidth = 210;
+        const pageHeight = 297;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        // Add image layer first
+        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight, undefined, 'MEDIUM');
 
-        // Download the PDF
+        // Now add INVISIBLE text layer for ATS parsing
+        // This text will be searchable but not visible
+        pdf.setTextColor(255, 255, 255); // White text (invisible on white background)
+        pdf.setFontSize(1); // Tiny font
+
+        const margin = 10;
+        let yPos = margin;
+
+        // Helper to add invisible text
+        const addInvisibleText = (text: string) => {
+          if (!text || text.trim().length === 0) return;
+          const lines = pdf.splitTextToSize(text, imgWidth - (margin * 2));
+          lines.forEach((line: string) => {
+            if (yPos > pageHeight - margin) {
+              // Text continues on visual but we keep it on first page for ATS
+              yPos = margin;
+            }
+            pdf.text(line, margin, yPos);
+            yPos += 0.5;
+          });
+        };
+
+        // Add all resume content as invisible searchable text
+        if (data.contact?.name) addInvisibleText(data.contact.name);
+        if (data.contact?.email) addInvisibleText(data.contact.email);
+        if (data.contact?.phone) addInvisibleText(data.contact.phone);
+        if (data.contact?.address) addInvisibleText(data.contact.address);
+        if (data.contact?.linkedin) addInvisibleText(data.contact.linkedin);
+        if (data.contact?.github) addInvisibleText(data.contact.github);
+        if (data.objective) addInvisibleText(data.objective);
+        if (data.skills) addInvisibleText(data.skills.join(' '));
+
+        data.experience?.forEach((exp: any) => {
+          addInvisibleText(`${exp.position || ''} ${exp.company || ''} ${exp.year || ''} ${exp.description || ''}`);
+        });
+
+        data.education?.forEach((edu: any) => {
+          addInvisibleText(`${edu.course || ''} ${edu.institution || ''} ${edu.year || ''} ${edu.description || ''}`);
+        });
+
+        data.projects?.forEach((proj: any) => {
+          addInvisibleText(`${proj.title || ''} ${proj.description || ''} ${proj.technologies || ''}`);
+        });
+
+        data.certifications?.forEach((cert: any) => {
+          addInvisibleText(`${cert.course || ''} ${cert.institution || ''} ${cert.year || ''}`);
+        });
+
+        // Handle multi-page if image is larger than one page
+        let heightLeft = imgHeight - pageHeight;
+        let position = -pageHeight;
+
+        while (heightLeft > 0) {
+          pdf.addPage();
+          pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'MEDIUM');
+          heightLeft -= pageHeight;
+          position -= pageHeight;
+        }
+
         pdf.save(`${data.contact?.name?.replace(/\s+/g, '_') || 'resume'}.pdf`);
-        console.log('PDF downloaded successfully');
+        console.log('Hybrid PDF downloaded successfully');
       } finally {
-        // Clean up
         document.body.removeChild(tempContainer);
       }
     } catch (error) {
@@ -189,7 +258,13 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({
     }
   };
 
+
+
   const handleDownloadDOC = async () => {
+    // Check credits first
+    const hasCredits = await deductCredits();
+    if (!hasCredits) return;
+
     setIsDownloading(true);
     setIsOpen(false);
 
@@ -356,15 +431,33 @@ const DownloadDropdown: React.FC<DownloadDropdownProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] overflow-hidden z-[100] min-w-[200px] animate-slideDown">
+        <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] overflow-hidden z-[100] min-w-[260px] animate-slideDown">
           <button
-            className="block w-full px-5 py-3 text-left bg-white border-none text-[15px] font-medium text-gray-800 cursor-pointer transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed border-b border-gray-200"
+            className="block w-full px-5 py-3 text-left bg-white border-none cursor-pointer transition-colors duration-200 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed border-b border-gray-200"
             onClick={handleDownloadPDF}
             disabled={isDownloading}
           >
-            📄 Download as PDF
+            <div className="flex items-center gap-2">
+              <span className="text-lg">📄</span>
+              <div>
+                <div className="text-[15px] font-semibold text-blue-700">Download PDF</div>
+                <div className="text-[11px] text-gray-500">Visual design + ATS compatible</div>
+              </div>
+            </div>
           </button>
-
+          <button
+            className="block w-full px-5 py-3 text-left bg-white border-none cursor-pointer transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handleDownloadDOC}
+            disabled={isDownloading}
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-lg">📝</span>
+              <div>
+                <div className="text-[15px] font-semibold text-gray-700">Download DOC</div>
+                <div className="text-[11px] text-gray-500">Editable Word document</div>
+              </div>
+            </div>
+          </button>
         </div>
       )}
     </div>

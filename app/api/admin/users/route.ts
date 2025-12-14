@@ -23,6 +23,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
+    // Password strength validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+        return NextResponse.json({ 
+            error: 'Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.' 
+        }, { status: 400 });
+    }
+
     // CREATE USER in Supabase Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,

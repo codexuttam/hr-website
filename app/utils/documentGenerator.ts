@@ -12,9 +12,9 @@ export const generatePDF = async (elementId: string, filename: string = 'resume'
       throw new Error('Element not found');
     }
 
-    // Create canvas from HTML element
+    // Create canvas from HTML element - reduced scale for smaller file size
     const canvas = await html2canvas(element, {
-      scale: 2,
+      scale: 1.5, // Reduced from 2 for smaller file size
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
@@ -22,13 +22,15 @@ export const generatePDF = async (elementId: string, filename: string = 'resume'
       height: element.scrollHeight,
     });
 
-    const imgData = canvas.toDataURL('image/png');
+    // Use JPEG instead of PNG for smaller file size
+    const imgData = canvas.toDataURL('image/jpeg', 0.85);
     
-    // Create PDF
+    // Create PDF with compression enabled
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
       format: 'a4',
+      compress: true
     });
 
     const imgWidth = 210; // A4 width in mm
@@ -37,15 +39,15 @@ export const generatePDF = async (elementId: string, filename: string = 'resume'
     let heightLeft = imgHeight;
     let position = 0;
 
-    // Add first page
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    // Add first page with JPEG compression
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'MEDIUM');
     heightLeft -= pageHeight;
 
     // Add additional pages if needed
     while (heightLeft >= 0) {
       position = heightLeft - imgHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'MEDIUM');
       heightLeft -= pageHeight;
     }
 

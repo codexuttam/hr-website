@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '../../contexts/AuthContext';
 
-const publicPaths = ['/login', '/register', '/acknowledgment'];
+const publicPaths = ['/', '/login', '/register', '/acknowledgment'];
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
     const { user, loading, isAuthenticated } = useAuth();

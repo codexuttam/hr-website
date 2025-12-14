@@ -59,7 +59,7 @@ const UserProfile: React.FC = () => {
               </div>
               <div className="overflow-hidden">
                 <h3 className="font-medium text-gray-900 dark:text-white truncate">{user.name}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                {/* <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{user.email}</p> */}
               </div>
             </div>
             <div className="mt-2">
