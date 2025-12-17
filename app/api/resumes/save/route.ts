@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '../../../lib/supabase';
+import { getAuthenticatedUser } from '@/backend/auth/getAuthenticatedUser';
 
 export async function POST(request: NextRequest) {
+  const { user, supabase } = await getAuthenticatedUser();
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { 
@@ -130,6 +136,12 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const { user, supabase } = await getAuthenticatedUser();
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { 

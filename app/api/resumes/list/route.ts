@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '../../../lib/supabase';
+import { getAuthenticatedUser } from '@/backend/auth/getAuthenticatedUser';
 
 export async function GET(request: NextRequest) {
+  const { user, supabase } = await getAuthenticatedUser();
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');

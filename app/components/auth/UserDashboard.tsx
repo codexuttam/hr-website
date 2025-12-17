@@ -2,15 +2,31 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext'; // Keeping for logout/context usage if needed
 import RoleBadge from '../ui/RoleBadge';
 import { UserRole } from '../../contexts/AuthContext';
 import AssignedQuizzes from '../dashboard/AssignedQuizzes';
 import InterviewHistory from '../dashboard/InterviewHistory';
-import { supabase } from '@/lib/supabase';
 
-const UserDashboard: React.FC = () => {
-  const { user } = useAuth();
+interface DashboardStats {
+  resumes: number;
+  skills: number;
+  interviews: number;
+}
+
+interface UserDashboardProps {
+  initialUser: any; // Using any for compatibility with different user types, or define specific type
+  initialStats: DashboardStats;
+}
+
+const UserDashboard: React.FC<UserDashboardProps> = ({ initialUser, initialStats }) => {
+  const { user: contextUser } = useAuth();
+
+  // Prefer server-side user, fallback to context
+  const user = initialUser || contextUser;
+
+  // Use props for stats directly
+  const stats = initialStats;
 
   if (!user) {
     return (
@@ -107,19 +123,24 @@ const UserDashboard: React.FC = () => {
           <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
             Quick Stats
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[
-              { label: user.role === 'student' ? 'Resumes Created' : 'Users Managed' },
-              { label: user.role === 'student' ? 'Skills Assessed' : 'System Reports' },
-              { label: user.role === 'student' ? 'Interview Preps' : 'Platform Updates' },
-            ].map((item, i) => (
+              { label: 'Resumes Created', value: stats.resumes, show: user.role === 'student' },
+              { label: 'Skills Assessed', value: stats.skills, show: user.role === 'student' },
+              { label: 'Interview Preps', value: stats.interviews, show: user.role === 'student' },
+              // Admin placeholders
+              { label: 'Users Managed', value: 0, show: user.role === 'admin' },
+              { label: 'System Reports', value: 0, show: user.role === 'admin' },
+              { label: 'Platform Updates', value: 0, show: user.role === 'admin' },
+            ].filter(item => item.show).map((item, i) => (
               <div key={i} className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">0</div>
+                <div className="text-2xl font-bold text-blue-600">{item.value}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">
                   {item.label}
                 </div>
               </div>
             ))}
+            {/* Empty placeholder if needed */}
           </div>
         </div>
 

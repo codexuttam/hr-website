@@ -35,7 +35,7 @@ export default function AdminDashboardHub() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
           {/* Card 1: AI Generator */}
-          <Link href="/quiz/admin/ai-generator" className="group relative">
+          <Link href="/admin/quiz/ai-generator" className="group relative">
             <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
             <div className="relative h-full bg-slate-900 border border-slate-800 hover:border-teal-500/50 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-teal-500/10 flex flex-col">
               <div className="w-14 h-14 bg-teal-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -54,7 +54,7 @@ export default function AdminDashboardHub() {
           </Link>
 
           {/* Card 2: Manual Creation */}
-          <Link href="/quiz/admin/manual" className="group relative">
+          <Link href="/admin/quiz/manual" className="group relative">
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
             <div className="relative h-full bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10 flex flex-col">
               <div className="w-14 h-14 bg-indigo-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -73,7 +73,7 @@ export default function AdminDashboardHub() {
           </Link>
 
           {/* Card 3: Manage & Analytics */}
-          <Link href="/quiz/admin/manage" className="group relative">
+          <Link href="/admin/quiz/manage" className="group relative">
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
             <div className="relative h-full bg-slate-900 border border-slate-800 hover:border-amber-500/50 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col">
               <div className="w-14 h-14 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">

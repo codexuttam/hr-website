@@ -8,10 +8,10 @@ export default function QuizAdminHeader() {
     const pathname = usePathname();
 
     const navItems = [
-        { name: "Overview", path: "/quiz/admin", icon: FaThLarge },
-        { name: "AI Generator", path: "/quiz/admin/ai-generator", icon: FaMagic },
-        { name: "Manual Creation", path: "/quiz/admin/manual", icon: FaPen },
-        { name: "Manage & Analytics", path: "/quiz/admin/manage", icon: FaChartLine },
+        { name: "Overview", path: "/admin/quiz", icon: FaThLarge },
+        { name: "AI Generator", path: "/admin/quiz/ai-generator", icon: FaMagic },
+        { name: "Manual Creation", path: "/admin/quiz/manual", icon: FaPen },
+        { name: "Manage & Analytics", path: "/admin/quiz/manage", icon: FaChartLine },
     ];
 
     return (
@@ -40,8 +40,8 @@ export default function QuizAdminHeader() {
                             key={item.path}
                             href={item.path}
                             className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
-                                    ? "bg-slate-800 text-white shadow-sm border border-slate-700/50"
-                                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                                ? "bg-slate-800 text-white shadow-sm border border-slate-700/50"
+                                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
                                 }`}
                         >
                             <Icon className={isActive ? "text-indigo-400" : ""} />

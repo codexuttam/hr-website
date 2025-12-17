@@ -1,10 +1,10 @@
-import { bubbleSort } from "./algorithms/bubbleSort";
-import { selectionSort } from "./algorithms/selectionSort";
-import { insertionSort } from "./algorithms/insertionSort";
-import { mergeSort } from "./algorithms/mergeSort";
-import { quickSort } from "./algorithms/quickSort";
-import { linearSearch } from "./algorithms/linearSearch";
-import { binarySearch } from "./algorithms/binarySearch";
+import { bubbleSort } from "@/backend/lib/algorithms/bubbleSort";
+import { selectionSort } from "@/backend/lib/algorithms/selectionSort";
+import { insertionSort } from "@/backend/lib/algorithms/insertionSort";
+import { mergeSort } from "@/backend/lib/algorithms/mergeSort";
+import { quickSort } from "@/backend/lib/algorithms/quickSort";
+import { linearSearch } from "@/backend/lib/algorithms/linearSearch";
+import { binarySearch } from "@/backend/lib/algorithms/binarySearch";
 import { Algorithm, AlgorithmType } from "./types";
 
 export const ALGORITHMS: Record<AlgorithmType, Algorithm> = {

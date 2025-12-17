@@ -28,6 +28,12 @@ const AssignedQuizzes: React.FC<{ userId: string | number }> = ({ userId }) => {
 
     const fetchAssignments = async () => {
         try {
+            // Determine if we should query by integer ID or UUID
+            const isNumeric = !isNaN(Number(userId)) && !String(userId).includes('-');
+            const queryColumn = isNumeric ? 'user_id' : 'user_id_uuid';
+
+            console.log(`fetching assignments for ${userId} using column ${queryColumn}`);
+
             const { data, error } = await supabase
                 .from('quiz_assignments')
                 .select(`
@@ -41,10 +47,18 @@ const AssignedQuizzes: React.FC<{ userId: string | number }> = ({ userId }) => {
             description
           )
         `)
-                .eq('user_id', userId)
+                .eq(queryColumn, userId)
                 .order('assigned_at', { ascending: false });
 
             if (error) {
+                // If the error is about the column not existing (migration not run yet)
+                // and we tried querying UUID, we might want to log that safely.
+                if (error.code === '42703' && queryColumn === 'user_id_uuid') {
+                    console.warn('Migration pending: user_id_uuid column not found in quiz_assignments.');
+                    setAssignments([]);
+                    return;
+                }
+
                 console.error('Supabase Query Error:', JSON.stringify(error, null, 2));
                 throw error;
             }

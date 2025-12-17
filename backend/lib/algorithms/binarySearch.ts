@@ -1,4 +1,4 @@
-import { Algorithm, Frame } from "../types";
+import { Algorithm, Frame } from "@/lib/types";
 
 export const binarySearch: Algorithm = {
   name: "Binary Search",

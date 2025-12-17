@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ThemeToggleButton from './ThemeToggleButton';
@@ -67,6 +69,10 @@ const Header: React.FC = () => {
 
   const handleAdminClick = () => {
     setAdminDropdownOpen(false);
+  }
+
+  const handleAdminQuizClick = () => {
+    // Close dropdown if needed
   }
 
   // Close dropdown when clicking outside
@@ -140,6 +146,8 @@ const Header: React.FC = () => {
                   </div>
                 )}
               </div>
+
+
 
               {/* Placement Prep Dropdown */}
               <div className="relative" ref={placementDropdownRef}>
@@ -278,7 +286,7 @@ const Header: React.FC = () => {
 
             {/* Quiz Admin - For admins */}
             {canAccessAdmin && (
-              <MobileNavLink href="/quiz/admin" onClick={handleMobileNavClick}>🎯 Quiz Admin</MobileNavLink>
+              <MobileNavLink href="/admin/quiz" onClick={handleMobileNavClick}>🎯 Quiz Admin</MobileNavLink>
             )}
 
             {/* Admin Section - Only for admins */}

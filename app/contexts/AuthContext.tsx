@@ -35,28 +35,55 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   async function loadUserProfile(authUser: any) {
     // console.log('[Auth] loadUserProfile called for:', authUser.email);
 
-    // Create a timeout that will reject after 5 seconds
-    // const timeoutPromise = new Promise<never>((_, reject) => {
-    //   setTimeout(() => reject(new Error('Database query timeout - check RLS policies')), 5000);
-    // });
+    // Create a timeout that will reject after 2.5 seconds
+    const timeoutPromise = new Promise<any>((_, reject) => {
+      setTimeout(() => reject(new Error('Database query timeout - check RLS policies')), 2500);
+    });
 
     try {
       // 1. Try finding by user_uid (Fastest, Correct)
-      // console.log('[Auth] Querying by user_uid...');
+      // We also check 'profiles' table as it's the more modern table and might be more reliable
+      const profilesQuery = supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', authUser.id)
+        .single()
+        .then(({ data, error }) => {
+          if (data) {
+            return {
+              data: {
+                user_id: data.id,
+                user_uid: data.id,
+                name: data.full_name || authUser.user_metadata?.name || 'User',
+                email: data.email || authUser.email,
+                role: data.role || 'student',
+                credits: data.credits || 0,
+                created_at: data.created_at || new Date().toISOString()
+              },
+              error: null
+            };
+          }
+          // If error/no data, return a promise that never resolves (or resolves slow) 
+          // to let the 'users' query have a chance if it's working.
+          // However, since we know 'users' is hanging, we might just return the error.
+          return { data: null, error };
+        });
+
       const { data, error } = await Promise.race([
         supabase
           .from('users')
           .select('*')
           .eq('user_uid', authUser.id)
           .single(),
-        // timeoutPromise
+        profilesQuery,
+        timeoutPromise
       ]);
 
-      console.log('[Auth] Query by user_uid result:', { found: !!data, error: error?.message });
+      console.log('[Auth] Query by user_uid/profile result:', { found: !!data, error: error?.message });
 
       if (!error && data) {
-        console.log('[Auth] User found by user_uid');
-        setUser(data);
+        console.log('[Auth] User found by user_uid/profile');
+        setUser(data as UserProfile);
         return;
       }
 
@@ -69,7 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             .select('*')
             .eq('email', authUser.email)
             .single(),
-          // timeoutPromise
+          timeoutPromise
         ]);
 
         //console.log('[Auth] Query by email result:', { found: !!byEmail, error: emailError?.message });
@@ -102,7 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           ])
           .select()
           .single(),
-        // timeoutPromise
+        timeoutPromise
       ]);
 
       //console.log('[Auth] New user created:', { success: !!newUser, error: insertError?.message });
@@ -142,8 +169,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(null);
       }
     } catch (err: any) {
-      console.error('[Auth] loadUserProfile failed:', err.message);
-      // On timeout or error, set user to null - user will be redirected to login
+      console.warn('[Auth] loadUserProfile failed (using fallback):', err.message);
+
+      // Fallback: Use Supabase Auth Session data if DB fails (timeout/RLS)
+      if (authUser) {
+        console.warn('[Auth] Using basic auth session as fallback due to DB error');
+        setUser({
+          user_id: authUser.id,
+          name: authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'User',
+          email: authUser.email || '',
+          role: (authUser.user_metadata?.role as UserRole) || 'student',
+          credits: 0,
+          created_at: new Date().toISOString()
+        });
+        return;
+      }
+
+      // Only set to null if we truly have no user info
       setUser(null);
     }
   }

@@ -26,10 +26,10 @@ const AdminDashboardPage: React.FC = () => {
   async function loadStats() {
     try {
       const [usersRes, quizzesRes, resumesRes, attemptsRes, applicationsRes] = await Promise.all([
-        supabase.from('users').select('user_id', { count: 'exact', head: true }),
+        supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('quizzes').select('quiz_id', { count: 'exact', head: true }),
         supabase.from('resumes').select('resume_id', { count: 'exact', head: true }),
-        supabase.from('attempts').select('attempt_id', { count: 'exact', head: true }),
+        supabase.from('quiz_assignments').select('assignment_id', { count: 'exact', head: true }),
         supabase.from('drive_applications').select('id', { count: 'exact', head: true }),
       ]);
 
@@ -43,7 +43,7 @@ const AdminDashboardPage: React.FC = () => {
     } catch (error) {
       console.error('Failed to load stats:', error);
     } finally {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 500); // Small delay to prevent flash
     }
   }
 
@@ -72,19 +72,21 @@ const AdminDashboardPage: React.FC = () => {
 
             {/* Admin Features Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {/* Quiz Admin Card */}
               <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6">
                 <div className="text-3xl mb-3">🎯</div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  Quiz Management
+                  Quiz Admin
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
                   Create, edit, and manage quizzes and questions
                 </p>
-                <Link href="/quiz/admin" className="block w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-center">
-                  Manage Quizzes
+                <Link href="/admin/quiz" className="block w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-center">
+                  Quiz Admin
                 </Link>
               </div>
 
+              {/* User Management Card */}
               <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6">
                 <div className="text-3xl mb-3">👥</div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -98,10 +100,11 @@ const AdminDashboardPage: React.FC = () => {
                 </a>
               </div>
 
+              {/* System Analytics Card */}
               <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6">
                 <div className="text-3xl mb-3">📊</div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  Analytics
+                  System Analytics
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
                   View platform usage statistics and reports
@@ -111,19 +114,7 @@ const AdminDashboardPage: React.FC = () => {
                 </button>
               </div>
 
-              <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6">
-                <div className="text-3xl mb-3">📄</div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  Resume Management
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                  View and manage user resumes
-                </p>
-                <button className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors" disabled>
-                  Coming Soon
-                </button>
-              </div>
-
+              {/* Content Moderation Card */}
               <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6">
                 <div className="text-3xl mb-3">🛡️</div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -137,6 +128,7 @@ const AdminDashboardPage: React.FC = () => {
                 </button>
               </div>
 
+              {/* Platform Settings Card */}
               <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6">
                 <div className="text-3xl mb-3">⚙️</div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -150,10 +142,11 @@ const AdminDashboardPage: React.FC = () => {
                 </button>
               </div>
 
+              {/* Post New Drive Card */}
               <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-6">
-                <div className="text-3xl mb-3">🚀</div>
+                <div className="text-3xl mb-3">📢</div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  Placement Drives
+                  Post New Drive
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
                   Create and manage placement drives and applications
