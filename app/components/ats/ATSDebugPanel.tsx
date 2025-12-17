@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { SupabaseATSService } from '../../services/supabaseATSService';
+import { SupabaseATSService } from '@/backend/services/supabaseATSService';
 
 const ATSDebugPanel: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +35,7 @@ const ATSDebugPanel: React.FC = () => {
 
     // Test network connectivity
     try {
-      const networkTest = await fetch('https://httpbin.org/get', { 
+      const networkTest = await fetch('https://httpbin.org/get', {
         method: 'GET',
         mode: 'cors'
       });

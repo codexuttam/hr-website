@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { ATSResultService } from '../../services/atsResultService';
-import { ResumeService } from '../../services/resumeService';
+import { ATSResultService } from '@/backend/services/atsResultService';
+import { ResumeService } from '@/backend/services/resumeService';
 import { ResumeData } from '../../types/resume';
-import { HuggingFaceService, HuggingFaceATSAnalysis } from '../../services/huggingFaceService';
-import { SupabaseATSService, SupabaseATSAnalysis } from '../../services/supabaseATSService';
+import { HuggingFaceService, HuggingFaceATSAnalysis } from '@/backend/services/huggingFaceService';
+import { SupabaseATSService, SupabaseATSAnalysis } from '@/backend/services/supabaseATSService';
 
 
 interface ATSResult {

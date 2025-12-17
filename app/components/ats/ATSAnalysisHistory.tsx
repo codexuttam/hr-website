@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { SupabaseATSService } from '../../services/supabaseATSService';
+import { SupabaseATSService } from '@/backend/services/supabaseATSService';
 
 interface AnalysisHistoryItem {
   id: number;

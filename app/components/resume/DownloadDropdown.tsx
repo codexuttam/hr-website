@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
 import { saveAs } from 'file-saver';
 import { useAuth } from '../../contexts/AuthContext';
-import { ResumeService } from '../../services/resumeService';
+import { ResumeService } from '@/backend/services/resumeService';
 import { ResumeData, ResumeColor } from '../../types/resume';
 
 interface DownloadDropdownProps {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ATSResultService, ATSResult, getScoreColor, getScoreBadgeColor } from '../../services/atsResultService';
+import { ATSResultService, ATSResult, getScoreColor, getScoreBadgeColor } from '@/backend/services/atsResultService';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface ATSResultHistoryProps {

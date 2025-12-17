@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import SavedResumes from '../../components/SavedResumes';
-import { SavedResume } from '../../services/resumeService';
+import { SavedResume } from '@/backend/services/resumeService';
 import ProtectedRoute from '../../components/auth/ProtectedRoute';
 
 const MyResumesPage: React.FC = () => {

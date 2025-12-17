@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ResumeService, SavedResume } from '../services/resumeService';
+import { ResumeService, SavedResume } from '@/backend/services/resumeService';
 import { useAuth } from '../contexts/AuthContext';
 
 interface SavedResumesProps {

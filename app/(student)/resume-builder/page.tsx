@@ -6,7 +6,7 @@ import TemplateSelection from '../../pages/TemplateSelection';
 import ProtectedRoute from '../../components/auth/ProtectedRoute';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { ResumeService } from '../../services/resumeService';
+import { ResumeService } from '@/backend/services/resumeService';
 
 function ResumeBuilderContent() {
   const [selectedTemplate, setSelectedTemplate] = useState<number>(0);

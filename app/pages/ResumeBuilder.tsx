@@ -4,7 +4,7 @@ import Resume from "../components/resume/Resume";
 import AISuggestions from "../components/AISuggestions";
 import DownloadDropdown from "../components/resume/DownloadDropdown";
 import { ResumeData, ResumeColor } from "../types/resume";
-import { ResumeService, useAutoSave } from "../services/resumeService";
+import { ResumeService, useAutoSave } from "@/backend/services/resumeService";
 import { useAuth } from "../contexts/AuthContext";
 
 // 🎨 Color Presets

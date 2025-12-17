@@ -1,4 +1,4 @@
-import { ResumeData, ResumeColor } from '../types/resume';
+import { ResumeData, ResumeColor } from '@/types/resume';
 
 export interface SavedResume {
   resume_id: number;

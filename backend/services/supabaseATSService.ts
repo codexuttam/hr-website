@@ -3,7 +3,7 @@
  * Uses the specific model: girishwangikar/ResumeATS
  */
 
-import { supabase } from '../lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 export interface SupabaseATSAnalysis {
   overall_score: number;
