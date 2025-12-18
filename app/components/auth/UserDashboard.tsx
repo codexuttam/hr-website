@@ -56,6 +56,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ initialUser, initialStats
           title: 'Student Dashboard',
           description: 'Build your career with AI-powered tools and guidance',
           features: [
+            { name: 'My Rankings', href: '/dashboard/rank', icon: '🏆' },
             { name: 'Resume Builder', href: '/resume-builder', icon: '📝' },
             { name: 'ATS Score Checker', href: '/ats-tools', icon: '✅' },
             { name: 'Placement Preparation', href: '/drives', icon: '💼' },
