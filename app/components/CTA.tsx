@@ -3,30 +3,36 @@ import React from 'react';
 
 const CTA: React.FC = () => {
   return (
-    <section className="bg-white dark:bg-slate-800">
-      <div className="max-w-4xl mx-auto py-16 px-4 sm:px-6 sm:py-24 lg:px-8 text-center">
-        <div className="relative">
-          <div className="absolute -inset-2">
-            <div
-              className="w-full h-full mx-auto rotate-180 max-w-sm opacity-30 blur-lg filter"
-              style={{
-                background: 'linear-gradient(90deg, #4f46e5 0%, #818cf8 100%)',
-              }}
-            ></div>
+    <section className="py-24 sm:py-32 bg-white dark:bg-slate-900 relative overflow-hidden">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="relative rounded-3xl overflow-hidden bg-slate-900 shadow-2xl">
+          {/* Animated Background inside the card */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-b from-indigo-500 to-purple-600 rounded-full blur-3xl opacity-40 animate-pulse mix-blend-screen"></div>
+            <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-gradient-to-t from-pink-500 to-rose-500 rounded-full blur-3xl opacity-30 animate-pulse delay-700 mix-blend-screen"></div>
           </div>
-          <h2 className="relative text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-            Ready to Transform Your Career?
-          </h2>
+          
+          <div className="relative px-6 py-16 sm:px-16 sm:py-24 lg:px-20 lg:py-28 text-center border border-white/10 rounded-3xl backdrop-blur-sm bg-slate-900/50">
+            <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl mb-6">
+              Ready to Transform <br className="hidden sm:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">Your Career?</span>
+            </h2>
+            <p className="mt-4 max-w-2xl mx-auto text-xl leading-8 text-slate-300">
+              Join thousands of students who are already using our AI-powered platform to land their dream jobs and ace their placements.
+            </p>
+            <div className="mt-10 flex justify-center">
+              <Link
+                href="/register"
+                className="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-full text-slate-900 bg-white hover:bg-slate-100 shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] hover:shadow-[0_0_60px_-15px_rgba(255,255,255,0.7)] transition-all duration-300 transform hover:-translate-y-1"
+              >
+                Start Your Journey Free
+                <svg className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
         </div>
-        <p className="mt-4 text-lg leading-6 text-gray-600 dark:text-gray-300">
-          Join thousands of students who are already using our AI-powered platform to ace their placements.
-        </p>
-        <Link
-          href="#"
-          className="mt-8 w-full inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 sm:w-auto transition-all duration-300 transform hover:scale-105"
-        >
-          Start Your Journey
-        </Link>
       </div>
     </section>
   );

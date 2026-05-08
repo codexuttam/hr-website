@@ -21,8 +21,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HR Website - Resume Builder & Career Tools",
+  title: "EduAI - Resume Builder & Career Tools",
   description: "Professional resume builder, ATS tools, and career development platform",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

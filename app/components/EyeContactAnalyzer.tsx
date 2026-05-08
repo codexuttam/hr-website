@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Script from 'next/script';
+import { Target, Eye, EyeOff } from 'lucide-react';
 
 export interface EyeContactRef {
     getStats: () => { percentage: number; isLookingAtCamera: boolean };
@@ -137,7 +138,6 @@ const EyeContactAnalyzer = React.forwardRef<EyeContactRef, {}>((props, ref) => {
                 src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"
                 strategy="afterInteractive"
                 onLoad={() => {
-                    console.log("FaceMesh script loaded");
                     setIsScriptLoaded(true);
                 }}
             />
@@ -149,16 +149,25 @@ const EyeContactAnalyzer = React.forwardRef<EyeContactRef, {}>((props, ref) => {
                 muted
             />
 
-            {/* Stats Overlay */}
-            <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md p-3 rounded-lg border border-white/10 text-white z-10 shadow-lg">
-                <div className="flex items-center gap-2 mb-1">
-                    <div className={`w-3 h-3 rounded-full ${stats.isLookingAtCamera ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'}`} />
-                    <span className="font-semibold text-sm">
-                        {stats.isLookingAtCamera ? 'Looking at camera' : 'Not looking'}
+            {/* Premium Stats Overlay */}
+            <div className="absolute top-6 left-6 flex flex-col gap-2 z-10">
+                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md border transition-all duration-300 ${
+                    stats.isLookingAtCamera 
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' 
+                    : 'bg-rose-500/10 border-rose-500/30 text-rose-500'
+                }`}>
+                    {stats.isLookingAtCamera ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">
+                        {stats.isLookingAtCamera ? 'Focus Locked' : 'Focus Lost'}
                     </span>
                 </div>
-                <div className="text-xs text-gray-300">
-                    Eye Contact: <span className="font-mono font-bold text-white text-sm ml-1">{stats.percentage.toFixed(1)}%</span>
+                
+                <div className="bg-slate-900/60 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-3">
+                    <Target className="h-4 w-4 text-indigo-400" />
+                    <div>
+                        <div className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Attention Score</div>
+                        <div className="text-sm font-black text-white font-mono leading-none">{stats.percentage.toFixed(1)}%</div>
+                    </div>
                 </div>
             </div>
 

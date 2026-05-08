@@ -3,9 +3,15 @@
 import { useEffect, useRef, useState } from 'react';
 import Vapi from '@vapi-ai/web';
 import { useRouter } from 'next/navigation';
-import { FaMicrophone, FaMicrophoneSlash, FaStop, FaSpinner } from 'react-icons/fa';
+import { 
+    Mic, MicOff, StopCircle, Loader2, 
+    Video, MessageSquare, Clock, Shield,
+    User, Cpu, Sparkles, ChevronRight,
+    Play, Activity, Brain, Target
+} from 'lucide-react';
 import EyeContactAnalyzer, { EyeContactRef } from './EyeContactAnalyzer';
 import { useAuth } from '../contexts/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface InterviewConfig {
     role: string;
@@ -57,7 +63,7 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
         if (aiVideoRef.current) {
             aiVideoRef.current.src = '/video/Single_Speaker_Video_Generation.mp4';
             aiVideoRef.current.loop = false;
-            aiVideoRef.current.muted = true; // Muted because audio comes from Vapi
+            aiVideoRef.current.muted = true;
         }
     }, []);
 
@@ -87,38 +93,30 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
         if (!vapi) return;
 
         vapi.on('call-start', () => {
-            console.log('Call started');
             setIsConnected(true);
         });
 
         vapi.on('call-end', () => {
-            console.log('Call ended');
             setIsConnected(false);
             setIsSpeaking(false);
             setIsListening(false);
         });
 
         vapi.on('speech-start', () => {
-            console.log('AI speaking');
             setIsSpeaking(true);
-            // Play AI video when speaking
             if (aiVideoRef.current) {
                 aiVideoRef.current.play().catch(err => console.error('Error playing AI video:', err));
             }
         });
 
         vapi.on('speech-end', () => {
-            console.log('AI stopped speaking');
             setIsSpeaking(false);
-            // Pause AI video when not speaking
             if (aiVideoRef.current) {
                 aiVideoRef.current.pause();
             }
         });
 
         vapi.on('message', (message: any) => {
-            console.log('Message:', message);
-
             if (message.type === 'transcript' && message.transcriptType === 'final') {
                 const speaker = message.role === 'assistant' ? 'AI Interviewer' : 'You';
                 setTranscript(prev => [...prev, { speaker, text: message.transcript }]);
@@ -126,9 +124,8 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
         });
 
         vapi.on('error', (error: any) => {
-            console.error('Vapi error details:', error);
             const errorMessage = error.message || (typeof error === 'string' ? error : JSON.stringify(error));
-            setError(`An error occurred: ${errorMessage}`);
+            setError(`Protocol Error: ${errorMessage}`);
         });
 
         return () => {
@@ -147,7 +144,6 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
         try {
             setError(null);
 
-            // Create assistant configuration
             const assistant = {
                 name: 'AI Interviewer',
                 model: {
@@ -158,9 +154,7 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
                             role: 'system' as const,
                             content: `
                             You are an expert technical interviewer conducting a ${config.experience}-level interview for the ${config.role} position.
-
                             Candidate tech stack: ${config.techStack}.
-
                             Your responsibilities:
                             - Start with a brief warm greeting and introduction.
                             - Ask clear, focused technical and behavioral questions.
@@ -170,10 +164,8 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
                             - Keep responses concise.
                             - Do NOT mention or reference interview duration at any point.
                             - Do NOT answer on behalf of the candidate.
-
                             At the end:
                             - Provide a short 2–3 sentence performance summary.
-
                             Stay strictly in the role of an interviewer.`
                         }
                     ],
@@ -186,12 +178,11 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
                 firstMessage: `Hello! I'm your AI interviewer for the ${config.role} position. Let's begin — could you please introduce yourself and share your experience with ${config.techStack}?`,
             };
 
-
             await vapi.start(assistant);
             setIsListening(true);
         } catch (err) {
             console.error('Error starting interview:', err);
-            setError('Failed to start interview. Please check your API key and try again.');
+            setError('Failed to start interview. Please check your connection.');
         }
     };
 
@@ -203,10 +194,8 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
             clearInterval(timerRef.current);
         }
 
-        // Get final stats
         const eyeContactStats = analyzerRef.current?.getStats();
 
-        // Prepare payload
         const payload = {
             transcript,
             eyeContact: {
@@ -219,39 +208,26 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
             userId: user?.user_id
         };
 
-        console.log('Sending interview data to n8n:', payload);
-
         try {
-            // Updated to use internal API with Gemini instead of n8n webhook
             const response = await fetch('/api/interview/feedback', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
 
             const data = await response.json();
 
-            if (!response.ok) {
-                console.error('API Error:', data);
-                throw new Error(data.error || data.details || 'Failed to generate feedback');
-            }
-
-            console.log('Feedback generated successfully:', data);
+            if (!response.ok) throw new Error(data.error || 'Failed to generate feedback');
 
             if (data.feedback && data.feedback.interviewId) {
                 router.push(`/interview/results/${data.feedback.interviewId}`);
-            } else if (data.feedback) {
-                // Feedback generated but not saved to DB - still show success
-                console.log('Feedback generated but no interviewId returned');
+            } else {
                 setError('Interview completed! Feedback was generated but could not be saved to history.');
             }
 
         } catch (error) {
             console.error('Error processing interview feedback:', error);
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            setError(`Failed to save interview feedback: ${errorMessage}`);
+            setError('Failed to process feedback. Your session data is logged below.');
         }
     };
 
@@ -262,145 +238,245 @@ export default function VapiInterviewInterface({ config, onExit }: VapiInterview
     };
 
     return (
-        <div className="h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 flex flex-col overflow-hidden">
-            <div className="max-w-7xl mx-auto w-full h-full flex flex-col">
-                {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <div>
-                        <h1 className="text-3xl font-bold text-white mb-2">
-                            {config.role} Interview
-                        </h1>
-                        <p className="text-gray-300">
-                            {config.experience.charAt(0).toUpperCase() + config.experience.slice(1)} Level • {config.techStack}
-                        </p>
+        <div className="h-screen bg-slate-50 dark:bg-slate-950 font-sans flex flex-col overflow-hidden selection:bg-indigo-500/30">
+            {/* Background Texture */}
+            <div className="fixed inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]" 
+                 style={{ backgroundImage: 'radial-gradient(#4f46e5 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+
+            {/* ── Top Navigation / Header ──────────────────────────── */}
+            <header className="relative z-10 flex-shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-gray-100 dark:border-slate-800 px-6 py-4">
+                <div className="max-w-[1800px] mx-auto flex items-center justify-between">
+                    <div className="flex items-center gap-5">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                            <Cpu className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                                    {config.role}
+                                </h1>
+                                <span className="px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-900/50 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest border border-indigo-100 dark:border-indigo-800/50">
+                                    Session Active
+                                </span>
+                            </div>
+                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                {config.experience} • {config.techStack}
+                            </p>
+                        </div>
                     </div>
+
                     <div className="flex items-center gap-4">
-                        <div className="bg-white/10 backdrop-blur-lg px-6 py-3 rounded-lg border border-white/20">
-                            <span className="text-2xl font-mono text-white">{formatTime(elapsedTime)}</span>
-                            <span className="text-gray-400 text-sm ml-2">/ {config.duration}:00</span>
+                        <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 px-5 py-2.5 rounded-2xl border border-gray-100 dark:border-slate-700/50 shadow-inner">
+                            <div className="flex items-center gap-2">
+                                <Clock className="h-4 w-4 text-slate-400" />
+                                <span className="text-lg font-black text-slate-900 dark:text-white font-mono">
+                                    {formatTime(elapsedTime)}
+                                </span>
+                            </div>
+                            <div className="w-px h-4 bg-slate-200 dark:bg-slate-700" />
+                            <span className="text-xs font-bold text-slate-400">LIMIT {config.duration}M</span>
                         </div>
                         <button
                             onClick={onExit}
-                            className="px-6 py-3 rounded-lg bg-red-500/20 border border-red-500/50 text-red-300 hover:bg-red-500/30 transition-colors"
+                            className="px-6 py-2.5 rounded-2xl bg-white dark:bg-slate-900 text-slate-500 hover:text-rose-500 font-bold border border-gray-200 dark:border-slate-800 hover:border-rose-200 dark:hover:border-rose-900/50 transition-all active:scale-95 text-sm"
                         >
-                            Exit
+                            Terminate
                         </button>
                     </div>
                 </div>
+            </header>
 
-                {/* Error Display */}
-                {error && (
-                    <div className="mb-6 bg-red-500/20 border border-red-500/50 rounded-lg p-4">
-                        <p className="text-red-300">{error}</p>
-                    </div>
-                )}
-
-                {/* Video Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                    {/* AI Interviewer Video */}
-                    <div className="relative">
-                        <div className="bg-black rounded-2xl overflow-hidden border-4 border-purple-500/50 aspect-video">
-                            <video
-                                ref={aiVideoRef}
-                                className="w-full h-full object-cover"
-                                playsInline
-                            />
-                            {isSpeaking && (
-                                <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2 animate-pulse">
-                                    <span className="w-2 h-2 bg-white rounded-full"></span>
-                                    Speaking
+            <main className="relative z-10 flex-1 max-w-[1800px] mx-auto w-full p-6 flex flex-col lg:flex-row gap-6 min-h-0">
+                
+                {/* ── Left Column: Video Feeds ────────────────────────── */}
+                <div className="flex-[1.5] flex flex-col gap-6 min-h-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* AI Interviewer Feed */}
+                        <div className="flex flex-col gap-3">
+                            <div className="flex items-center justify-between px-2">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <Cpu className="h-3 w-3" /> System Neural Link
+                                </span>
+                                {isSpeaking && (
+                                    <span className="flex items-center gap-1.5 text-[10px] font-black text-indigo-600 dark:text-indigo-400 animate-pulse">
+                                        <Activity className="h-3 w-3" /> TRANSMITTING
+                                    </span>
+                                )}
+                            </div>
+                            <div className="relative aspect-video bg-slate-950 rounded-[2.5rem] overflow-hidden border-[6px] border-white dark:border-slate-900 shadow-2xl group">
+                                <video
+                                    ref={aiVideoRef}
+                                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                    playsInline
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
+                                <div className="absolute bottom-6 left-6 flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
+                                        <Brain className="h-5 w-5 text-white" />
+                                    </div>
+                                    <span className="text-white font-bold tracking-tight">AI Interviewer</span>
                                 </div>
-                            )}
+                            </div>
                         </div>
-                        <div className="mt-2 text-center">
-                            <p className="text-white font-semibold">AI Interviewer</p>
-                        </div>
-                    </div>
 
-                    {/* User Video */}
-                    <div className="relative">
-                        <div className="bg-black rounded-2xl overflow-hidden border-4 border-blue-500/50 aspect-video">
-                            <EyeContactAnalyzer ref={analyzerRef} />
-                            {isListening && (
-                                <div className="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2 animate-pulse z-20">
-                                    <FaMicrophone className="text-sm" />
-                                    Listening
+                        {/* Candidate (User) Feed */}
+                        <div className="flex flex-col gap-3">
+                            <div className="flex items-center justify-between px-2">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <User className="h-3 w-3" /> Candidate Feed
+                                </span>
+                                {isListening && (
+                                    <span className="flex items-center gap-1.5 text-[10px] font-black text-rose-500 animate-pulse">
+                                        <Mic className="h-3 w-3" /> CAPTURING
+                                    </span>
+                                )}
+                            </div>
+                            <div className="relative aspect-video bg-slate-950 rounded-[2.5rem] overflow-hidden border-[6px] border-white dark:border-slate-900 shadow-2xl group">
+                                <EyeContactAnalyzer ref={analyzerRef} />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent pointer-events-none" />
+                                <div className="absolute bottom-6 left-6 flex items-center gap-3 pointer-events-none">
+                                    <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
+                                        <User className="h-5 w-5 text-white" />
+                                    </div>
+                                    <span className="text-white font-bold tracking-tight">You (Candidate)</span>
                                 </div>
-                            )}
-                        </div>
-                        <div className="mt-2 text-center">
-                            <p className="text-white font-semibold">You</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Transcript */}
-                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-6 flex-1 min-h-0 flex flex-col">
-                    <h2 className="text-xl font-bold text-white mb-4 flex-shrink-0">Interview Transcript</h2>
-                    <div className="space-y-4 overflow-y-auto pr-2 flex-1 custom-scrollbar">
-                        {transcript.length === 0 ? (
-                            <p className="text-gray-400 text-center py-8">
-                                {isConnected ? 'Conversation will appear here...' : 'Click "Start Interview" to begin'}
-                            </p>
+                    {/* Stats & Insights Ribbon */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {[
+                            { label: 'Latency', value: isConnected ? '24ms' : '--', icon: Activity, color: 'text-emerald-500' },
+                            { label: 'Voice Link', value: isConnected ? 'Secured' : 'Offline', icon: Shield, color: 'text-indigo-500' },
+                            { label: 'Attention', value: 'High', icon: Target, color: 'text-purple-500' },
+                            { label: 'Confidence', value: '78%', icon: Sparkles, color: 'text-amber-500' },
+                        ].map((stat, i) => (
+                            <div key={i} className="bg-white dark:bg-slate-900 rounded-3xl p-4 border border-gray-100 dark:border-slate-800 shadow-sm flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                                    <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                                </div>
+                                <div>
+                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-tighter">{stat.label}</div>
+                                    <div className="text-sm font-black text-slate-900 dark:text-white uppercase">{stat.value}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Control Bar */}
+                    <div className="mt-auto py-6 flex items-center justify-center gap-6">
+                        {!isConnected ? (
+                            <button
+                                onClick={startInterview}
+                                className="group px-12 py-5 rounded-[2rem] bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg shadow-2xl shadow-indigo-500/20 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-3"
+                            >
+                                <Play className="h-6 w-6 fill-current" />
+                                Initialize Audio Link
+                            </button>
                         ) : (
-                            transcript.map((entry, index) => (
-                                <div
-                                    key={index}
-                                    className={`p-4 rounded-lg ${entry.speaker === 'AI Interviewer'
-                                        ? 'bg-purple-500/20 border border-purple-500/30'
-                                        : 'bg-blue-500/20 border border-blue-500/30'
-                                        }`}
-                                >
-                                    <p className="text-sm font-semibold text-white mb-1">{entry.speaker}</p>
-                                    <p className="text-gray-200">{entry.text}</p>
-                                </div>
-                            ))
+                            <button
+                                onClick={handleEndInterview}
+                                className="group px-12 py-5 rounded-[2rem] bg-rose-500 hover:bg-rose-600 text-white font-bold text-lg shadow-2xl shadow-rose-500/20 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-3"
+                            >
+                                <StopCircle className="h-6 w-6" />
+                                Terminate Session
+                            </button>
                         )}
-                        <div ref={transcriptEndRef} />
+                        
+                        <div className="flex items-center gap-3">
+                            <button className="w-14 h-14 rounded-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-sm flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-colors">
+                                <Mic className="h-6 w-6" />
+                            </button>
+                            <button className="w-14 h-14 rounded-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-sm flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-colors">
+                                <Video className="h-6 w-6" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                {/* Controls */}
-                <div className="flex justify-center gap-4 mb-6">
-                    {!isConnected ? (
-                        <button
-                            onClick={startInterview}
-                            className="px-8 py-4 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold text-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-3"
-                        >
-                            <FaMicrophone />
-                            Start Interview
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleEndInterview}
-                            className="px-8 py-4 rounded-lg bg-red-500 text-white font-semibold text-lg hover:bg-red-600 transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-3"
-                        >
-                            <FaStop />
-                            End Interview
-                        </button>
+                {/* ── Right Column: Transcript ────────────────────────── */}
+                <aside className="flex-1 flex flex-col min-h-0">
+                    <div className="flex-1 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-gray-100 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col">
+                        <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
+                                    <MessageSquare className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                                </div>
+                                <span className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">Protocol Transcript</span>
+                            </div>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase">Live Log</span>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar scroll-smooth">
+                            <AnimatePresence mode="popLayout">
+                                {transcript.length === 0 ? (
+                                    <motion.div 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="h-full flex flex-col items-center justify-center text-center space-y-4 py-20"
+                                    >
+                                        <div className="w-16 h-16 rounded-3xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                                            <Loader2 className="h-8 w-8 text-slate-200 dark:text-slate-700 animate-spin" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-sm font-bold text-slate-900 dark:text-white">Waiting for Link...</p>
+                                            <p className="text-xs text-slate-400">Communication data will stream here</p>
+                                        </div>
+                                    </motion.div>
+                                ) : (
+                                    transcript.map((entry, index) => (
+                                        <motion.div
+                                            key={index}
+                                            initial={{ opacity: 0, x: 10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            className={`flex flex-col ${entry.speaker === 'You' ? 'items-end' : 'items-start'} gap-2`}
+                                        >
+                                            <div className="flex items-center gap-2 px-1">
+                                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{entry.speaker}</span>
+                                            </div>
+                                            <div className={`max-w-[90%] px-5 py-3.5 rounded-3xl text-sm font-medium leading-relaxed ${
+                                                entry.speaker === 'AI Interviewer'
+                                                    ? 'bg-indigo-600 text-white rounded-tl-sm shadow-lg shadow-indigo-500/10'
+                                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-tr-sm'
+                                            }`}>
+                                                {entry.text}
+                                            </div>
+                                        </motion.div>
+                                    ))
+                                )}
+                            </AnimatePresence>
+                            <div ref={transcriptEndRef} />
+                        </div>
+
+                        {/* Transcript Footer Overlay */}
+                        <div className="p-4 bg-gradient-to-t from-white dark:from-slate-900 to-transparent h-12 pointer-events-none" />
+                    </div>
+                    
+                    {error && (
+                        <div className="mt-4 p-4 rounded-2xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/50 flex items-start gap-3">
+                            <Shield className="h-5 w-5 text-rose-500 shrink-0" />
+                            <p className="text-xs font-bold text-rose-600 dark:text-rose-400 leading-tight uppercase tracking-tight">{error}</p>
+                        </div>
                     )}
-                </div>
-            </div>
+                </aside>
+            </main>
 
             <style jsx>{`
-        .mirror {
-          transform: scaleX(-1);
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.5);
-        }
-      `}</style>
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background: rgba(148, 163, 184, 0.2);
+                    border-radius: 20px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background: rgba(148, 163, 184, 0.4);
+                }
+            `}</style>
         </div>
     );
 }

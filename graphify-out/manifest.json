@@ -1,0 +1,2090 @@
+{
+  "D:\\hr-website\\cleanup_rls.sql": {
+    "mtime": 1765729672.8639362,
+    "hash": "9c065d802edde38a3994b559bdca6df2"
+  },
+  "D:\\hr-website\\eslint.config.mjs": {
+    "mtime": 1765729672.8639362,
+    "hash": "6c4307ffa009658f5c97f5629094c0c2"
+  },
+  "D:\\hr-website\\next-env.d.ts": {
+    "mtime": 1778172309.0191784,
+    "hash": "29f60a376e12bf72b67d4994fcc84214"
+  },
+  "D:\\hr-website\\next.config.ts": {
+    "mtime": 1765729672.8652759,
+    "hash": "2cabf856262378b824c6314096079a60"
+  },
+  "D:\\hr-website\\postcss.config.mjs": {
+    "mtime": 1765729672.8679576,
+    "hash": "481fac0fdecd70e1821cc30b86030c1a"
+  },
+  "D:\\hr-website\\supabase_rls_fix.sql": {
+    "mtime": 1765729672.960499,
+    "hash": "b511828b77e2717ec445dd538e731f91"
+  },
+  "D:\\hr-website\\app\\custom.d.ts": {
+    "mtime": 1765729672.8450205,
+    "hash": "4ef1774b25c1c48343a30aa0e8efc0c2"
+  },
+  "D:\\hr-website\\app\\layout.tsx": {
+    "mtime": 1765729672.8460217,
+    "hash": "3e04508e063d25e407ff2bf7fb2c313c"
+  },
+  "D:\\hr-website\\app\\page.tsx": {
+    "mtime": 1765729672.8528707,
+    "hash": "b78d03960f6dc970baef3e17dbfceae6"
+  },
+  "D:\\hr-website\\app\\(pages)\\acknowledgment\\page.tsx": {
+    "mtime": 1765729672.7687972,
+    "hash": "dbe2e7f29aec99cdee57bc7628e76110"
+  },
+  "D:\\hr-website\\app\\(pages)\\admin\\drives\\page.tsx": {
+    "mtime": 1765729672.772312,
+    "hash": "ba1de9855d1a33d97d3df2102b53ab3a"
+  },
+  "D:\\hr-website\\app\\(pages)\\admin\\drives\\create\\page.tsx": {
+    "mtime": 1765729672.772312,
+    "hash": "7c564bff333ea34f7366425929075bc1"
+  },
+  "D:\\hr-website\\app\\(pages)\\admin\\drives\\[id]\\applications\\page.tsx": {
+    "mtime": 1765729672.7713115,
+    "hash": "8946c8a0f87e958b912e676097410ab2"
+  },
+  "D:\\hr-website\\app\\(pages)\\admin\\users\\page.tsx": {
+    "mtime": 1765729672.772312,
+    "hash": "116ca99a086a1ff21e6475ea1b9aae82"
+  },
+  "D:\\hr-website\\app\\(pages)\\admin_dashboard\\page.tsx": {
+    "mtime": 1765729672.773415,
+    "hash": "8cd80817c082eb4235ef74313c28e2ff"
+  },
+  "D:\\hr-website\\app\\(pages)\\ai-interview\\page.tsx": {
+    "mtime": 1765729672.7743127,
+    "hash": "64274e4df55bae6329818e23bc8ebd45"
+  },
+  "D:\\hr-website\\app\\(pages)\\alumni\\page.tsx": {
+    "mtime": 1765729672.775059,
+    "hash": "8c94ad7866d36179a9450466c51fa161"
+  },
+  "D:\\hr-website\\app\\(pages)\\ats-tools\\page.tsx": {
+    "mtime": 1765729672.775059,
+    "hash": "cbe2672f237f4d6b31eb084065621342"
+  },
+  "D:\\hr-website\\app\\(pages)\\coach\\page.tsx": {
+    "mtime": 1765729672.7760673,
+    "hash": "5f9fa5e1c27d15d18f0330c4481635e2"
+  },
+  "D:\\hr-website\\app\\(pages)\\code-playground\\page.tsx": {
+    "mtime": 1765729672.7760673,
+    "hash": "ebf772ed20ba5ea744aa72a2c5215ee4"
+  },
+  "D:\\hr-website\\app\\(pages)\\dashboard\\page.tsx": {
+    "mtime": 1765729672.7770667,
+    "hash": "1d6cca92d99c108816f517edd25c5f20"
+  },
+  "D:\\hr-website\\app\\(pages)\\dashboard\\coding-profile\\page.tsx": {
+    "mtime": 1765729672.7770667,
+    "hash": "fa8a452e20734aed2da35b22ecd2232a"
+  },
+  "D:\\hr-website\\app\\(pages)\\drives\\page.tsx": {
+    "mtime": 1765729672.7786999,
+    "hash": "1a621c6454e8e4a908638e8525791f58"
+  },
+  "D:\\hr-website\\app\\(pages)\\drives\\[id]\\page.tsx": {
+    "mtime": 1765729672.7786999,
+    "hash": "8b6347c51d3a5abb25f732ea0192be4c"
+  },
+  "D:\\hr-website\\app\\(pages)\\drives\\[id]\\application-form\\page.tsx": {
+    "mtime": 1765729672.7780664,
+    "hash": "a109ea71e481542d4204237b05564bed"
+  },
+  "D:\\hr-website\\app\\(pages)\\games\\page.tsx": {
+    "mtime": 1765729672.7797344,
+    "hash": "994a9e9088283018d6b1f4830a1df25a"
+  },
+  "D:\\hr-website\\app\\(pages)\\games\\dsa-cheat-sheet\\page.tsx": {
+    "mtime": 1765729672.7797344,
+    "hash": "7b155daa36a153fefa3d4b13a906d35a"
+  },
+  "D:\\hr-website\\app\\(pages)\\games\\roadmap\\page.tsx": {
+    "mtime": 1765729672.7797344,
+    "hash": "529e3edd296cbbeb9c9e46cbb4139406"
+  },
+  "D:\\hr-website\\app\\(pages)\\games\\roadmap\\view\\page.tsx": {
+    "mtime": 1765729672.7807362,
+    "hash": "86fa6c21df302b93f0f6422a73af4cab"
+  },
+  "D:\\hr-website\\app\\(pages)\\games\\visualizer\\page.tsx": {
+    "mtime": 1765729672.7807362,
+    "hash": "b2190d9a314b57e657ef72e51adc3912"
+  },
+  "D:\\hr-website\\app\\(pages)\\interview\\page.tsx": {
+    "mtime": 1765729672.7818654,
+    "hash": "52b02910056e1213e492f7993d28ac14"
+  },
+  "D:\\hr-website\\app\\(pages)\\interview\\results\\[id]\\page.tsx": {
+    "mtime": 1765729672.7828653,
+    "hash": "915f90e4245b4a89964b04488d7f9a32"
+  },
+  "D:\\hr-website\\app\\(pages)\\interview-prep\\page.tsx": {
+    "mtime": 1765729672.7818654,
+    "hash": "534e2f8293c9177240aca54ecb8ff9d0"
+  },
+  "D:\\hr-website\\app\\(pages)\\login\\page.tsx": {
+    "mtime": 1765729672.7828653,
+    "hash": "64a8596b885572b27166ba07eb8ca504"
+  },
+  "D:\\hr-website\\app\\(pages)\\my-resumes\\page.tsx": {
+    "mtime": 1765729672.7828653,
+    "hash": "bee414176b713c3d013e8b2648bfc25d"
+  },
+  "D:\\hr-website\\app\\(pages)\\profile\\page.tsx": {
+    "mtime": 1765729672.783866,
+    "hash": "2ea48a6bf08221777be10f3a1180e7ae"
+  },
+  "D:\\hr-website\\app\\(pages)\\quiz\\page.tsx": {
+    "mtime": 1765729672.7878664,
+    "hash": "3a0a26413afc8e32e8aaacf467eb4ad7"
+  },
+  "D:\\hr-website\\app\\(pages)\\quiz\\admin\\page.tsx": {
+    "mtime": 1765729672.786866,
+    "hash": "b8617eafa4fe389f608b5166d6ebaeda"
+  },
+  "D:\\hr-website\\app\\(pages)\\quiz\\admin\\ai-generator\\page.tsx": {
+    "mtime": 1765729672.7858653,
+    "hash": "a68cfd51704e969480cf16eaab12e0ab"
+  },
+  "D:\\hr-website\\app\\(pages)\\quiz\\admin\\manage\\page.tsx": {
+    "mtime": 1765729672.7858653,
+    "hash": "ebb612460a22200d7e0d38701a5b5cf0"
+  },
+  "D:\\hr-website\\app\\(pages)\\quiz\\admin\\manual\\page.tsx": {
+    "mtime": 1765729672.786866,
+    "hash": "9115bccfd88baafd75d8bbc3ec51e712"
+  },
+  "D:\\hr-website\\app\\(pages)\\quiz\\random\\page.tsx": {
+    "mtime": 1765729672.7878664,
+    "hash": "41957e3257b57185605fb14b7eb38cde"
+  },
+  "D:\\hr-website\\app\\(pages)\\quiz\\[quizId]\\page.tsx": {
+    "mtime": 1765729672.783866,
+    "hash": "253d929ea32e150335c1d76627428ef8"
+  },
+  "D:\\hr-website\\app\\(pages)\\quiz\\[quizId]\\result\\page.tsx": {
+    "mtime": 1765729672.7848728,
+    "hash": "ba87b427c18e77fbf16b3cb665c3bd4c"
+  },
+  "D:\\hr-website\\app\\(pages)\\register\\page.tsx": {
+    "mtime": 1765729672.788866,
+    "hash": "b908fd5c9e270af213c6a45ccbcb81ef"
+  },
+  "D:\\hr-website\\app\\(pages)\\resume-builder\\page.tsx": {
+    "mtime": 1765729672.788866,
+    "hash": "217609914349302841c5376f6776d2a8"
+  },
+  "D:\\hr-website\\app\\(pages)\\settings\\page.tsx": {
+    "mtime": 1765729672.7905934,
+    "hash": "2b501d0adb8e16da0f3d7da590cc7956"
+  },
+  "D:\\hr-website\\app\\(pages)\\skill-gap\\loading.tsx": {
+    "mtime": 1765729672.79214,
+    "hash": "c75e51019acd091b9d688a515fdb6436"
+  },
+  "D:\\hr-website\\app\\(pages)\\skill-gap\\page.tsx": {
+    "mtime": 1765729672.79214,
+    "hash": "8880c8dfdea0290eb84f11bed81aacda"
+  },
+  "D:\\hr-website\\app\\(pages)\\skill-gap\\ResultView.tsx": {
+    "mtime": 1765729672.791133,
+    "hash": "689e5aafe201d91e3dc06f8e1cf7406d"
+  },
+  "D:\\hr-website\\app\\(pages)\\skill-gap\\SkillForm.tsx": {
+    "mtime": 1765729672.79214,
+    "hash": "fd8ee94fbc2e8ae7ad6a5678a01cc4b7"
+  },
+  "D:\\hr-website\\app\\api\\aiSuggestionsApi.ts": {
+    "mtime": 1765729672.7941413,
+    "hash": "48d864deaae9b488217eb9337d06ef84"
+  },
+  "D:\\hr-website\\app\\api\\api.ts": {
+    "mtime": 1765729672.7941413,
+    "hash": "b7ec1bb32aab8c3da6bc808b52a516f9"
+  },
+  "D:\\hr-website\\app\\api\\atsAnalyzerApi.ts": {
+    "mtime": 1765729672.7961392,
+    "hash": "6a22b3fa3383e715d9f55cf0ec135184"
+  },
+  "D:\\hr-website\\app\\api\\databaseApi.ts": {
+    "mtime": 1765729672.79914,
+    "hash": "83044f44039c2de6dd8f2290482e3792"
+  },
+  "D:\\hr-website\\app\\api\\resumeApi.ts": {
+    "mtime": 1765729672.8063736,
+    "hash": "136d3b4977ada374a41ca6764b42d810"
+  },
+  "D:\\hr-website\\app\\api\\admin\\users\\route.ts": {
+    "mtime": 1765729672.7941413,
+    "hash": "dd98350c41b038890071a0aa1d3a8625"
+  },
+  "D:\\hr-website\\app\\api\\ats-analyzer\\analyze\\route.ts": {
+    "mtime": 1765729672.795141,
+    "hash": "009d7a7cf98ecd7f2bd59d98c587c818"
+  },
+  "D:\\hr-website\\app\\api\\ats-results\\list\\route.ts": {
+    "mtime": 1765729672.7961392,
+    "hash": "ebd4eeb5fa3164ab20aa5f578e3fa498"
+  },
+  "D:\\hr-website\\app\\api\\ats-results\\save\\route.ts": {
+    "mtime": 1765729672.7961392,
+    "hash": "18f4e03917b8b17665e91bdfdfee75b1"
+  },
+  "D:\\hr-website\\app\\api\\ats-results\\[id]\\route.ts": {
+    "mtime": 1765729672.795141,
+    "hash": "10026b5217752653530953df1d3b2bc2"
+  },
+  "D:\\hr-website\\app\\api\\chat\\route.ts": {
+    "mtime": 1765729672.7971406,
+    "hash": "c34e58bc806804ed4f6d0e5bcbd3ca82"
+  },
+  "D:\\hr-website\\app\\api\\community\\posts\\route.ts": {
+    "mtime": 1765729672.7981453,
+    "hash": "76dcfd1ef0f8217e93ec0210561e472f"
+  },
+  "D:\\hr-website\\app\\api\\community\\posts\\[postId]\\replies\\route.ts": {
+    "mtime": 1765729672.7981453,
+    "hash": "476353f4288e30fbcbf9a78c9dc97566"
+  },
+  "D:\\hr-website\\app\\api\\credits\\deduct\\route.ts": {
+    "mtime": 1765729672.79914,
+    "hash": "f1296fb3173d16962ae0501e755c9466"
+  },
+  "D:\\hr-website\\app\\api\\deregister-drive\\route.ts": {
+    "mtime": 1765729672.79914,
+    "hash": "4925e73bf4fa99dfbd137f79c0cc7df8"
+  },
+  "D:\\hr-website\\app\\api\\execute\\route.ts": {
+    "mtime": 1765729672.800141,
+    "hash": "535df6b31887de6fabdbfc943033b63d"
+  },
+  "D:\\hr-website\\app\\api\\interview\\chat\\route.ts": {
+    "mtime": 1765729672.800141,
+    "hash": "e578d3bcf264411b23632bfcd54007dd"
+  },
+  "D:\\hr-website\\app\\api\\interview\\feedback\\route.ts": {
+    "mtime": 1765729672.800141,
+    "hash": "735171e3b94cde7d5f1358215a70dac7"
+  },
+  "D:\\hr-website\\app\\api\\interview\\history\\route.ts": {
+    "mtime": 1765729672.8016477,
+    "hash": "efdd9c1bdde9f80c0fc8f69258ef208e"
+  },
+  "D:\\hr-website\\app\\api\\interview\\results\\[id]\\route.ts": {
+    "mtime": 1765729672.8016477,
+    "hash": "2fcb856c254559229ff4e4428af2a5aa"
+  },
+  "D:\\hr-website\\app\\api\\quiz\\admin\\add-question\\route.ts": {
+    "mtime": 1765729672.8036556,
+    "hash": "ab8f5f075a16e26242cd493f3ea4a03a"
+  },
+  "D:\\hr-website\\app\\api\\quiz\\admin\\attach-question\\route.ts": {
+    "mtime": 1765729672.8036556,
+    "hash": "e9cdd9f025e50c6e56e7c3f2f4a473fa"
+  },
+  "D:\\hr-website\\app\\api\\quiz\\admin\\attempts\\route.ts": {
+    "mtime": 1765729672.8046575,
+    "hash": "2c1328cc6c70593c1f8eae32474e4d0a"
+  },
+  "D:\\hr-website\\app\\api\\quiz\\admin\\create\\route.ts": {
+    "mtime": 1765729672.8046575,
+    "hash": "a57d69ef89276d3c8fb26674b0150819"
+  },
+  "D:\\hr-website\\app\\api\\quiz\\admin\\delete\\route.ts": {
+    "mtime": 1765729672.8046575,
+    "hash": "5a66c436c5d1462c81f814d20d2c24af"
+  },
+  "D:\\hr-website\\app\\api\\quiz\\generate\\route.ts": {
+    "mtime": 1765729672.8056915,
+    "hash": "2cb41eb19decc442d5e206eda63e841b"
+  },
+  "D:\\hr-website\\app\\api\\quiz\\[quizId]\\leaderboard\\route.ts": {
+    "mtime": 1765729672.8026543,
+    "hash": "6f95b5e0f71bcf49417742150d93d0d0"
+  },
+  "D:\\hr-website\\app\\api\\quiz\\[quizId]\\questions\\route.ts": {
+    "mtime": 1765729672.8026543,
+    "hash": "905d67e260adea179a950a79dff23953"
+  },
+  "D:\\hr-website\\app\\api\\register-drive\\route.ts": {
+    "mtime": 1765729672.8063736,
+    "hash": "22e86a580512ba5cb57b5a46d98aad91"
+  },
+  "D:\\hr-website\\app\\api\\resumes\\debug\\route.ts": {
+    "mtime": 1765729672.8083813,
+    "hash": "97516e0e8030dfdedce2102b21158f0f"
+  },
+  "D:\\hr-website\\app\\api\\resumes\\list\\route.ts": {
+    "mtime": 1765729672.8083813,
+    "hash": "c1b7a83324c81d16155d1e6b8f689921"
+  },
+  "D:\\hr-website\\app\\api\\resumes\\save\\route.ts": {
+    "mtime": 1765729672.809381,
+    "hash": "aefe6391fc51e13d7fe8338b697f857b"
+  },
+  "D:\\hr-website\\app\\api\\resumes\\test\\route.ts": {
+    "mtime": 1765729672.809381,
+    "hash": "ce3ee81cfacb6019b014cf0a77a0759b"
+  },
+  "D:\\hr-website\\app\\api\\resumes\\[id]\\route.ts": {
+    "mtime": 1765729672.8073814,
+    "hash": "f3e629bc436bbf5c8b540e764398484d"
+  },
+  "D:\\hr-website\\app\\api\\roadmap\\generate\\route.ts": {
+    "mtime": 1765729672.8103814,
+    "hash": "519f90a228c8333bb0c236a7e44cfcc2"
+  },
+  "D:\\hr-website\\app\\api\\skill-gap\\route.ts": {
+    "mtime": 1765729672.8103814,
+    "hash": "9d3c7d9d81289ef60fe877395441bfef"
+  },
+  "D:\\hr-website\\app\\api\\submit-application\\route.ts": {
+    "mtime": 1765729672.8103814,
+    "hash": "d9864e9a2ac07b124811c0db544c2884"
+  },
+  "D:\\hr-website\\app\\api\\vapi\\generate\\route.ts": {
+    "mtime": 1765729672.8118882,
+    "hash": "4a8fd25005e1f220cd1619405239c352"
+  },
+  "D:\\hr-website\\app\\api\\vapi-token\\route.ts": {
+    "mtime": 1765729672.8103814,
+    "hash": "f1c2a938bedcd876faa4d4e227cddf62"
+  },
+  "D:\\hr-website\\app\\api\\webhooks\\whatsapp\\route.ts": {
+    "mtime": 1765729672.8118882,
+    "hash": "5a224f32d97154fa75362de60251c6f3"
+  },
+  "D:\\hr-website\\app\\components\\AISuggestions.tsx": {
+    "mtime": 1765729672.8128943,
+    "hash": "1642295eaee6eeb9e6259de7d0fec9a7"
+  },
+  "D:\\hr-website\\app\\components\\AuthDebug.tsx": {
+    "mtime": 1765729672.8128943,
+    "hash": "4be2a22af1b3b00b4fd7f3a8641f7841"
+  },
+  "D:\\hr-website\\app\\components\\BasicDownloadDropdown.tsx": {
+    "mtime": 1765729672.8128943,
+    "hash": "d07999c16150650b746645fca6fdd760"
+  },
+  "D:\\hr-website\\app\\components\\CodePlayground.tsx": {
+    "mtime": 1765729672.8138964,
+    "hash": "ff23b57186a3ad4bad05553f4fcc2c8f"
+  },
+  "D:\\hr-website\\app\\components\\CTA.tsx": {
+    "mtime": 1778216114.715445,
+    "hash": "405f990d911f316d657c7e72dcb6477e"
+  },
+  "D:\\hr-website\\app\\components\\Dashboard.tsx": {
+    "mtime": 1765729672.8138964,
+    "hash": "6bd2ca7c7a95ca1d4baf134af01f1e65"
+  },
+  "D:\\hr-website\\app\\components\\DownloadDropdown.tsx": {
+    "mtime": 1765729672.8138964,
+    "hash": "81d0d4b091a06c29513f9e65880a4bdd"
+  },
+  "D:\\hr-website\\app\\components\\EyeContactAnalyzer.tsx": {
+    "mtime": 1765729672.8138964,
+    "hash": "9b82eaed812ad9e68c4a5feee156a941"
+  },
+  "D:\\hr-website\\app\\components\\Features.tsx": {
+    "mtime": 1778216068.5142653,
+    "hash": "b1370e77e70b61cf1d2fd53298cc1ef6"
+  },
+  "D:\\hr-website\\app\\components\\Footer.tsx": {
+    "mtime": 1765729672.815436,
+    "hash": "33cfde9072980d94e38cddfade00a1d5"
+  },
+  "D:\\hr-website\\app\\components\\Header.tsx": {
+    "mtime": 1778216317.8412502,
+    "hash": "48699b387c8989b48d979dab6926e4ad"
+  },
+  "D:\\hr-website\\app\\components\\Hero.tsx": {
+    "mtime": 1778216066.4655654,
+    "hash": "b22bc24c60de5664a302ab8ea68a464e"
+  },
+  "D:\\hr-website\\app\\components\\InterviewSetup.tsx": {
+    "mtime": 1765729672.8164356,
+    "hash": "b380947c23d6c502d91d567ea1cd7611"
+  },
+  "D:\\hr-website\\app\\components\\Mentor.tsx": {
+    "mtime": 1778216110.6304266,
+    "hash": "231726f8db9a494b2b7c6b678e2c9fd2"
+  },
+  "D:\\hr-website\\app\\components\\MurfTextToSpeech.tsx": {
+    "mtime": 1765729672.8164356,
+    "hash": "c55c8ea285ed3cae1ec50e02a283240c"
+  },
+  "D:\\hr-website\\app\\components\\QuizAdminHeader.tsx": {
+    "mtime": 1765729672.8164356,
+    "hash": "377ad20f55ede506c4fcad1929a61d1c"
+  },
+  "D:\\hr-website\\app\\components\\SavedResumes.tsx": {
+    "mtime": 1765729672.8174357,
+    "hash": "563beaa37066a119fa3a9d1b97964f61"
+  },
+  "D:\\hr-website\\app\\components\\SkillTag.tsx": {
+    "mtime": 1765729672.8174357,
+    "hash": "4721c4f327dc4b11104f80767c7375f5"
+  },
+  "D:\\hr-website\\app\\components\\Stats.tsx": {
+    "mtime": 1778216112.685433,
+    "hash": "c9b06f5bbf0104df0ed6f3932fecba17"
+  },
+  "D:\\hr-website\\app\\components\\TemplateSelector.tsx": {
+    "mtime": 1765729672.8174357,
+    "hash": "5d806d5d76955e31efc67a3cac5993bc"
+  },
+  "D:\\hr-website\\app\\components\\ThemeToggleButton.tsx": {
+    "mtime": 1765729672.8184352,
+    "hash": "8b4c251a4878fe2095bd4818db832e08"
+  },
+  "D:\\hr-website\\app\\components\\VapiInterviewInterface.tsx": {
+    "mtime": 1765729672.8184352,
+    "hash": "341e0b61ba36cdeb2a9c48573d4f20c2"
+  },
+  "D:\\hr-website\\app\\components\\ats\\ATSAnalysisHistory.tsx": {
+    "mtime": 1765729672.8184352,
+    "hash": "f3f7226ed84b8f61372fb3ccf500757b"
+  },
+  "D:\\hr-website\\app\\components\\ats\\ATSAnalyzer.tsx": {
+    "mtime": 1765729672.8194363,
+    "hash": "d4c6c72b00827bfbe736e10e5b71ef51"
+  },
+  "D:\\hr-website\\app\\components\\ats\\ATSDashboard.tsx": {
+    "mtime": 1765729672.8194363,
+    "hash": "2d255bc33d9790f8b921ae390513665e"
+  },
+  "D:\\hr-website\\app\\components\\ats\\ATSDebugPanel.tsx": {
+    "mtime": 1765729672.820436,
+    "hash": "720723db3375066aa10a06d36ee8a456"
+  },
+  "D:\\hr-website\\app\\components\\ats\\ATSResultHistory.tsx": {
+    "mtime": 1765729672.820436,
+    "hash": "d238988dc2f6bf071fc47a917c6f0dc8"
+  },
+  "D:\\hr-website\\app\\components\\ats\\CoverLetterGenerator.tsx": {
+    "mtime": 1765729672.820436,
+    "hash": "377e7efd9fca0837556d44455e42b793"
+  },
+  "D:\\hr-website\\app\\components\\ats\\InterviewPrep.tsx": {
+    "mtime": 1765729672.8214357,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "D:\\hr-website\\app\\components\\auth\\AuthErrorBoundary.tsx": {
+    "mtime": 1765729672.8214357,
+    "hash": "f7d09ded57a43cb4781a09ae9e03dbbc"
+  },
+  "D:\\hr-website\\app\\components\\auth\\AuthGuard.tsx": {
+    "mtime": 1765729672.8222609,
+    "hash": "f4ac09cace1ac4408ed0a8248998401d"
+  },
+  "D:\\hr-website\\app\\components\\auth\\ProtectedRoute.tsx": {
+    "mtime": 1765729672.8222609,
+    "hash": "0dbb7ba1830821b5fabc0d78145db05c"
+  },
+  "D:\\hr-website\\app\\components\\auth\\RoleProtectedRoute.tsx": {
+    "mtime": 1765729672.823268,
+    "hash": "7d0ae4c115e39083584548afd51825a5"
+  },
+  "D:\\hr-website\\app\\components\\auth\\UserDashboard.tsx": {
+    "mtime": 1765729672.823268,
+    "hash": "d04dbb9192121fe7577bd942868a87c8"
+  },
+  "D:\\hr-website\\app\\components\\auth\\UserProfile.tsx": {
+    "mtime": 1765729672.823268,
+    "hash": "38cd735e9ed70083065a8b931fd6f0ab"
+  },
+  "D:\\hr-website\\app\\components\\community\\AskDoubtForm.tsx": {
+    "mtime": 1765729672.824268,
+    "hash": "8a9789424f6a5c1c645f36ee58fad32a"
+  },
+  "D:\\hr-website\\app\\components\\community\\PostCard.tsx": {
+    "mtime": 1765729672.824268,
+    "hash": "471b6ab10283fdcc4d72681d775bd847"
+  },
+  "D:\\hr-website\\app\\components\\community\\PostDetail.tsx": {
+    "mtime": 1765729672.825269,
+    "hash": "2ed572e7f45fdefc0565f78621ba3e74"
+  },
+  "D:\\hr-website\\app\\components\\dashboard\\AssignedQuizzes.tsx": {
+    "mtime": 1765729672.825269,
+    "hash": "a9b3635023c74d88b9febaa3941fcba4"
+  },
+  "D:\\hr-website\\app\\components\\dashboard\\InterviewHistory.tsx": {
+    "mtime": 1765729672.825269,
+    "hash": "fa2624c6fb3e3ad06979e4d7d243fb83"
+  },
+  "D:\\hr-website\\app\\components\\editor\\AceEditorWrapper.tsx": {
+    "mtime": 1765729672.826268,
+    "hash": "41516fcbcf6019cc6195398c3f8a722d"
+  },
+  "D:\\hr-website\\app\\components\\editor\\CodeEditor.tsx": {
+    "mtime": 1765729672.826268,
+    "hash": "c83732d153896185467de2908fe4976c"
+  },
+  "D:\\hr-website\\app\\components\\editor\\ControlBar.tsx": {
+    "mtime": 1765729672.826268,
+    "hash": "09569ce53212f722ad2d85af4e03457b"
+  },
+  "D:\\hr-website\\app\\components\\editor\\CustomInputBox.tsx": {
+    "mtime": 1765729672.826268,
+    "hash": "09f46713609ceee2c9331e1282a14106"
+  },
+  "D:\\hr-website\\app\\components\\editor\\index.ts": {
+    "mtime": 1765729672.8272676,
+    "hash": "061225cb2fdeaa366ba59625f7e81b2a"
+  },
+  "D:\\hr-website\\app\\components\\editor\\LanguageChangeDialog.tsx": {
+    "mtime": 1765729672.8272676,
+    "hash": "e3d7cc6b7cdd21dbf169892587aadc74"
+  },
+  "D:\\hr-website\\app\\components\\editor\\OutputConsole.tsx": {
+    "mtime": 1765729672.8272676,
+    "hash": "94844a3ce8fa554533ca0ea0265d38fe"
+  },
+  "D:\\hr-website\\app\\components\\interview\\agent.tsx": {
+    "mtime": 1765729672.8282695,
+    "hash": "02da20bd92b7c0d7ffa557ee48a27acf"
+  },
+  "D:\\hr-website\\app\\components\\interview\\EyeContactTracker.tsx": {
+    "mtime": 1765729672.8282695,
+    "hash": "f920321bb02f7c614a9ce374ceb1c8c7"
+  },
+  "D:\\hr-website\\app\\components\\interview\\VideoInterviewer.tsx": {
+    "mtime": 1765729672.8282695,
+    "hash": "0ae6ccbccc07e9a01f4a70212fe3b2fb"
+  },
+  "D:\\hr-website\\app\\components\\quiz\\QuizCard.tsx": {
+    "mtime": 1765729672.829268,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "D:\\hr-website\\app\\components\\quiz\\QuizPlayer.tsx": {
+    "mtime": 1765729672.829268,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "D:\\hr-website\\app\\components\\resume\\AIRephraseButton.tsx": {
+    "mtime": 1765729672.829268,
+    "hash": "d992937b878125f4eb72b874c8ed050d"
+  },
+  "D:\\hr-website\\app\\components\\resume\\DownloadDropdown.tsx": {
+    "mtime": 1765729672.829268,
+    "hash": "9e71523117643456b82f34dd55c20138"
+  },
+  "D:\\hr-website\\app\\components\\resume\\Form.tsx": {
+    "mtime": 1765729672.8307745,
+    "hash": "b2bec5145896e1b85e1a82fd55b58caf"
+  },
+  "D:\\hr-website\\app\\components\\resume\\LeftContent.tsx": {
+    "mtime": 1765729672.8307745,
+    "hash": "b51b1fd05ba6904190cd09112158deb8"
+  },
+  "D:\\hr-website\\app\\components\\resume\\Resume.tsx": {
+    "mtime": 1765729672.8307745,
+    "hash": "cd6f564c069e6df0beabccc97c9a89a7"
+  },
+  "D:\\hr-website\\app\\components\\resume\\RightContent.tsx": {
+    "mtime": 1765729672.8307745,
+    "hash": "9c67884833648aeb6de4849d08603e29"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Activities.tsx": {
+    "mtime": 1765729672.8317807,
+    "hash": "c422404a2e6b980173ce4381bc0fe664"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Certifications.tsx": {
+    "mtime": 1765729672.8317807,
+    "hash": "5690e14045d90fd62ae8094a43232aa0"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Contact.tsx": {
+    "mtime": 1765729672.8327818,
+    "hash": "05208b560a229bf7476be60e7a1b6560"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Education.tsx": {
+    "mtime": 1765729672.8327818,
+    "hash": "06e0e9152f55746e7b2ecb2ef4d8d43c"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Experience.tsx": {
+    "mtime": 1765729672.8327818,
+    "hash": "32f2b18bf249652b6b35e7fd5fd69f37"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Interests.tsx": {
+    "mtime": 1765729672.8327818,
+    "hash": "be8ee775abe388dabb48cadc95560d4c"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Languages.tsx": {
+    "mtime": 1765729672.8327818,
+    "hash": "86d5aba2de900e2fcc4a8857b082d6b6"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Objective.tsx": {
+    "mtime": 1765729672.8327818,
+    "hash": "b2ab11a14bc67035e5b9f518c6928973"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Projects.tsx": {
+    "mtime": 1765729672.8327818,
+    "hash": "797c3723d07e3625213deac06227344f"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\References.tsx": {
+    "mtime": 1765729672.834263,
+    "hash": "d5437574d555899af06d14019ff1bb5f"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Skills.tsx": {
+    "mtime": 1765729672.834263,
+    "hash": "8b1d055829626c25d6b41449fb87e111"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Tools.tsx": {
+    "mtime": 1765729672.834263,
+    "hash": "c64abdd9de06f62404d47236d1bf16be"
+  },
+  "D:\\hr-website\\app\\components\\resume\\sections\\Workshops.tsx": {
+    "mtime": 1765729672.834263,
+    "hash": "847209477f7c4e9dfb65cd19db104de5"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template1.tsx": {
+    "mtime": 1765729672.8352616,
+    "hash": "3bd9649c9f059dc29219fd9a2ea59f68"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template10.tsx": {
+    "mtime": 1765729672.8352616,
+    "hash": "d955703f956f088a511dfc756ec2aae8"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template11.tsx": {
+    "mtime": 1765729672.8352616,
+    "hash": "80f59d4f92e9bbac3fb84bce60ab6712"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template2.tsx": {
+    "mtime": 1765729672.8352616,
+    "hash": "d0016166fbe65637cc97e9dd69c24cc0"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template3.tsx": {
+    "mtime": 1765729672.836261,
+    "hash": "8e35189b250a9a2e48bf35b88409f607"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template4.tsx": {
+    "mtime": 1765729672.836261,
+    "hash": "eaafb15be4dbd9bbe6a4ece19a271ffd"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template5.tsx": {
+    "mtime": 1765729672.836261,
+    "hash": "9d87c79a4e1b0f60bdd5bf1ed87148bd"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template6.tsx": {
+    "mtime": 1765729672.8379045,
+    "hash": "37bd8861013dee18cb5fe3373fac339a"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template7.tsx": {
+    "mtime": 1765729672.8379045,
+    "hash": "7e94ba46fa858f7fdce55cf82f2ab637"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template8.tsx": {
+    "mtime": 1765729672.8379045,
+    "hash": "dce86595504eaa6b35b2fcb0853ecc29"
+  },
+  "D:\\hr-website\\app\\components\\resume\\templates\\Template9.tsx": {
+    "mtime": 1765729672.8379045,
+    "hash": "b849039257f19cd09d880873ef80a399"
+  },
+  "D:\\hr-website\\app\\components\\roadmap\\VisualRoadmap.tsx": {
+    "mtime": 1765729672.8389113,
+    "hash": "bea13d1b0c8bcecd0d369d816deee78c"
+  },
+  "D:\\hr-website\\app\\components\\ui\\button.tsx": {
+    "mtime": 1765729672.8399117,
+    "hash": "045b423967af7e15c8054888bf30e4a8"
+  },
+  "D:\\hr-website\\app\\components\\ui\\DisplayTechIcons.tsx": {
+    "mtime": 1765729672.8389113,
+    "hash": "1ab8a97a579f7461adcd6844a60783f9"
+  },
+  "D:\\hr-website\\app\\components\\ui\\RoleBadge.tsx": {
+    "mtime": 1765729672.8389113,
+    "hash": "4c7dff9802285b9c91a7e04b1e51b1a1"
+  },
+  "D:\\hr-website\\app\\components\\ui\\RoleSelector.tsx": {
+    "mtime": 1765729672.8399117,
+    "hash": "588ba55b6f894a67fe679e6621bf7de9"
+  },
+  "D:\\hr-website\\app\\components\\ui\\Toast.tsx": {
+    "mtime": 1765729672.8399117,
+    "hash": "736de9cc8c1102992220926d3d1075af"
+  },
+  "D:\\hr-website\\app\\components\\visualizer\\AlgorithmSelector.tsx": {
+    "mtime": 1765729672.840912,
+    "hash": "7e56158f658ada831336f21db1b83b72"
+  },
+  "D:\\hr-website\\app\\components\\visualizer\\ArrayGenerator.tsx": {
+    "mtime": 1765729672.840912,
+    "hash": "669a5fadea44c1966dce9b021fc227fd"
+  },
+  "D:\\hr-website\\app\\components\\visualizer\\CodePanel.tsx": {
+    "mtime": 1765729672.840912,
+    "hash": "50bf72c00e21b4f783289bf3907f8f08"
+  },
+  "D:\\hr-website\\app\\components\\visualizer\\ControlPanel.tsx": {
+    "mtime": 1765729672.840912,
+    "hash": "ecc679226497527ad161b697648093c8"
+  },
+  "D:\\hr-website\\app\\components\\visualizer\\SpeedSlider.tsx": {
+    "mtime": 1765729672.840912,
+    "hash": "25aa14fc15c368a2a60109ec3bcd80d6"
+  },
+  "D:\\hr-website\\app\\components\\visualizer\\VisualizerCanvas.tsx": {
+    "mtime": 1765729672.8419123,
+    "hash": "7028366d6cb0ba3027c65eafe422d6b3"
+  },
+  "D:\\hr-website\\app\\config\\api.ts": {
+    "mtime": 1765729672.8429377,
+    "hash": "4b04e7e347bf7a3a58d3ac7908f6e044"
+  },
+  "D:\\hr-website\\app\\constants\\index.ts": {
+    "mtime": 1765729672.8429377,
+    "hash": "b80f4f575492c1792eeb25f5cc14680e"
+  },
+  "D:\\hr-website\\app\\contexts\\AuthContext.tsx": {
+    "mtime": 1765729672.8429377,
+    "hash": "ca7688c5b3c479f10d7da1b041047e21"
+  },
+  "D:\\hr-website\\app\\contexts\\index.ts": {
+    "mtime": 1765729672.8440194,
+    "hash": "39142113fdfd8758a5645bb75748eba7"
+  },
+  "D:\\hr-website\\app\\contexts\\ResumeContext.tsx": {
+    "mtime": 1765729672.8440194,
+    "hash": "62173db0c1ba45043e66c628df7e184c"
+  },
+  "D:\\hr-website\\app\\contexts\\ThemeContext.tsx": {
+    "mtime": 1765729672.8440194,
+    "hash": "f6106130f4fb67202f2669fd35ab9c53"
+  },
+  "D:\\hr-website\\app\\contexts\\ThemeProvider.tsx": {
+    "mtime": 1765729672.8440194,
+    "hash": "b80528b29e1df9562f2ca8436ab0883b"
+  },
+  "D:\\hr-website\\app\\hooks\\useResumeApi.ts": {
+    "mtime": 1765729672.8460217,
+    "hash": "a8177306589ed12fb11208584d258106"
+  },
+  "D:\\hr-website\\app\\hooks\\useRoleAccess.ts": {
+    "mtime": 1765729672.8460217,
+    "hash": "639be656fb2548259c1a763c69fe8bbb"
+  },
+  "D:\\hr-website\\app\\lib\\openai.ts": {
+    "mtime": 1765729672.8500202,
+    "hash": "ea37ce10021e9fe9a81b5324acc39348"
+  },
+  "D:\\hr-website\\app\\lib\\supabase.ts": {
+    "mtime": 1765729672.8510182,
+    "hash": "4166f6bb6fc9368290342b001e8541b9"
+  },
+  "D:\\hr-website\\app\\lib\\types.ts": {
+    "mtime": 1765729672.8510182,
+    "hash": "b0938d7c864cf16e5ec3bcbf21ef842b"
+  },
+  "D:\\hr-website\\app\\lib\\utils.ts": {
+    "mtime": 1765729672.8510182,
+    "hash": "75498359cc2e387ff2d49070bfa28bdd"
+  },
+  "D:\\hr-website\\app\\lib\\vapi.sdk.ts": {
+    "mtime": 1765729672.852363,
+    "hash": "4132e8450c2e3affc372e63318ef8d0b"
+  },
+  "D:\\hr-website\\app\\lib\\visualizerEngine.ts": {
+    "mtime": 1765729672.8528707,
+    "hash": "a0560abd6e83a77c6e949a97ab07ec9b"
+  },
+  "D:\\hr-website\\app\\lib\\action\\general.action.ts": {
+    "mtime": 1765729672.84702,
+    "hash": "ed58c3e89876905ddaf9168beae895e4"
+  },
+  "D:\\hr-website\\app\\lib\\actions\\general.action.ts": {
+    "mtime": 1765729672.84702,
+    "hash": "3004be5f5236b650c6fd60b0bc2e8b8f"
+  },
+  "D:\\hr-website\\app\\lib\\algorithms\\binarySearch.ts": {
+    "mtime": 1765729672.8480198,
+    "hash": "e85e5ff58bf34c74c55fed1dabc1bc59"
+  },
+  "D:\\hr-website\\app\\lib\\algorithms\\bubbleSort.ts": {
+    "mtime": 1765729672.8480198,
+    "hash": "6e5b59d533e9bd1cb7daf31c3462aaac"
+  },
+  "D:\\hr-website\\app\\lib\\algorithms\\insertionSort.ts": {
+    "mtime": 1765729672.8480198,
+    "hash": "272c51391976e0aa2822cf15fb85f321"
+  },
+  "D:\\hr-website\\app\\lib\\algorithms\\linearSearch.ts": {
+    "mtime": 1765729672.8490467,
+    "hash": "b65d4f2f4ed50677b148a250cc96f2b9"
+  },
+  "D:\\hr-website\\app\\lib\\algorithms\\mergeSort.ts": {
+    "mtime": 1765729672.8490467,
+    "hash": "fa5e5518cee12c8f6b0d0eac8d483fd0"
+  },
+  "D:\\hr-website\\app\\lib\\algorithms\\quickSort.ts": {
+    "mtime": 1765729672.8490467,
+    "hash": "46ea394b143819b339c422fd8beb9206"
+  },
+  "D:\\hr-website\\app\\lib\\algorithms\\selectionSort.ts": {
+    "mtime": 1765729672.8500202,
+    "hash": "562c38d666cc7134d74c0c0e9693169a"
+  },
+  "D:\\hr-website\\app\\lib\\skill-gap\\jobSkillsDB.ts": {
+    "mtime": 1765729672.8500202,
+    "hash": "7c0ea93852b91aa9c9e1dca28f62905f"
+  },
+  "D:\\hr-website\\app\\lib\\skill-gap\\skillAnalyzer.ts": {
+    "mtime": 1765729672.8510182,
+    "hash": "8523379610f8d31534ab2dbc7fc1c82c"
+  },
+  "D:\\hr-website\\app\\pages\\ATSTools.tsx": {
+    "mtime": 1765729672.8533902,
+    "hash": "45ed467a4a3b6a05af2a42adae207275"
+  },
+  "D:\\hr-website\\app\\pages\\ResumeBuilder.tsx": {
+    "mtime": 1765729672.8533902,
+    "hash": "cb1f4b11be0edb9f5188af66a7970a03"
+  },
+  "D:\\hr-website\\app\\pages\\TemplateSelection.tsx": {
+    "mtime": 1765729672.8543997,
+    "hash": "75af6899bf0b30053027244695fa31bd"
+  },
+  "D:\\hr-website\\app\\services\\atsResultService.ts": {
+    "mtime": 1765729672.8543997,
+    "hash": "b2cff110c5c38bf0380dd127427ba271"
+  },
+  "D:\\hr-website\\app\\services\\huggingFaceService.ts": {
+    "mtime": 1765729672.855399,
+    "hash": "fc4c7381f87c25870546f8683c108d8d"
+  },
+  "D:\\hr-website\\app\\services\\murfService.ts": {
+    "mtime": 1765729672.855399,
+    "hash": "d5bd3577cc8409d9bcd818dc1816272b"
+  },
+  "D:\\hr-website\\app\\services\\quiz.ts": {
+    "mtime": 1765729672.855399,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "D:\\hr-website\\app\\services\\resumeService.ts": {
+    "mtime": 1765729672.855399,
+    "hash": "cb190e0f01436951c5211534e52b9f49"
+  },
+  "D:\\hr-website\\app\\services\\supabaseATSService.ts": {
+    "mtime": 1765729672.8563979,
+    "hash": "6839f2e362a20d11fdc93351e2f24768"
+  },
+  "D:\\hr-website\\app\\services\\validations\\quizSchemas.ts": {
+    "mtime": 1765729672.8563979,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "D:\\hr-website\\app\\types\\community.ts": {
+    "mtime": 1765729672.8574,
+    "hash": "bf3a6fcd77fc9feb10f7ac5a9400539e"
+  },
+  "D:\\hr-website\\app\\types\\database.types.ts": {
+    "mtime": 1765729672.8574,
+    "hash": "c761d5138a54407f0c4f7eaeb2b79c43"
+  },
+  "D:\\hr-website\\app\\types\\interview.ts": {
+    "mtime": 1765729672.8574,
+    "hash": "90dcaca3a45d5aa1f18214fcd2e34b9c"
+  },
+  "D:\\hr-website\\app\\types\\quiz.d.ts": {
+    "mtime": 1765729672.8583994,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "D:\\hr-website\\app\\types\\resume.ts": {
+    "mtime": 1765729672.8583994,
+    "hash": "1906e80a9bc0d57069801ac21da7a86e"
+  },
+  "D:\\hr-website\\app\\types\\roadmap.ts": {
+    "mtime": 1765729672.8583994,
+    "hash": "d364da8041c18f33cf443ca8bbf955bd"
+  },
+  "D:\\hr-website\\app\\types\\vapi.d.ts": {
+    "mtime": 1765729672.8583994,
+    "hash": "cb53d4e6bdf87d395248ce386f5b6761"
+  },
+  "D:\\hr-website\\app\\utils\\api.ts": {
+    "mtime": 1765729672.8603985,
+    "hash": "8c21e8a5a55d0f22f9fab7ed3a9161f2"
+  },
+  "D:\\hr-website\\app\\utils\\codeTemplates.ts": {
+    "mtime": 1765729672.8603985,
+    "hash": "8a50f33ecac4e952b80f14f8477d52fc"
+  },
+  "D:\\hr-website\\app\\utils\\documentGenerator.ts": {
+    "mtime": 1765729672.8603985,
+    "hash": "25be35461b38cf2e1279e337e4f9bb0b"
+  },
+  "D:\\hr-website\\app\\utils\\errorHandler.ts": {
+    "mtime": 1765729672.8613992,
+    "hash": "b412d5d9adb32141038c2257cd92907d"
+  },
+  "D:\\hr-website\\app\\utils\\InputField.jsx": {
+    "mtime": 1765729672.8593976,
+    "hash": "057b8f7a6b638a9c982ce02be2877d78"
+  },
+  "D:\\hr-website\\app\\utils\\OtpInputForm.jsx": {
+    "mtime": 1765729672.8603985,
+    "hash": "3b4e0b59274f93cb2afa25813d566bff"
+  },
+  "D:\\hr-website\\app\\utils\\pdfStorageErrors.ts": {
+    "mtime": 1765729672.8624303,
+    "hash": "9f1c4e24f13c7d849c5fdba5b89f264b"
+  },
+  "D:\\hr-website\\app\\utils\\redirectHelpers.ts": {
+    "mtime": 1765729672.8624303,
+    "hash": "6ec8e3c641c1654ef9a2e3dabfe9302f"
+  },
+  "D:\\hr-website\\app\\utils\\types\\resume.ts": {
+    "mtime": 1765729672.8624303,
+    "hash": "128daa5b5b297805fa29f9068c2f9a5d"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\activecampaign.js": {
+    "mtime": 1778216045.44477,
+    "hash": "b2430740496864720553137b52005f57"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\adobe-analytics.js": {
+    "mtime": 1778216045.4463146,
+    "hash": "c647d9fa9d7854b830e6bb15c75adbe1"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\ahrefs.js": {
+    "mtime": 1778216045.4482775,
+    "hash": "764177e25ecf912dbf9f1d9af89602a5"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\airops.js": {
+    "mtime": 1778216045.4482775,
+    "hash": "0e380fa43e9b72888cf6f1e46a47f6b9"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\amplitude.js": {
+    "mtime": 1778216045.4498074,
+    "hash": "d5775d8fb6bf2c601dabdb4804914cb2"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\apollo.js": {
+    "mtime": 1778216045.450464,
+    "hash": "907b14aa709224ff4e778c97d6678aeb"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\beehiiv.js": {
+    "mtime": 1778216045.450464,
+    "hash": "8c777f8b45b720c29081dc5ee5d9d774"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\brevo.js": {
+    "mtime": 1778216045.4514773,
+    "hash": "9446c67bfed36b27171fa42ce6884dea"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\buffer.js": {
+    "mtime": 1778216045.4524884,
+    "hash": "b001b4ba6359a8b1a6d1dceff63550de"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\calendly.js": {
+    "mtime": 1778216045.453017,
+    "hash": "dcf4346ba30bc45a4d854b886247122c"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\clay.js": {
+    "mtime": 1778216045.453017,
+    "hash": "41392ea6d1b28b75dabd7d5fe9337d44"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\clearbit.js": {
+    "mtime": 1778216045.453017,
+    "hash": "7fb88c3da10720bba84adfff4aeee1d4"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\close.js": {
+    "mtime": 1778216045.4550178,
+    "hash": "28adf13a76671bb23f68079dc0b8095e"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\coupler.js": {
+    "mtime": 1778216045.4550178,
+    "hash": "bb5f93f5437fdb3dfbe6989527891add"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\crossbeam.js": {
+    "mtime": 1778216045.455966,
+    "hash": "d99025f7478b87053bb79feeb53b396b"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\customer-io.js": {
+    "mtime": 1778216045.455966,
+    "hash": "32461ec5f37ced33e980166f6cd7beeb"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\dataforseo.js": {
+    "mtime": 1778216045.4573069,
+    "hash": "5ba21cad856fe09fe2bc5e08084bd4d6"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\demio.js": {
+    "mtime": 1778216045.457973,
+    "hash": "50f1c685156d799e3b9660ce34fe55d5"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\dub.js": {
+    "mtime": 1778216045.457973,
+    "hash": "2cf2108215944a6129806af7256391f4"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\g2.js": {
+    "mtime": 1778216045.458974,
+    "hash": "d9d2810776783b84e28d4a5e7f99cb0d"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\ga4.js": {
+    "mtime": 1778216045.4599738,
+    "hash": "0f819dfcce7f8fbd7b0a78a1e9363ae0"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\google-ads.js": {
+    "mtime": 1778216045.4599738,
+    "hash": "246edd13e71338072fb3ceb14e6e864d"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\google-search-console.js": {
+    "mtime": 1778216045.4609768,
+    "hash": "05e94d1e8d838eed0beab359425e32bf"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\hotjar.js": {
+    "mtime": 1778216045.4609768,
+    "hash": "10200d3cdce1e2d4b0fb947b0eccc668"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\hunter.js": {
+    "mtime": 1778216045.46198,
+    "hash": "351187be35c1fa7058a0f349f1202bde"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\instantly.js": {
+    "mtime": 1778216045.46198,
+    "hash": "657230adeac8088fcac60e9df203ec15"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\intercom.js": {
+    "mtime": 1778216045.4630826,
+    "hash": "f414b554ccf573879f05aeb49a6e4bd5"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\keywords-everywhere.js": {
+    "mtime": 1778216045.4630826,
+    "hash": "b6ec6aabc0f5647a90d5407803c5964b"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\kit.js": {
+    "mtime": 1778216045.4640925,
+    "hash": "3fbbcfabdad99bc9a2641560349dbd5a"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\klaviyo.js": {
+    "mtime": 1778216045.4645982,
+    "hash": "dfc1ecd64d0f9ea9d24eb90563e79718"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\lemlist.js": {
+    "mtime": 1778216045.4651053,
+    "hash": "39680131c4fd00c6de0a21c4938bad17"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\linkedin-ads.js": {
+    "mtime": 1778216045.4654403,
+    "hash": "2612c3d7a986bb7f6f78387e4d854779"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\livestorm.js": {
+    "mtime": 1778216045.4654403,
+    "hash": "dd16f7fba08071f3572fdef9223d836a"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\mailchimp.js": {
+    "mtime": 1778216045.4664874,
+    "hash": "bdaeefaffc71882503012e3238e144dd"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\mention-me.js": {
+    "mtime": 1778216045.4664874,
+    "hash": "7dfff18a2832e7ca1815e5d0af2706a7"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\meta-ads.js": {
+    "mtime": 1778216045.467993,
+    "hash": "a31a07aa8f1ff238854e981dc0fd9f0b"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\mixpanel.js": {
+    "mtime": 1778216045.467993,
+    "hash": "6da9bbd0cac2814343457f5538a343cf"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\onesignal.js": {
+    "mtime": 1778216045.4690056,
+    "hash": "c1b44ad6ee3e20d207243e698c9f8805"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\optimizely.js": {
+    "mtime": 1778216045.470012,
+    "hash": "d759e1cd1783bde38477628b7aafc0bb"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\outreach.js": {
+    "mtime": 1778216045.470012,
+    "hash": "1bb113b8bb4bd832694447ed736c0a41"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\paddle.js": {
+    "mtime": 1778216045.471001,
+    "hash": "6a90f1b1abdab728801fd64375a15bb0"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\partnerstack.js": {
+    "mtime": 1778216045.471001,
+    "hash": "dd9d50b26ae1b86a6986e0c7bc5e5ba5"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\pendo.js": {
+    "mtime": 1778216045.47201,
+    "hash": "bbf5a6e2619f991ec27ca93346000e68"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\plausible.js": {
+    "mtime": 1778216045.47201,
+    "hash": "8dea5ca0a3a8d7fc8b3cd1e8351d5a48"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\postmark.js": {
+    "mtime": 1778216045.4731104,
+    "hash": "86df28092147af3dfb1ab40f9dbaf0b6"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\resend.js": {
+    "mtime": 1778216045.4731104,
+    "hash": "d8d3eaae357613638135e8c0642f114e"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\rewardful.js": {
+    "mtime": 1778216045.4731104,
+    "hash": "0a794272e68b7038d012b4eae8c3a882"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\savvycal.js": {
+    "mtime": 1778216045.4745855,
+    "hash": "8c59ff08928b3a1e2dd496c8dd2e9750"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\segment.js": {
+    "mtime": 1778216045.4745855,
+    "hash": "f43e2a21bcf5ad220b528f2ed01571e8"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\semrush.js": {
+    "mtime": 1778216045.4745855,
+    "hash": "703f499d960832379e6b5d22a83ca03a"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\sendgrid.js": {
+    "mtime": 1778216045.4760935,
+    "hash": "7801e69fb6e9f543c66d8edc768f21cb"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\similarweb.js": {
+    "mtime": 1778216045.4760935,
+    "hash": "ca0c00db7ed96f7b48e578ce2723d738"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\snov.js": {
+    "mtime": 1778216045.4771004,
+    "hash": "e0fad05a17bb792f0657d8173756b22d"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\supermetrics.js": {
+    "mtime": 1778216045.4771004,
+    "hash": "0d86c1168797b3cc44d3da5f9f52cdda"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\tiktok-ads.js": {
+    "mtime": 1778216045.4782267,
+    "hash": "cd749587b60f788918a0f7e118c8149c"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\tolt.js": {
+    "mtime": 1778216045.479238,
+    "hash": "758909389815d1444d2448d133d1026f"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\trustpilot.js": {
+    "mtime": 1778216045.479238,
+    "hash": "a1171daabed4234e443d9c39613adfe5"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\typeform.js": {
+    "mtime": 1778216045.479238,
+    "hash": "ce793bdf2a98ad634fb65114e1009ec3"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\wistia.js": {
+    "mtime": 1778216045.4807034,
+    "hash": "e4cf6408789191e4b52c07680a877528"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\zapier.js": {
+    "mtime": 1778216045.4812136,
+    "hash": "bc444a83ca723d1f7bea48892f9117aa"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\zoominfo.js": {
+    "mtime": 1778216045.4812136,
+    "hash": "212efd824a692d91d3621d7d7cda990b"
+  },
+  "D:\\hr-website\\migrations\\20240522_add_credits.sql": {
+    "mtime": 1765729672.8639362,
+    "hash": "0bb2d1790f85c19324ef698c7c31ba75"
+  },
+  "D:\\hr-website\\migrations\\fix_users_updated_at.sql": {
+    "mtime": 1765729672.8652759,
+    "hash": "e0e9e722d2bd0e822400d731435d8d8f"
+  },
+  "D:\\hr-website\\build_output.txt": {
+    "mtime": 1765729672.8624303,
+    "hash": "44b3eec69e77654380e1ec43141049ef"
+  },
+  "D:\\hr-website\\marketingskills\\AGENTS.md": {
+    "mtime": 1778216045.3073885,
+    "hash": "6dc1febd99c5a46ef5735e3cc0a280a7"
+  },
+  "D:\\hr-website\\marketingskills\\CLAUDE.md": {
+    "mtime": 1778216045.307899,
+    "hash": "bc5441b46c60dc9086061eb9793d0283"
+  },
+  "D:\\hr-website\\marketingskills\\CONTRIBUTING.md": {
+    "mtime": 1778216045.308411,
+    "hash": "4c12db7a6f6a573367dfa9571e34292e"
+  },
+  "D:\\hr-website\\marketingskills\\README.md": {
+    "mtime": 1778216045.3098762,
+    "hash": "1abb2488061100f9baa8c8b45812b0a7"
+  },
+  "D:\\hr-website\\marketingskills\\VERSIONS.md": {
+    "mtime": 1778216045.3098762,
+    "hash": "d2665fee830a27d65351dc27dde8cb4d"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\ab-test-setup\\SKILL.md": {
+    "mtime": 1778216045.3118484,
+    "hash": "fb8cd54a9db5c06f65fd2e7432120ecb"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\ab-test-setup\\references\\sample-size-guide.md": {
+    "mtime": 1778216045.3139248,
+    "hash": "739ed75be56ec33feac82cf384ef2ba9"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\ab-test-setup\\references\\test-templates.md": {
+    "mtime": 1778216045.3139248,
+    "hash": "c0b494aec29d8a10c80b064be67e7f87"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\ad-creative\\SKILL.md": {
+    "mtime": 1778216045.315369,
+    "hash": "4f3840bc27d3e9e2b169becd76c49dce"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\ad-creative\\references\\generative-tools.md": {
+    "mtime": 1778216045.3178847,
+    "hash": "c336ea8fd1e7f907d10f5ab155681f91"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\ad-creative\\references\\platform-specs.md": {
+    "mtime": 1778216045.3178847,
+    "hash": "d7ae838b7bc4b985ed5805e653b2d7c1"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\ai-seo\\SKILL.md": {
+    "mtime": 1778216045.3203216,
+    "hash": "f64df16da7f7a2d62511f975e382d321"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\ai-seo\\references\\content-patterns.md": {
+    "mtime": 1778216045.3218296,
+    "hash": "1a090d09c6e94e59bad1e8577f0a36f0"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\ai-seo\\references\\platform-ranking-factors.md": {
+    "mtime": 1778216045.3228385,
+    "hash": "21f58129c55a84b99abc8abd458d16d5"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\analytics-tracking\\SKILL.md": {
+    "mtime": 1778216045.3243477,
+    "hash": "a25379ed823fd9752a15feee78f66af1"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\analytics-tracking\\references\\event-library.md": {
+    "mtime": 1778216045.3258834,
+    "hash": "7339d6b764cb0c1c456cc3711255eaa3"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\analytics-tracking\\references\\ga4-implementation.md": {
+    "mtime": 1778216045.3258834,
+    "hash": "083be80011598cffd663282b9262ac0d"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\analytics-tracking\\references\\gtm-implementation.md": {
+    "mtime": 1778216045.327274,
+    "hash": "d4d2e8a6421685ea43183d25d5d705a3"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\aso-audit\\SKILL.md": {
+    "mtime": 1778216045.3282886,
+    "hash": "6ad69362ffdb2e5e5f2a4d8a8c7dfbd5"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\aso-audit\\references\\apple-specs.md": {
+    "mtime": 1778216045.3282886,
+    "hash": "41eb4105eada39d5722b018b56163cb3"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\aso-audit\\references\\benchmarks.md": {
+    "mtime": 1778216045.329612,
+    "hash": "da1c15c9e15e748df7f899fa454a5b96"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\aso-audit\\references\\google-play-specs.md": {
+    "mtime": 1778216045.3300598,
+    "hash": "a9e2373d684bf830a69e550552550eb8"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\aso-audit\\references\\report-template.md": {
+    "mtime": 1778216045.3310783,
+    "hash": "83eac5276bd16b9903451d8a6be66702"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\aso-audit\\references\\scoring-criteria.md": {
+    "mtime": 1778216045.3310783,
+    "hash": "491b706426936e43c0bc7065d1540672"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\churn-prevention\\SKILL.md": {
+    "mtime": 1778216045.332605,
+    "hash": "ee2ec6dfc335dd678d9f36eabadcdd16"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\churn-prevention\\references\\cancel-flow-patterns.md": {
+    "mtime": 1778216045.3336365,
+    "hash": "31efdca814ce7db041cc821e015e8c36"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\churn-prevention\\references\\dunning-playbook.md": {
+    "mtime": 1778216045.334866,
+    "hash": "31ca3ee48377a52739013f51bed61390"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\co-marketing\\SKILL.md": {
+    "mtime": 1778216045.335897,
+    "hash": "99e57bf40286df31c32ad07a9c3a31bf"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\cold-email\\SKILL.md": {
+    "mtime": 1778216045.3375216,
+    "hash": "0c722fd75592f12e2c3bc8f6c533df2d"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\cold-email\\references\\benchmarks.md": {
+    "mtime": 1778216045.3397777,
+    "hash": "89805bac471a7d1ab6326c80a4a712d0"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\cold-email\\references\\follow-up-sequences.md": {
+    "mtime": 1778216045.340322,
+    "hash": "1359d0f8d7d57e9798f9847e1a327790"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\cold-email\\references\\frameworks.md": {
+    "mtime": 1778216045.340322,
+    "hash": "583479f3c3d870070654d497304765be"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\cold-email\\references\\personalization.md": {
+    "mtime": 1778216045.340322,
+    "hash": "e12c572baec87afc7ee69c4e6225b753"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\cold-email\\references\\subject-lines.md": {
+    "mtime": 1778216045.341479,
+    "hash": "a9bfcdd230fce155a241612edbd1249c"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\community-marketing\\SKILL.md": {
+    "mtime": 1778216045.341479,
+    "hash": "f61b34fb64008ab4d0c6cc40be514b70"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\competitor-alternatives\\SKILL.md": {
+    "mtime": 1778216045.3432467,
+    "hash": "d18a468f6afb58aacafea955e005adf8"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\competitor-alternatives\\references\\content-architecture.md": {
+    "mtime": 1778216045.3443725,
+    "hash": "01d37d4606f212daceaa96a5ea76817d"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\competitor-alternatives\\references\\templates.md": {
+    "mtime": 1778216045.346012,
+    "hash": "f2536442337f93c2f6248ab492db5b01"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\competitor-profiling\\SKILL.md": {
+    "mtime": 1778216045.3465912,
+    "hash": "536b15084717d7706bc3785a276c0e83"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\competitor-profiling\\references\\templates.md": {
+    "mtime": 1778216045.3476038,
+    "hash": "876add665916e097ce074d82cea9143c"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\competitor-profiling\\references\\tool-reference.md": {
+    "mtime": 1778216045.3476038,
+    "hash": "f2e6dfcf8a9fcc40b626cee454dc3cbb"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\content-strategy\\SKILL.md": {
+    "mtime": 1778216045.3486073,
+    "hash": "c4fabfe496c4460971f37b1b12e34016"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\content-strategy\\references\\headless-cms.md": {
+    "mtime": 1778216045.3501163,
+    "hash": "120e78980c651fc02793a1c930e0272d"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\copy-editing\\SKILL.md": {
+    "mtime": 1778216045.3506525,
+    "hash": "1963712108125bb17cc3bc68a9af6fed"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\copy-editing\\references\\content-refresh.md": {
+    "mtime": 1778216045.3536422,
+    "hash": "face3e2323118fe5341f1e4507b5a9a1"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\copy-editing\\references\\plain-english-alternatives.md": {
+    "mtime": 1778216045.3546326,
+    "hash": "af8a6c36bbc3a3f912817e47f150cf58"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\copywriting\\SKILL.md": {
+    "mtime": 1778216045.3556314,
+    "hash": "13ada128516b1bcc1de37bbbcc419896"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\copywriting\\references\\copy-frameworks.md": {
+    "mtime": 1778216045.3568902,
+    "hash": "5c163d9a4f30d1736d83903921ace419"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\copywriting\\references\\natural-transitions.md": {
+    "mtime": 1778216045.3578856,
+    "hash": "08003a7f59fb82bea6121dbdabbfb9cf"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\customer-research\\SKILL.md": {
+    "mtime": 1778216045.3588846,
+    "hash": "b9e274d8effd32b20c3e8744ba79e056"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\customer-research\\references\\source-guides.md": {
+    "mtime": 1778216045.3598914,
+    "hash": "43774e691f1db04255fa319ee2ff459b"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\directory-submissions\\SKILL.md": {
+    "mtime": 1778216045.3620827,
+    "hash": "aec1edc470ad4c6d59576d26067500d8"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\directory-submissions\\references\\directory-list.md": {
+    "mtime": 1778216045.363096,
+    "hash": "2f8c70a7242aca5648f997bbac38f289"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\directory-submissions\\references\\positioning-variations.md": {
+    "mtime": 1778216045.363096,
+    "hash": "53e29b5ea9f84ba484f721e3f4c320f3"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\email-sequence\\SKILL.md": {
+    "mtime": 1778216045.3651953,
+    "hash": "b4315f732e10ca2f6e40b15f7655096a"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\email-sequence\\references\\copy-guidelines.md": {
+    "mtime": 1778216045.3672395,
+    "hash": "b3f2f368974603dccbfce2b8d457adcc"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\email-sequence\\references\\email-types.md": {
+    "mtime": 1778216045.368289,
+    "hash": "db04ffbd6f263f63765df7f65541e096"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\email-sequence\\references\\sequence-templates.md": {
+    "mtime": 1778216045.368289,
+    "hash": "59786a271e4daf5e40a95abd7bc42d9c"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\form-cro\\SKILL.md": {
+    "mtime": 1778216045.36926,
+    "hash": "0aad4ad1c823e0898a776dae9bfe9a18"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\free-tool-strategy\\SKILL.md": {
+    "mtime": 1778216045.3717606,
+    "hash": "e2b8bac466b743483c3e11a97c365f63"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\free-tool-strategy\\references\\tool-types.md": {
+    "mtime": 1778216045.3737814,
+    "hash": "f7d8a2ad0ed30a78215effd140054f17"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\image\\SKILL.md": {
+    "mtime": 1778216045.3748405,
+    "hash": "cd5893fa18da5c87bdab6f30a92e90a2"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\image\\references\\ai-image-prompting.md": {
+    "mtime": 1778216045.3758526,
+    "hash": "10eed729178f801775ec6d5a7c84822c"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\launch-strategy\\SKILL.md": {
+    "mtime": 1778216045.3758526,
+    "hash": "681c06146a4be6e92ed5775dd5ec0bb0"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\lead-magnets\\SKILL.md": {
+    "mtime": 1778216045.3782635,
+    "hash": "4c4cb246b31f1fcafe084d2640b41faf"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\lead-magnets\\references\\benchmarks.md": {
+    "mtime": 1778216045.379274,
+    "hash": "73f15eab8f98661c75bca89182456a78"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\lead-magnets\\references\\format-guide.md": {
+    "mtime": 1778216045.380575,
+    "hash": "de1754452549855be9d30be8a8692e5b"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\marketing-ideas\\SKILL.md": {
+    "mtime": 1778216045.3810914,
+    "hash": "8519a814978097a8c225f7dc70e277be"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\marketing-ideas\\references\\ideas-by-category.md": {
+    "mtime": 1778216045.3826048,
+    "hash": "8778c19522990a2267b4d9bedc4bb405"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\marketing-psychology\\SKILL.md": {
+    "mtime": 1778216045.3846188,
+    "hash": "ccfa712be129f61d55a52516a63ba75b"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\onboarding-cro\\SKILL.md": {
+    "mtime": 1778216045.3861449,
+    "hash": "2dc3660f95c535c3c848d7108904072a"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\onboarding-cro\\references\\experiments.md": {
+    "mtime": 1778216045.387695,
+    "hash": "6ee5896596680ce6ae6ef7e1b1c04df0"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\page-cro\\SKILL.md": {
+    "mtime": 1778216045.3899245,
+    "hash": "f00f15f0fb736d04c60b2ed5c86a6e9c"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\page-cro\\references\\experiments.md": {
+    "mtime": 1778216045.3920724,
+    "hash": "e2ab36d280622b496311882374993f3e"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\paid-ads\\SKILL.md": {
+    "mtime": 1778216045.3930697,
+    "hash": "afd9a1e99261e2e7e360beba2b80aa09"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\paid-ads\\references\\ad-copy-templates.md": {
+    "mtime": 1778216045.3950706,
+    "hash": "c747d83a6b61af15e7b1e1cb49268d99"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\paid-ads\\references\\audience-targeting.md": {
+    "mtime": 1778216045.3950706,
+    "hash": "355572fdf6e4e906599964a747aa46dd"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\paid-ads\\references\\conversion-tracking.md": {
+    "mtime": 1778216045.3965764,
+    "hash": "39357596e8a7ab35caf10c0b0c25252f"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\paid-ads\\references\\platform-setup-checklists.md": {
+    "mtime": 1778216045.3965764,
+    "hash": "aa3dc04192a829e01fa76c4e5d59877d"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\paywall-upgrade-cro\\SKILL.md": {
+    "mtime": 1778216045.3976214,
+    "hash": "44a818a3e07c606188698c568c440a17"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\paywall-upgrade-cro\\references\\experiments.md": {
+    "mtime": 1778216045.399442,
+    "hash": "1f9910f401b1db4c0b312b25f0974c82"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\popup-cro\\SKILL.md": {
+    "mtime": 1778216045.4011128,
+    "hash": "01b26be796b87e53f3147f5e9368c4ef"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\pricing-strategy\\SKILL.md": {
+    "mtime": 1778216045.4033651,
+    "hash": "afcf55c46196559f65a1486dc1678900"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\pricing-strategy\\references\\research-methods.md": {
+    "mtime": 1778216045.4043646,
+    "hash": "a8415d984f125a4308d7c85eb71e2289"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\pricing-strategy\\references\\tier-structure.md": {
+    "mtime": 1778216045.4053667,
+    "hash": "d5c223605ccd0a7897f716c8e90fbe26"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\product-marketing-context\\SKILL.md": {
+    "mtime": 1778216045.4067206,
+    "hash": "3b0b80a63e06a968078902b4571c855a"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\programmatic-seo\\SKILL.md": {
+    "mtime": 1778216045.4087088,
+    "hash": "047644b11f9c48b41b0dfa6b7f389d23"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\programmatic-seo\\references\\playbooks.md": {
+    "mtime": 1778216045.4107106,
+    "hash": "8b0610eeea1d207fc9bb0aa289575766"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\referral-program\\SKILL.md": {
+    "mtime": 1778216045.4107106,
+    "hash": "b6b6ddb2b270d96d876ba5bacfa0aa37"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\referral-program\\references\\affiliate-programs.md": {
+    "mtime": 1778216045.411981,
+    "hash": "8f8ef8f31bd53e95c5322293c9f42418"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\referral-program\\references\\program-examples.md": {
+    "mtime": 1778216045.413309,
+    "hash": "6388dbf7d58434592371f4713cd84fa2"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\revops\\SKILL.md": {
+    "mtime": 1778216045.414316,
+    "hash": "51b5897028020ea9120a861fe490ca32"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\revops\\references\\automation-playbooks.md": {
+    "mtime": 1778216045.4165797,
+    "hash": "dce1d22ebbc2a6d337175c3a95f58062"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\revops\\references\\lifecycle-definitions.md": {
+    "mtime": 1778216045.4170918,
+    "hash": "7a003e117368a9ce7d2f4ebee69b117f"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\revops\\references\\routing-rules.md": {
+    "mtime": 1778216045.4176157,
+    "hash": "806af103187d3a9f2e0da308c48001ab"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\revops\\references\\scoring-models.md": {
+    "mtime": 1778216045.4186287,
+    "hash": "a8c9f0a21f165dbcbf780726b791c546"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\sales-enablement\\SKILL.md": {
+    "mtime": 1778216045.4206293,
+    "hash": "574caba1d0d4375e08af2c0f33cd605a"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\sales-enablement\\references\\deck-frameworks.md": {
+    "mtime": 1778216045.4221456,
+    "hash": "0bf47ed201cf79385558a8e27ae26ed6"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\sales-enablement\\references\\demo-scripts.md": {
+    "mtime": 1778216045.4231634,
+    "hash": "0bdc1ad59cf230406d67452dc8666952"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\sales-enablement\\references\\objection-library.md": {
+    "mtime": 1778216045.4241679,
+    "hash": "c823648afd00c2d05573567c3343d430"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\sales-enablement\\references\\one-pager-templates.md": {
+    "mtime": 1778216045.4241679,
+    "hash": "37f43d6a2bb2aafcaf622807ddf06333"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\schema-markup\\SKILL.md": {
+    "mtime": 1778216045.425155,
+    "hash": "4f5cd40d1fe0e0dcaa632556b7b78227"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\schema-markup\\references\\schema-examples.md": {
+    "mtime": 1778216045.4273689,
+    "hash": "824f6ddd8ac68ff7b17fe997a79d2928"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\seo-audit\\SKILL.md": {
+    "mtime": 1778216045.4283986,
+    "hash": "b7f03397722c45c5ff5b0e1c27262290"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\seo-audit\\references\\ai-writing-detection.md": {
+    "mtime": 1778216045.4303834,
+    "hash": "a5489f71fca1525b35d5822d3426fc90"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\seo-audit\\references\\international-seo.md": {
+    "mtime": 1778216045.4313934,
+    "hash": "f98a2faff322c07b79ac99546e7cf523"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\signup-flow-cro\\SKILL.md": {
+    "mtime": 1778216045.4319265,
+    "hash": "0c004c7586628f62926d03bbd2de4ce1"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\site-architecture\\SKILL.md": {
+    "mtime": 1778216045.4324677,
+    "hash": "1520022bd2133393f473f85ea5a45398"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\site-architecture\\references\\mermaid-templates.md": {
+    "mtime": 1778216045.4353325,
+    "hash": "8eaecb02fb9288bfcde35ade1e174535"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\site-architecture\\references\\navigation-patterns.md": {
+    "mtime": 1778216045.4358625,
+    "hash": "0a170e183b1240d436aaa430d59bb554"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\site-architecture\\references\\site-type-templates.md": {
+    "mtime": 1778216045.4369898,
+    "hash": "361004fcc86cc2583d44a0f02ff3fe47"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\social-content\\SKILL.md": {
+    "mtime": 1778216045.4375117,
+    "hash": "caeb65e9b6bb3c52c6ad81288ff37f1f"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\social-content\\references\\platform-limits.md": {
+    "mtime": 1778216045.4387896,
+    "hash": "483439ad3e39db1a93eed86fb396258f"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\social-content\\references\\platforms.md": {
+    "mtime": 1778216045.439806,
+    "hash": "8832bb4316df220f3ea562c707d22b90"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\social-content\\references\\post-templates.md": {
+    "mtime": 1778216045.440411,
+    "hash": "bd5696ebbf74043bf9c4a5db8dd69c56"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\social-content\\references\\reverse-engineering.md": {
+    "mtime": 1778216045.4414277,
+    "hash": "50d6ecca601991d172a61fc7e6aedf15"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\social-content\\references\\short-form-video.md": {
+    "mtime": 1778216045.4414277,
+    "hash": "38126530b3ff1474c7d6c5ce33c2e848"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\video\\SKILL.md": {
+    "mtime": 1778216045.4425752,
+    "hash": "dcbe418be82e9431327486284fac7e77"
+  },
+  "D:\\hr-website\\marketingskills\\skills\\video\\references\\ai-video-prompting.md": {
+    "mtime": 1778216045.4425752,
+    "hash": "98f515820e22fd79c6b0fe8c584747a0"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\REGISTRY.md": {
+    "mtime": 1778216045.443602,
+    "hash": "17bef823476250b4ba66dcc62f064fb2"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\clis\\README.md": {
+    "mtime": 1778216045.44477,
+    "hash": "dc2bac99e57c259c7504a1fe7408ce72"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\composio\\marketing-tools.md": {
+    "mtime": 1778216045.4827368,
+    "hash": "dfae266e5e99a0fd739084e07e91a847"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\composio\\README.md": {
+    "mtime": 1778216045.4822283,
+    "hash": "e09247f86e84832ba439a8318a894fbb"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\activecampaign.md": {
+    "mtime": 1778216045.4837492,
+    "hash": "bedbbbaa970898004beb35f4e25ce2a0"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\adobe-analytics.md": {
+    "mtime": 1778216045.4837492,
+    "hash": "434349c5d610ea9605ef677c4e4f5e7b"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\ahrefs.md": {
+    "mtime": 1778216045.4847486,
+    "hash": "f4eddafeb6c951cff0bbcdc6459aae88"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\airops.md": {
+    "mtime": 1778216045.4847486,
+    "hash": "3dc0ad180f3e04e02b3d347a66c8063a"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\amplitude.md": {
+    "mtime": 1778216045.4857466,
+    "hash": "3de1f727b0f4067ed47b29b1f0d240ad"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\apollo.md": {
+    "mtime": 1778216045.4857466,
+    "hash": "b0a06b26482e750835f7c835cce5b8a0"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\beehiiv.md": {
+    "mtime": 1778216045.4875762,
+    "hash": "0e1667520b1ce2642f743476d178bdfc"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\brevo.md": {
+    "mtime": 1778216045.4875762,
+    "hash": "51153f9d7f8c80c3e98299d8416c1bc7"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\buffer.md": {
+    "mtime": 1778216045.4885879,
+    "hash": "54e1656817f735146e86fbd9e4270441"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\calendly.md": {
+    "mtime": 1778216045.489096,
+    "hash": "941ee07abb1a1ecafbe9782c70b78637"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\clay.md": {
+    "mtime": 1778216045.489606,
+    "hash": "390ba3349cfaa85272947858044b84e4"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\clearbit.md": {
+    "mtime": 1778216045.4902372,
+    "hash": "8f739fe08adb4eb743ccee1dac4528ca"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\close.md": {
+    "mtime": 1778216045.4902372,
+    "hash": "f2f8c94cca090392e4d27f0ab17970e4"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\composio.md": {
+    "mtime": 1778216045.491246,
+    "hash": "f396611f0fd837e4e5d9e36d8254de07"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\contentful.md": {
+    "mtime": 1778216045.491246,
+    "hash": "3cfc452b7013b3f5d504dd8658ed06fe"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\coupler.md": {
+    "mtime": 1778216045.491246,
+    "hash": "f956040a46a884aff7ece39b6b1dbb9a"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\crossbeam.md": {
+    "mtime": 1778216045.4922457,
+    "hash": "2991bbeae831028650ae9379ac257764"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\customer-io.md": {
+    "mtime": 1778216045.4922457,
+    "hash": "c04978a823423faf1c949045527b3a4a"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\dataforseo.md": {
+    "mtime": 1778216045.493246,
+    "hash": "62c2bc66b7acc259e540c0e4a0462f00"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\demio.md": {
+    "mtime": 1778216045.493246,
+    "hash": "394a121294efe86d62e28fced26679b8"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\dub-co.md": {
+    "mtime": 1778216045.494246,
+    "hash": "c1b1caf1023ca97713e991f889c626ca"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\firehose.md": {
+    "mtime": 1778216045.494246,
+    "hash": "3cb12adea888171bc195548b59c2d8ad"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\g2.md": {
+    "mtime": 1778216045.494754,
+    "hash": "4c608430219d76b41002289e88df415f"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\ga4.md": {
+    "mtime": 1778216045.494754,
+    "hash": "a8dd06397b0bbce81d29c290a9b5423c"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\gong.md": {
+    "mtime": 1778216045.4957619,
+    "hash": "b616d128d9b6c67427f415290dbe9f49"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\google-ads.md": {
+    "mtime": 1778216045.4957619,
+    "hash": "7aee513e94a8b429e61a704c2ce0c731"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\google-search-console.md": {
+    "mtime": 1778216045.4967709,
+    "hash": "618d53f33343f492664105539e316e7a"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\heygen.md": {
+    "mtime": 1778216045.4967709,
+    "hash": "2d9114f8fe7a655ea7ed3895c8afbba8"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\hotjar.md": {
+    "mtime": 1778216045.4967709,
+    "hash": "06768fb264e1d59fd890b3ec0fccd369"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\hubspot.md": {
+    "mtime": 1778216045.4977715,
+    "hash": "506cf763441e88c33cfc0787319f294c"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\hunter.md": {
+    "mtime": 1778216045.4977715,
+    "hash": "1f31efdd90e69aa5288c6ccea7cdcaa4"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\hyperframes.md": {
+    "mtime": 1778216045.4977715,
+    "hash": "b1bd6eec0d7281609520ceb83353e8b2"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\instantly.md": {
+    "mtime": 1778216045.4992945,
+    "hash": "e010526434f107fc13fed113005a5ea8"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\intercom.md": {
+    "mtime": 1778216045.4992945,
+    "hash": "1f5c5391be6352629f0774cfa1ee524a"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\introw.md": {
+    "mtime": 1778216045.4992945,
+    "hash": "52864b395e1513a9f68fef17f0a1ec3b"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\keywords-everywhere.md": {
+    "mtime": 1778216045.5004747,
+    "hash": "241186d4dfd9ed189247e0cdbe2265b9"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\kit.md": {
+    "mtime": 1778216045.5009887,
+    "hash": "3bce68e052caa3dabdb42fe97c3b0dea"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\klaviyo.md": {
+    "mtime": 1778216045.5009887,
+    "hash": "565ae7aa1d0a2bc4c0fffa88f9ce7fb5"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\lemlist.md": {
+    "mtime": 1778216045.5025132,
+    "hash": "50b4b46b757aa0df8a130f43d4b2e736"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\linkedin-ads.md": {
+    "mtime": 1778216045.5025132,
+    "hash": "3db952c0f9de5402fc02b3d6ebe0580e"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\livestorm.md": {
+    "mtime": 1778216045.5035205,
+    "hash": "12e3f613927e9711fe5e820887050d73"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\mailchimp.md": {
+    "mtime": 1778216045.5035205,
+    "hash": "33397b3020b907606265623bdc9cf141"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\mention-me.md": {
+    "mtime": 1778216045.5035205,
+    "hash": "d6bcfcda34acdd4f83a1473efb507894"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\meta-ads.md": {
+    "mtime": 1778216045.504521,
+    "hash": "ccf5fb904d1c629a3f9391d4d1bc189a"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\mixpanel.md": {
+    "mtime": 1778216045.504521,
+    "hash": "5d64bef9effbeb580fdbd444d500efbb"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\nitrosend.md": {
+    "mtime": 1778216045.50552,
+    "hash": "7dc09d3c5eff9d4c4db0449947a7607c"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\onesignal.md": {
+    "mtime": 1778216045.50552,
+    "hash": "dfde8616a0c9a1d0d7b33f94e06675e8"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\optimizely.md": {
+    "mtime": 1778216045.50552,
+    "hash": "f6f88c98b7e29b8743ecc4d1a228e88b"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\outreach.md": {
+    "mtime": 1778216045.50552,
+    "hash": "659932dd84da0f741a2c76c2d36c6f75"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\paddle.md": {
+    "mtime": 1778216045.5070183,
+    "hash": "a026856a58ad3e04540d5e1d5df4342c"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\partnerstack.md": {
+    "mtime": 1778216045.5075245,
+    "hash": "d9e0cdc647ed3703e96e22a0f726108d"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\pendo.md": {
+    "mtime": 1778216045.5075245,
+    "hash": "e5ec2be102d1d25e77d40ed77ff998b1"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\plausible.md": {
+    "mtime": 1778216045.508532,
+    "hash": "eeb9eab7dfd56deb42d2cc7713a06dcc"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\posthog.md": {
+    "mtime": 1778216045.508532,
+    "hash": "23e857a1bf767d5e43a334cdf308e686"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\postmark.md": {
+    "mtime": 1778216045.5095327,
+    "hash": "08f65b8db22c1d94728142f7b0c88d73"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\rb2b.md": {
+    "mtime": 1778216045.5095327,
+    "hash": "c0d72d592bdbe5b404049a7614819552"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\resend.md": {
+    "mtime": 1778216045.5100415,
+    "hash": "65a0dcae3f334c861976ba12ded11fac"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\rewardful.md": {
+    "mtime": 1778216045.5110586,
+    "hash": "41e8cfda84150dba1c8479f491466dbb"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\salesforce.md": {
+    "mtime": 1778216045.5110586,
+    "hash": "15a0674a51ec0e215a8661b451477c36"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\sanity.md": {
+    "mtime": 1778216045.5120547,
+    "hash": "53a78aae1695129c5393286db0582c19"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\savvycal.md": {
+    "mtime": 1778216045.5120547,
+    "hash": "2a2814af3d54ef9417575dcc2e37bf2d"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\segment.md": {
+    "mtime": 1778216045.5131514,
+    "hash": "f02007a943cebfefdd01d60e0288e796"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\semrush.md": {
+    "mtime": 1778216045.5131514,
+    "hash": "ea7be5c5adff5d90ea4f10ae98ce4340"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\sendgrid.md": {
+    "mtime": 1778216045.5131514,
+    "hash": "13e24c6d9f5db7483bd6dafc3bb5f397"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\shopify.md": {
+    "mtime": 1778216045.514169,
+    "hash": "2dc4f3ddeb6a4c7be3ff1519846853f4"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\similarweb.md": {
+    "mtime": 1778216045.514169,
+    "hash": "e23ae6e09e2c0e0e230f08b0d7e2a97d"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\snov.md": {
+    "mtime": 1778216045.514169,
+    "hash": "fddddbd5ff76460e13fb8df223ea96cf"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\sparktoro.md": {
+    "mtime": 1778216045.5156195,
+    "hash": "e38842762dbfc72cc30213e129213671"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\strapi.md": {
+    "mtime": 1778216045.5156195,
+    "hash": "a3a161ecc4d189a6254ba21bb5f90e41"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\stripe.md": {
+    "mtime": 1778216045.5162878,
+    "hash": "929f64a4137b23ba645eff7f4e615b28"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\supermetrics.md": {
+    "mtime": 1778216045.5162878,
+    "hash": "ee9e83dc436b39a2575dee135121267c"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\tiktok-ads.md": {
+    "mtime": 1778216045.5162878,
+    "hash": "02fca383e16be9b57ef51ffcdeab221f"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\tolt.md": {
+    "mtime": 1778216045.517795,
+    "hash": "73c1d3811680274911299d67409cca64"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\trustpilot.md": {
+    "mtime": 1778216045.517795,
+    "hash": "c8588279b6aeb30fe7d7266f0d6fb9e3"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\typeform.md": {
+    "mtime": 1778216045.5188024,
+    "hash": "917751a76c72bead916f914f4e336fb7"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\webflow.md": {
+    "mtime": 1778216045.5188024,
+    "hash": "e52c09513aafde627371a9c952bdd745"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\wistia.md": {
+    "mtime": 1778216045.5198038,
+    "hash": "91fdd64876ed0662e1ed9440fdf9e99a"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\wordpress.md": {
+    "mtime": 1778216045.5198038,
+    "hash": "6532392408b8686fb0b9597c8d06347e"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\zapier.md": {
+    "mtime": 1778216045.520811,
+    "hash": "d1a2b93dc4cea1ed8149fe0caef17f7f"
+  },
+  "D:\\hr-website\\marketingskills\\tools\\integrations\\zoominfo.md": {
+    "mtime": 1778216045.520811,
+    "hash": "53a933c6f1dfc94f669ebb20776611fc"
+  },
+  "D:\\hr-website\\public\\file.svg": {
+    "mtime": 1765729672.8679576,
+    "hash": "d09f95206c3fa0bb9bd9fefabfd0ea71"
+  },
+  "D:\\hr-website\\public\\globe.svg": {
+    "mtime": 1765729672.8679576,
+    "hash": "2aaafa6a49b6563925fe440891e32717"
+  },
+  "D:\\hr-website\\public\\next.svg": {
+    "mtime": 1765729672.919672,
+    "hash": "8e061864f388b47f33a1c3780831193e"
+  },
+  "D:\\hr-website\\public\\vercel.svg": {
+    "mtime": 1765729672.919672,
+    "hash": "c0af2f507b369b085b35ef4bbe3bcf1e"
+  },
+  "D:\\hr-website\\public\\window.svg": {
+    "mtime": 1765729672.96016,
+    "hash": "a2760511c65806022ad20adf74370ff3"
+  },
+  "D:\\hr-website\\public\\images\\resume_templates-images-0.jpg": {
+    "mtime": 1765729672.8738296,
+    "hash": "fabcd4324a4cdf931f4feb61b5d99607"
+  },
+  "D:\\hr-website\\public\\images\\resume_templates-images-1.jpg": {
+    "mtime": 1765729672.8783507,
+    "hash": "dff6cfc1715ee4cc25a7a730af5baf48"
+  },
+  "D:\\hr-website\\public\\images\\resume_templates-images-2.jpg": {
+    "mtime": 1765729672.8827605,
+    "hash": "59390a9efc09cb7631703b4ea0c93694"
+  },
+  "D:\\hr-website\\public\\images\\resume_templates-images-3.jpg": {
+    "mtime": 1765729672.8875053,
+    "hash": "e1803c5cb5872b615a03387594ceb9ec"
+  },
+  "D:\\hr-website\\public\\images\\resume_templates-images-4.jpg": {
+    "mtime": 1765729672.891928,
+    "hash": "83f81766ca9dca81055f3c475fc36acf"
+  },
+  "D:\\hr-website\\public\\images\\resume_templates-images-5.jpg": {
+    "mtime": 1765729672.896928,
+    "hash": "96c4d8821ed65c2cd1228013b6cd5006"
+  },
+  "D:\\hr-website\\public\\images\\resume_templates-images-6.jpg": {
+    "mtime": 1765729672.9024372,
+    "hash": "8845fd2752e2545d151c575707c59a99"
+  },
+  "D:\\hr-website\\public\\images\\resume_templates-images-7.jpg": {
+    "mtime": 1765729672.907899,
+    "hash": "5b1c868b68b32dffad1ea3af237b9787"
+  },
+  "D:\\hr-website\\public\\images\\resume_templates-images-8.jpg": {
+    "mtime": 1765729672.9130023,
+    "hash": "ea413fbb28792698bcffe57a1ce12b01"
+  },
+  "D:\\hr-website\\public\\images\\resume_templates-images-9.jpg": {
+    "mtime": 1765729672.9167182,
+    "hash": "edc0a38ec6ac4bb5b77fc081eee4f6bd"
+  },
+  "D:\\hr-website\\public\\images\\{F144CC7D-2C8E-4CEB-9E78-6316E430ED49}.png": {
+    "mtime": 1765729672.9187205,
+    "hash": "4d1d1665f2b1b230174e63f2af0ec30b"
+  },
+  "D:\\hr-website\\public\\video\\Professional Interview Scene.mp4": {
+    "mtime": 1765729672.9515653,
+    "hash": "3db2a267f3552a34eb8fb8115796e0d5"
+  },
+  "D:\\hr-website\\public\\video\\Single_Speaker_Video_Generation.mp4": {
+    "mtime": 1765729672.9591608,
+    "hash": "3eaf8da3ce731ce5fc9037a9eed8a111"
+  }
+}

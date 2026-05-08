@@ -7,6 +7,7 @@ import RoleBadge from '../ui/RoleBadge';
 const UserProfile: React.FC = () => {
   const { user, logout } = useAuth();
   const [showProfile, setShowProfile] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -25,14 +26,20 @@ const UserProfile: React.FC = () => {
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
+    if (isLoggingOut) return;
+
     try {
+      setIsLoggingOut(true);
       setShowProfile(false);
       await logout();
-      // Use window.location.href to force a full page refresh and clear any client-side state
-      window.location.href = '/login';
+      // Replace history entry so back button doesn't return to protected page
+      router.replace('/login');
     } catch (error) {
       console.error('Logout handler error:', error);
-      window.location.href = '/login';
+      // Force hard redirect as fallback
+      window.location.replace('/login');
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -93,9 +100,20 @@ const UserProfile: React.FC = () => {
             <button
               type="button"
               onClick={handleLogout}
-              className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md"
+              disabled={isLoggingOut}
+              className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
             >
-              Logout
+              {isLoggingOut ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Signing out...
+                </>
+              ) : (
+                'Logout'
+              )}
             </button>
           </div>
         </div>

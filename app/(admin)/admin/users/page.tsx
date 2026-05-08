@@ -31,6 +31,9 @@ const UserManagementPage: React.FC = () => {
         role: 'student' as 'student' | 'instructor' | 'admin'
     });
     const [showNewUserPassword, setShowNewUserPassword] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const PAGE_SIZE = 50;
 
     // Quiz Assignment State
     const [showAssignModal, setShowAssignModal] = useState(false);
@@ -39,17 +42,20 @@ const UserManagementPage: React.FC = () => {
     const [selectedQuizId, setSelectedQuizId] = useState<string>("");
 
     useEffect(() => {
-        loadUsers();
-    }, []);
+        loadUsers(currentPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPage]);
 
-    async function loadUsers() {
+    async function loadUsers(page = 1) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
         try {
             setLoading(true);
             setError(null);
 
-            // Fetch from API to bypass RLS restrictions
-            const response = await fetch('/api/admin/users', {
-                cache: 'no-store'
+            const response = await fetch(`/api/admin/users?page=${page}&pageSize=${PAGE_SIZE}`, {
+                signal: controller.signal,
             });
 
             if (!response.ok) {
@@ -59,12 +65,18 @@ const UserManagementPage: React.FC = () => {
 
             const data = await response.json();
 
-            console.log('Users loaded successfully:', data.users?.length || 0);
+            console.log('Users loaded successfully:', data.users?.length || 0, '/', data.total);
             setUsers(data.users || []);
+            setTotalUsers(data.total || 0);
         } catch (error: any) {
-            console.error('Failed to load users:', error);
-            setError(error.message || 'Failed to load users. Please check your connection.');
+            if (error.name === 'AbortError') {
+                setError('Request timed out. The database may be slow. Please try again.');
+            } else {
+                console.error('Failed to load users:', error);
+                setError(error.message || 'Failed to load users. Please check your connection.');
+            }
         } finally {
+            clearTimeout(timeoutId);
             setLoading(false);
         }
     }
@@ -149,7 +161,7 @@ const UserManagementPage: React.FC = () => {
             alert('User added successfully!');
 
             // Reload users to get fresh data
-            loadUsers();
+            loadUsers(currentPage);
         } catch (error: any) {
             console.error('Failed to add user:', error);
             alert(`Failed to add user: ${error.message || 'Unknown error'}`);
@@ -249,7 +261,8 @@ const UserManagementPage: React.FC = () => {
             alert(`Bulk upload complete!\nSuccess: ${successCount}\nFailed: ${failCount}`);
 
             // Reload users
-            loadUsers();
+            loadUsers(1);
+            setCurrentPage(1);
         } catch (error: any) {
             console.error('Bulk upload failed:', error);
             alert(`Bulk upload failed: ${error.message || 'Unknown error'}`);
@@ -353,10 +366,20 @@ const UserManagementPage: React.FC = () => {
                                 <div className="flex items-center gap-4">
                                     <div className="text-right">
                                         <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                                            {users.length}
+                                            {totalUsers || users.length}
                                         </div>
                                         <div className="text-sm text-gray-600 dark:text-gray-300">Total Users</div>
                                     </div>
+                                    <button
+                                        onClick={() => loadUsers(currentPage)}
+                                        disabled={loading}
+                                        className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                        {loading ? 'Loading...' : 'Refresh'}
+                                    </button>
                                     <button
                                         onClick={() => setShowBulkUploadModal(true)}
                                         className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center gap-2"
@@ -565,6 +588,34 @@ const UserManagementPage: React.FC = () => {
                                 </div>
                             )}
                         </div>
+
+                        {/* Pagination */}
+                        {!loading && totalUsers > PAGE_SIZE && (
+                            <div className="bg-white dark:bg-slate-700 rounded-lg shadow-sm p-4 mt-4 flex items-center justify-between">
+                                <span className="text-sm text-gray-600 dark:text-gray-300">
+                                    Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, totalUsers)} of {totalUsers} users
+                                </span>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                        disabled={currentPage === 1}
+                                        className="px-3 py-1.5 text-sm bg-gray-100 dark:bg-slate-600 rounded-lg disabled:opacity-40 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
+                                    >
+                                        ← Prev
+                                    </button>
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                                        Page {currentPage} of {Math.ceil(totalUsers / PAGE_SIZE)}
+                                    </span>
+                                    <button
+                                        onClick={() => setCurrentPage(p => p + 1)}
+                                        disabled={currentPage * PAGE_SIZE >= totalUsers}
+                                        className="px-3 py-1.5 text-sm bg-gray-100 dark:bg-slate-600 rounded-lg disabled:opacity-40 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
+                                    >
+                                        Next →
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </main>
                 <Footer />

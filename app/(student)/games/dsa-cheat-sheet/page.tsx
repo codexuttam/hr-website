@@ -3,10 +3,34 @@
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { useTheme } from '@/contexts/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FileCode2, CheckCircle2, ChevronDown, ExternalLink, 
+  Search, BookOpen, Trophy, Sparkles, Layers,
+  ArrowRightLeft, MousePointer2, RefreshCw, ListOrdered,
+  LayoutGrid, Share2, Target, Brain, Code2, Zap
+} from 'lucide-react';
 
-
+// Map pattern titles to Lucide icons
+const patternIcons: Record<string, any> = {
+  'Arrays & Hashing': Layers,
+  'Prefix Sum': ListOrdered,
+  'Two Pointers': ArrowRightLeft,
+  'Sliding Window': MousePointer2,
+  'Fast & Slow Pointers (Tortoise and Hare)': RefreshCw,
+  'Linked List In-Place Reversal': RefreshCw,
+  'Monotonic Stack': ListOrdered,
+  'Top K Elements (Heap)': Trophy,
+  'Overlapping Intervals': LayoutGrid,
+  'Modified Binary Search': Search,
+  'Binary Tree Traversal': Share2,
+  'Depth-First Search (DFS)': Brain,
+  'Breadth-First Search (BFS)': Target,
+  'Matrix Traversal': LayoutGrid,
+  'Backtracking': RefreshCw,
+  'Dynamic Programming (DP)': Zap,
+  'Graph Traversal': Share2,
+};
 
 const patterns = [
     {
@@ -213,7 +237,7 @@ const container = {
     show: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.1
+            staggerChildren: 0.05
         }
     }
 };
@@ -224,12 +248,9 @@ const item = {
 };
 
 export default function DSACheatSheetPage() {
-    const { theme } = useTheme();
-    const darkMode = theme === 'dark';
     const [expandedId, setExpandedId] = useState<number | null>(null);
     const [completedProblems, setCompletedProblems] = useState<Record<string, boolean>>({});
 
-    // Load progress from localStorage on mount
     useEffect(() => {
         const savedProgress = localStorage.getItem('dsa_cheat_sheet_progress');
         if (savedProgress) {
@@ -254,187 +275,273 @@ export default function DSACheatSheetPage() {
         setExpandedId(expandedId === id ? null : id);
     };
 
-    // Calculate progress for a pattern
     const getPatternProgress = (patternProblems: string[]) => {
         const completedCount = patternProblems.filter(p => completedProblems[p]).length;
         return Math.round((completedCount / patternProblems.length) * 100);
     };
 
+    const totalProblems = patterns.reduce((acc, p) => acc + p.problems.length, 0);
+    const totalCompleted = Object.values(completedProblems).filter(Boolean).length;
+    const overallProgress = Math.round((totalCompleted / totalProblems) * 100);
+
     return (
-        <div className={`min-h-screen ${darkMode ? 'bg-slate-950 text-white' : 'bg-gray-50 text-slate-900'}`}>
-            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200'} border-b sticky top-0 z-40`}>
-                <Header />
-            </div>
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 font-sans">
+            <Header />
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                {/* Document Header */}
-                <div className="text-center mb-12 space-y-4">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+                
+                {/* ── Hero Banner ─────────────────────────────────────────── */}
+                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-800 p-8 md:p-12 shadow-2xl shadow-indigo-500/10 border border-indigo-500/10">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full -translate-y-1/2 translate-x-1/4 blur-[100px] pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full translate-y-1/2 -translate-x-1/4 blur-[80px] pointer-events-none" />
 
+                    <div className="relative flex flex-col items-center text-center space-y-6">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur rounded-full text-indigo-300 text-xs font-bold tracking-widest uppercase border border-white/10">
+                            <Code2 className="h-4 w-4" />
+                            <span>Algorithm Preparation Guide</span>
+                        </div>
+                        
+                        <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                            DSA Pattern <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">CheatSheet 2025</span>
+                        </h1>
+                        
+                        <p className="max-w-2xl text-slate-400 text-lg md:text-xl leading-relaxed">
+                            Master the core concepts behind technical interviews. Track your progress across 17 essential patterns and 60+ curated LeetCode problems.
+                        </p>
 
-                    <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent py-2">
-                        DSA PATTERN CHEATSHEET 2025
-                    </h1>
-                    <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                        Master Data Structures and Algorithms with these essential patterns.
-                        <br />
-                        <span className="text-sm text-gray-500">Click on a pattern to view problems and track your progress.</span>
-                    </p>
+                        {/* Overall Progress Tracker */}
+                        <div className="w-full max-w-md bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 mt-4">
+                            <div className="flex justify-between items-end mb-2">
+                                <div className="text-left">
+                                    <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Overall Completion</span>
+                                    <div className="text-2xl font-black text-white">{overallProgress}%</div>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Status</span>
+                                    <div className="text-sm font-bold text-indigo-300">{totalCompleted} / {totalProblems} Solved</div>
+                                </div>
+                            </div>
+                            <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden border border-white/5">
+                                <motion.div 
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${overallProgress}%` }}
+                                    className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 shadow-[0_0_15px_rgba(79,70,229,0.5)]" 
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Patterns Grid */}
-                <motion.div
-                    variants={container}
-                    initial="hidden"
-                    animate="show"
-                    className="grid grid-cols-1 gap-6 mb-16"
-                >
-                    {patterns.map((pattern) => {
-                        const progress = getPatternProgress(pattern.problems);
-                        const isExpanded = expandedId === pattern.id;
+                {/* ── Patterns List ────────────────────────────────────────── */}
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Essential Patterns</h2>
+                        <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest bg-white dark:bg-slate-900 px-4 py-2 rounded-xl shadow-sm">
+                            <Sparkles className="h-4 w-4 text-indigo-500" />
+                            Curated Content
+                        </div>
+                    </div>
 
-                        return (
-                            <motion.div
-                                key={pattern.id}
-                                variants={item}
-                                layout
-                                className={`rounded-xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200'} overflow-hidden transition-all duration-300 ${isExpanded ? 'ring-2 ring-blue-500 shadow-2xl' : 'hover:shadow-xl hover:-translate-y-1'}`}
-                            >
-                                {/* Card Header - Clickable */}
-                                <div
-                                    onClick={() => toggleExpand(pattern.id)}
-                                    className={`p-6 cursor-pointer flex flex-col gap-4 ${isExpanded ? (darkMode ? 'bg-slate-800/50' : 'bg-gray-50') : ''}`}
+                    <motion.div
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
+                        className="grid grid-cols-1 gap-4"
+                    >
+                        {patterns.map((pattern) => {
+                            const progress = getPatternProgress(pattern.problems);
+                            const isExpanded = expandedId === pattern.id;
+                            const Icon = patternIcons[pattern.title] || BookOpen;
+
+                            return (
+                                <motion.div
+                                    key={pattern.id}
+                                    variants={item}
+                                    layout
+                                    className={`group rounded-3xl border transition-all duration-300 overflow-hidden ${
+                                        isExpanded 
+                                            ? 'bg-white dark:bg-slate-900 border-indigo-200 dark:border-indigo-900 shadow-xl shadow-indigo-500/5' 
+                                            : 'bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-indigo-900 hover:shadow-md'
+                                    }`}
                                 >
-                                    <div className="flex items-start justify-between w-full">
-                                        <div className="flex items-center gap-3">
-                                            <span className={`flex items-center justify-center w-8 h-8 rounded-full ${progress === 100 ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' : 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'} font-bold text-sm`}>
-                                                {progress === 100 ? '✓' : pattern.id}
-                                            </span>
-                                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                                                {pattern.title}
-                                            </h2>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            {/* Progress Bar (Mini) */}
-                                            <div className="hidden sm:flex flex-col items-end gap-1">
-                                                <span className="text-xs font-medium text-gray-500">{progress}% Done</span>
-                                                <div className="w-20 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                                    <div
-                                                        className={`h-full rounded-full ${progress === 100 ? 'bg-green-500' : 'bg-blue-500'}`}
-                                                        style={{ width: `${progress}%` }}
-                                                    />
-                                                </div>
+                                    {/* Header - Clickable */}
+                                    <div
+                                        onClick={() => toggleExpand(pattern.id)}
+                                        className={`p-6 cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-6 ${isExpanded ? 'bg-indigo-50/30 dark:bg-indigo-900/10' : ''}`}
+                                    >
+                                        <div className="flex items-start gap-4 flex-1">
+                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 ${
+                                                isExpanded 
+                                                    ? 'bg-indigo-600 text-white rotate-6' 
+                                                    : 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white group-hover:-rotate-6'
+                                            }`}>
+                                                <Icon className="h-7 w-7" />
                                             </div>
-                                            {/* Chevron */}
-                                            <svg
-                                                className={`w-6 h-6 text-gray-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                            </svg>
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-md">Pattern {pattern.id}</span>
+                                                    {progress === 100 && (
+                                                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-md uppercase tracking-tighter">
+                                                            <CheckCircle2 className="h-3 w-3" /> Mastered
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                                    {pattern.title}
+                                                </h3>
+                                                <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-1 mt-1 font-medium">
+                                                    {pattern.concept}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-6 justify-between md:justify-end">
+                                            <div className="flex flex-col items-end gap-1.5">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs font-bold text-slate-500">{progress}%</span>
+                                                    <div className="w-24 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700">
+                                                        <div
+                                                            className={`h-full rounded-full transition-all duration-500 ${progress === 100 ? 'bg-emerald-500' : 'bg-indigo-500'}`}
+                                                            style={{ width: `${progress}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{pattern.problems.length} Problems</span>
+                                            </div>
+                                            <div className={`p-2 rounded-xl transition-all duration-300 ${isExpanded ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:text-indigo-600'}`}>
+                                                <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Concept Snippet (Always visible or truncated?) - Let's keep it visible but maybe smaller if collapsed */}
-                                    <p className={`text-gray-600 dark:text-gray-300 text-sm leading-relaxed ${!isExpanded && 'line-clamp-2'}`}>
-                                        {pattern.concept}
-                                    </p>
-                                </div>
-
-                                {/* Expanded Content */}
-                                <AnimatePresence>
-                                    {isExpanded && (
-                                        <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.3 }}
-                                            className="border-t border-gray-100 dark:border-slate-800"
-                                        >
-                                            <div className="p-6 space-y-6">
-                                                {/* Extended Details */}
-                                                {pattern.details && (
-                                                    <div className="bg-blue-50 dark:bg-blue-900/10 rounded-lg p-4">
-                                                        <h4 className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-2 uppercase tracking-wider">Key Concepts</h4>
-                                                        <ul className="space-y-2">
-                                                            {pattern.details.map((detail, idx) => (
-                                                                <li key={idx} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2">
-                                                                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                                                                    {detail}
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    </div>
-                                                )}
-
-                                                {/* Problems List with Checkboxes */}
-                                                <div>
-                                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                                                        <span>LeetCode Problems</span>
-                                                        <span className="text-xs font-normal text-gray-500 bg-gray-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
-                                                            {pattern.problems.filter(p => completedProblems[p]).length}/{pattern.problems.length}
-                                                        </span>
-                                                    </h3>
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                        {pattern.problems.map((problem, idx) => {
-                                                            const isDone = completedProblems[problem] || false;
-                                                            return (
-                                                                <div
-                                                                    key={idx}
-                                                                    className={`group flex items-center justify-between p-3 rounded-lg border transition-all ${isDone
-                                                                        ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800'
-                                                                        : 'bg-gray-50 dark:bg-slate-800/50 border-transparent hover:border-gray-200 dark:hover:border-slate-700'
-                                                                        }`}
-                                                                >
-                                                                    <div
-                                                                        className="flex items-start gap-3 flex-1 cursor-pointer"
-                                                                        onClick={() => toggleProblem(problem)}
-                                                                    >
-                                                                        <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${isDone
-                                                                            ? 'bg-green-500 border-green-500 text-white'
-                                                                            : 'bg-white dark:bg-slate-900 border-gray-300 dark:border-slate-600 group-hover:border-blue-400'
-                                                                            }`}>
-                                                                            {isDone && (
-                                                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                                                </svg>
-                                                                            )}
+                                    {/* Expanded Content */}
+                                    <AnimatePresence>
+                                        {isExpanded && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                className="border-t border-gray-100 dark:border-slate-800"
+                                            >
+                                                <div className="p-8 space-y-8">
+                                                    {/* Concept Breakdown */}
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                        <div className="space-y-4">
+                                                            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm uppercase tracking-widest">
+                                                                <FileCode2 className="h-4 w-4" />
+                                                                Core Logic
+                                                            </div>
+                                                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
+                                                                {pattern.concept}
+                                                            </p>
+                                                            {pattern.details && (
+                                                                <div className="grid grid-cols-1 gap-2">
+                                                                    {pattern.details.map((detail, idx) => (
+                                                                        <div key={idx} className="flex items-start gap-3 p-3 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100/50 dark:border-indigo-800/30">
+                                                                            <div className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center shrink-0 mt-0.5">
+                                                                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                                                                            </div>
+                                                                            <span className="text-sm text-slate-700 dark:text-slate-300 font-medium">{detail}</span>
                                                                         </div>
-                                                                        <span className={`text-sm transition-colors ${isDone
-                                                                            ? 'text-gray-500 dark:text-gray-400 line-through decoration-gray-400'
-                                                                            : 'text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400'
-                                                                            }`}>
-                                                                            {problem}
-                                                                        </span>
-                                                                    </div>
-
-                                                                    <a
-                                                                        href={`https://leetcode.com/problems/${problem.split(' (LeetCode')[0].toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-')}/`}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="ml-3 px-3 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-full transition-colors opacity-0 group-hover:opacity-100 whitespace-nowrap"
-                                                                        onClick={(e) => e.stopPropagation()}
-                                                                    >
-                                                                        Solve
-                                                                    </a>
+                                                                    ))}
                                                                 </div>
-                                                            );
-                                                        })}
+                                                            )}
+                                                        </div>
+
+                                                        {/* Problems Grid */}
+                                                        <div className="space-y-4">
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm uppercase tracking-widest">
+                                                                    <Trophy className="h-4 w-4" />
+                                                                    Problem List
+                                                                </div>
+                                                                <span className="text-[10px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">
+                                                                    {pattern.problems.filter(p => completedProblems[p]).length} / {pattern.problems.length} COMPLETED
+                                                                </span>
+                                                            </div>
+                                                            <div className="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto no-scrollbar pr-2">
+                                                                {pattern.problems.map((problem, idx) => {
+                                                                    const isDone = completedProblems[problem] || false;
+                                                                    return (
+                                                                        <div
+                                                                            key={idx}
+                                                                            className={`group/item flex items-center justify-between p-4 rounded-2xl border transition-all ${
+                                                                                isDone
+                                                                                    ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-800/30'
+                                                                                    : 'bg-slate-50 dark:bg-slate-800/50 border-transparent hover:border-indigo-100 dark:hover:border-indigo-900/50'
+                                                                            }`}
+                                                                        >
+                                                                            <div
+                                                                                className="flex items-center gap-4 flex-1 cursor-pointer"
+                                                                                onClick={() => toggleProblem(problem)}
+                                                                            >
+                                                                                <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all ${
+                                                                                    isDone
+                                                                                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                                                                                        : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 group-hover/item:border-indigo-500'
+                                                                                }`}>
+                                                                                    {isDone && <CheckCircle2 className="h-4 w-4" />}
+                                                                                </div>
+                                                                                <span className={`text-sm font-bold transition-all ${
+                                                                                    isDone
+                                                                                        ? 'text-slate-400 dark:text-slate-500 line-through'
+                                                                                        : 'text-slate-700 dark:text-slate-300 group-hover/item:text-indigo-600 dark:group-hover/item:text-indigo-400'
+                                                                                }`}>
+                                                                                    {problem}
+                                                                                </span>
+                                                                            </div>
+
+                                                                            <a
+                                                                                href={`https://leetcode.com/problems/${problem.split(' (LeetCode')[0].toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-')}/`}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 text-xs font-bold rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all active:scale-95 ml-2"
+                                                                                onClick={(e) => e.stopPropagation()}
+                                                                            >
+                                                                                Solve
+                                                                                <ExternalLink className="h-3 w-3" />
+                                                                            </a>
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </motion.div>
-                        );
-                    })}
-                </motion.div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            );
+                        })}
+                    </motion.div>
+                </div>
 
-                <Footer />
+                {/* ── Call to Action ──────────────────────────────────────── */}
+                <div className="bg-indigo-600 dark:bg-indigo-500 rounded-3xl p-8 md:p-12 text-center text-white shadow-2xl shadow-indigo-500/20 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 -translate-x-1/2 blur-3xl" />
+                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/10 rounded-full translate-y-1/2 translate-x-1/2 blur-3xl" />
+                    
+                    <div className="relative max-w-2xl mx-auto space-y-6">
+                        <h2 className="text-3xl md:text-4xl font-black">Ready to land your dream job?</h2>
+                        <p className="text-indigo-100 text-lg">
+                            Consistent practice is the only way to master DSA. Use this checklist daily and watch your problem-solving skills skyrocket.
+                        </p>
+                        <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
+                            <button className="px-8 py-4 bg-white text-indigo-600 font-bold rounded-2xl hover:bg-slate-50 transition-all shadow-xl hover:-translate-y-1">
+                                Share Progress
+                            </button>
+                            <Link href="/quiz" className="px-8 py-4 bg-indigo-700/50 hover:bg-indigo-700 text-white font-bold rounded-2xl border border-indigo-400/30 transition-all hover:-translate-y-1">
+                                Take a Quiz
+                            </Link>
+                        </div>
+                    </div>
+                </div>
 
             </main>
+            
+            <Footer />
         </div>
     );
 }

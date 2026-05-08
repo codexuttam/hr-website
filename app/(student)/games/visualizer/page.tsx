@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Header from '../../../components/Header';
+import Footer from '../../../components/Footer';
 import VisualizerCanvas from '@/components/visualizer/VisualizerCanvas';
 import ControlPanel from '@/components/visualizer/ControlPanel';
 import CodePanel from '@/components/visualizer/CodePanel';
@@ -9,6 +11,7 @@ import SpeedSlider from '@/components/visualizer/SpeedSlider';
 import ArrayGenerator from '@/components/visualizer/ArrayGenerator';
 import { ALGORITHMS, generateRandomArray } from '@/lib/visualizerEngine';
 import { AlgorithmType, Frame } from '@/lib/types';
+import { Activity, Code2, Settings2, Info, ChevronRight, Play } from 'lucide-react';
 
 export default function VisualizerPage() {
     // State
@@ -110,124 +113,188 @@ export default function VisualizerPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-950 text-gray-100 p-4 md:p-8 font-sans">
-            <header className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div>
-                    <h1 className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-                        AlgoVisualizer
-                    </h1>
-                    <p className="text-gray-400 mt-1 text-sm">Interactive DSA Visualization Engine</p>
-                </div>
-
-                {/* Search Target Input (Only for searching algos) */}
-                {algoDetails.type === 'searching' && (
-                    <div className="flex items-center gap-2 bg-gray-900 p-2 rounded-lg border border-gray-800">
-                        <span className="text-sm text-gray-400">Target:</span>
-                        <input
-                            type="number"
-                            value={target}
-                            onChange={(e) => {
-                                setTarget(Number(e.target.value));
-                                // Trigger re-run is handled by useEffect
-                            }}
-                            className="bg-gray-800 text-white px-2 py-1 rounded w-20 text-sm border border-gray-700 focus:border-blue-500 outline-none"
-                        />
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 font-sans">
+            <Header />
+            
+            <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+                
+                {/* ── Page Header ─────────────────────────────────────────── */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
+                            <Activity className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                AlgoVisualizer
+                                <span className="px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-[10px] text-indigo-600 dark:text-indigo-400 uppercase tracking-widest border border-indigo-200/50">Engine v2.0</span>
+                            </h1>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm">Interactive Data Structures & Algorithms Visualization</p>
+                        </div>
                     </div>
-                )}
-            </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                {/* Left Sidebar - Controls */}
-                <div className="lg:col-span-3 space-y-6">
-                    <AlgorithmSelector
-                        selectedAlgorithm={selectedAlgo}
-                        onSelect={setSelectedAlgo}
-                    />
-
-                    <ArrayGenerator
-                        size={arraySize}
-                        onSizeChange={setArraySize}
-                        onGenerate={handleGenerateArray}
-                        isSorting={algoDetails.type === 'sorting'}
-                    />
-
-                    <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
-                        <h3 className="text-gray-400 font-bold mb-3 uppercase text-xs tracking-wider">Animation Speed</h3>
-                        <SpeedSlider speed={speed} onChange={setSpeed} />
-                    </div>
-                </div>
-
-                {/* Center - Canvas & Controls */}
-                <div className="lg:col-span-6 space-y-6 flex flex-col">
-                    {/* Canvas */}
-                    <div className="relative">
-                        {currentFrame && (
-                            <VisualizerCanvas
-                                frame={currentFrame}
-                                array={currentArray}
-                                maxVal={100}
-                            />
-                        )}
-                        {!currentFrame && (
-                            <div className="w-full h-64 md:h-96 bg-gray-900 rounded-xl flex items-center justify-center text-gray-500">
-                                Loading...
+                    <div className="flex items-center gap-3">
+                        {algoDetails.type === 'searching' && (
+                            <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 px-4 py-2 rounded-xl border border-gray-200 dark:border-slate-700">
+                                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Target Value</span>
+                                <input
+                                    type="number"
+                                    value={target}
+                                    onChange={(e) => setTarget(Number(e.target.value))}
+                                    className="bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-bold px-2 py-0.5 rounded-md w-16 text-center focus:ring-2 focus:ring-indigo-500 outline-none border border-gray-200 dark:border-slate-700"
+                                />
                             </div>
                         )}
+                        <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-100 dark:border-emerald-800/50 text-xs font-bold uppercase tracking-widest">
+                           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                           System Ready
+                        </div>
                     </div>
-
-                    {/* Description Box */}
-                    <div className="bg-gray-900/50 border border-gray-800 p-4 rounded-xl min-h-[80px] flex items-center justify-center text-center">
-                        <p className="text-lg font-medium text-blue-200 animate-pulse-short">
-                            {currentDescription}
-                        </p>
-                    </div>
-
-                    {/* Playback Controls */}
-                    <ControlPanel
-                        isPlaying={isPlaying}
-                        onPlayPause={handlePlayPause}
-                        onNext={handleNext}
-                        onPrev={handlePrev}
-                        onReset={handleReset}
-                        progress={currentFrameIdx}
-                        totalSteps={frames.length}
-                        onSeek={handleSeek}
-                    />
                 </div>
 
-                {/* Right Sidebar - Code & Info */}
-                <div className="lg:col-span-3 space-y-6 flex flex-col h-full">
-                    <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
-                        <h3 className="text-gray-400 font-bold mb-2 uppercase text-xs tracking-wider">Description</h3>
-                        <p className="text-sm text-gray-300 leading-relaxed">
-                            {algoDetails.description}
-                        </p>
-                    </div>
-
-                    <div className="flex-1 min-h-[300px] flex flex-col gap-4">
-                        <div className="bg-gray-900 rounded-xl p-2 border border-gray-800 flex gap-2 overflow-x-auto">
-                            {availableLanguages.map(lang => (
-                                <button
-                                    key={lang}
-                                    onClick={() => setSelectedLanguage(lang)}
-                                    className={`px-3 py-1.5 rounded text-xs font-medium transition-colors whitespace-nowrap ${selectedLanguage === lang
-                                            ? 'bg-blue-600 text-white'
-                                            : 'text-gray-400 hover:text-white hover:bg-gray-800'
-                                        }`}
-                                >
-                                    {lang}
-                                </button>
-                            ))}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    
+                    {/* ── Left Column: Config ─────────────────────────────────── */}
+                    <div className="lg:col-span-3 space-y-6">
+                        {/* Algorithm Selection */}
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-gray-100 dark:border-slate-800 shadow-sm">
+                            <div className="flex items-center gap-2 mb-4 text-gray-400">
+                                <Settings2 className="h-4 w-4" />
+                                <span className="text-xs font-bold uppercase tracking-widest">Configuration</span>
+                            </div>
+                            <AlgorithmSelector
+                                selectedAlgorithm={selectedAlgo}
+                                onSelect={setSelectedAlgo}
+                            />
                         </div>
 
-                        <CodePanel
-                            code={getCodeContent()}
-                            language={selectedLanguage}
-                            currentLine={currentLine}
-                        />
+                        {/* Array Management */}
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-gray-100 dark:border-slate-800 shadow-sm">
+                            <ArrayGenerator
+                                size={arraySize}
+                                onSizeChange={setArraySize}
+                                onGenerate={handleGenerateArray}
+                                isSorting={algoDetails.type === 'sorting'}
+                            />
+                        </div>
+
+                        {/* Speed Control */}
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-gray-100 dark:border-slate-800 shadow-sm">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Animation Speed</h3>
+                                <span className="text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-md">{speed}fps</span>
+                            </div>
+                            <SpeedSlider speed={speed} onChange={setSpeed} />
+                        </div>
+                    </div>
+
+                    {/* ── Center Column: Canvas ───────────────────────────────── */}
+                    <div className="lg:col-span-6 space-y-6">
+                        {/* Visualizer Area */}
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-gray-100 dark:border-slate-800 shadow-xl relative overflow-hidden">
+                            {/* Decorative Grid */}
+                            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" 
+                                 style={{ backgroundImage: 'radial-gradient(#4f46e5 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+                            
+                            <div className="relative aspect-video md:aspect-auto md:h-[400px]">
+                                {currentFrame ? (
+                                    <VisualizerCanvas
+                                        frame={currentFrame}
+                                        array={currentArray}
+                                        maxVal={100}
+                                    />
+                                ) : (
+                                    <div className="w-full h-full bg-slate-50 dark:bg-slate-950/50 rounded-2xl flex flex-col items-center justify-center text-gray-400 gap-4">
+                                        <div className="w-10 h-10 rounded-full border-2 border-indigo-500/20 border-t-indigo-500 animate-spin" />
+                                        <p className="text-sm">Initializing visualizer...</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Description / Step Info */}
+                        <div className="bg-indigo-600 dark:bg-indigo-500 rounded-3xl p-6 text-white shadow-lg shadow-indigo-500/20 relative overflow-hidden">
+                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+                             <div className="relative flex items-center gap-4">
+                                 <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                                     <Play className="h-5 w-5 fill-current" />
+                                 </div>
+                                 <p className="text-lg font-semibold leading-tight">
+                                     {currentDescription}
+                                 </p>
+                             </div>
+                        </div>
+
+                        {/* Controls */}
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-4 border border-gray-100 dark:border-slate-800 shadow-sm">
+                            <ControlPanel
+                                isPlaying={isPlaying}
+                                onPlayPause={handlePlayPause}
+                                onNext={handleNext}
+                                onPrev={handlePrev}
+                                onReset={handleReset}
+                                progress={currentFrameIdx}
+                                totalSteps={frames.length}
+                                onSeek={handleSeek}
+                            />
+                        </div>
+                    </div>
+
+                    {/* ── Right Column: Info & Code ───────────────────────────── */}
+                    <div className="lg:col-span-3 space-y-6">
+                        {/* Algo Info */}
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-gray-100 dark:border-slate-800 shadow-sm">
+                            <div className="flex items-center gap-2 mb-4 text-gray-400">
+                                <Info className="h-4 w-4" />
+                                <span className="text-xs font-bold uppercase tracking-widest">Algorithm Info</span>
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{algoDetails.name}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
+                                {algoDetails.description}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                <span className="px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-gray-500 uppercase tracking-tighter border border-gray-200 dark:border-slate-700">Type: {algoDetails.type}</span>
+                                <span className="px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-gray-500 uppercase tracking-tighter border border-gray-200 dark:border-slate-700">Steps: {frames.length}</span>
+                            </div>
+                        </div>
+
+                        {/* Code Panel */}
+                        <div className="flex-1 min-h-[400px] flex flex-col bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
+                            <div className="p-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/50">
+                                <div className="flex items-center gap-2 mb-4 text-gray-400">
+                                    <Code2 className="h-4 w-4" />
+                                    <span className="text-xs font-bold uppercase tracking-widest">Implementation</span>
+                                </div>
+                                <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+                                    {availableLanguages.map(lang => (
+                                        <button
+                                            key={lang}
+                                            onClick={() => setSelectedLanguage(lang)}
+                                            className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap uppercase tracking-tighter border ${selectedLanguage === lang
+                                                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-500/20'
+                                                    : 'text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800'
+                                                }`}
+                                        >
+                                            {lang}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="flex-1 p-2 bg-slate-950 overflow-hidden">
+                                <CodePanel
+                                    code={getCodeContent()}
+                                    language={selectedLanguage}
+                                    currentLine={currentLine}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+            </main>
+            
+            <Footer />
         </div>
     );
 }

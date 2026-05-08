@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 30; // cache for 30s, revalidate in background
 
 export async function POST(req: NextRequest) {
   try {
@@ -99,17 +100,32 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Server configuration error: Service Role Key missing' }, { status: 500 });
     }
 
-    const { data, error } = await supabaseAdmin
+    const { searchParams } = new URL(req.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
+    const pageSize = Math.min(100, parseInt(searchParams.get('pageSize') || '50'));
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    const { data, error, count } = await supabaseAdmin
       .from('users')
-      .select('*')
-      .order('user_id', { ascending: false }); // Order by serial ID instead of created_at
+      .select('user_id, user_uid, name, email, role', { count: 'exact' })
+      .order('user_id', { ascending: false })
+      .range(from, to);
 
     if (error) {
       console.error('Database error fetch users:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ users: data }, { status: 200 });
+    return NextResponse.json(
+      { users: data, total: count, page, pageSize },
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'private, max-age=30, stale-while-revalidate=60',
+        },
+      }
+    );
   } catch (error: any) {
     console.error('API GET Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });

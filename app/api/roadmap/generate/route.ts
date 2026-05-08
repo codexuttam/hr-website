@@ -6,53 +6,41 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
 import { RoadmapInput, RoadmapStructure } from "@/types/roadmap";
 
-// Initialize AI providers
+// OpenAI — primary provider
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || '' });
+
+// Gemini — fallback provider
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || '');
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
-});
 
 async function callAI(prompt: string): Promise<{ text: string; provider: string }> {
-  let text = '';
-  let usedProvider = '';
-
-  // Try OpenAI first
-  if (openai.apiKey) {
+  // 1. Try OpenAI first
+  if (process.env.OPENAI_API_KEY) {
     try {
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "user", content: prompt }
-        ],
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.7,
       });
-      text = completion.choices[0]?.message?.content || "";
-      usedProvider = 'OpenAI';
-    } catch (error) {
-      console.error("OpenAI error:", error);
-      // Will fall through to Gemini
+      const text = completion.choices[0]?.message?.content || '';
+      if (text) return { text, provider: 'OpenAI' };
+    } catch (err: any) {
+      console.error('OpenAI error, falling back to Gemini:', err.message);
     }
   }
 
-  // Fallback to Gemini if OpenAI failed or unavailable
-  if (!text) {
-    try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      text = response.text();
-      usedProvider = 'Gemini';
-    } catch (error) {
-      console.error("Gemini error:", error);
-      throw new Error("Both OpenAI and Gemini failed to generate content");
-    }
+  // 2. Fallback: Gemini 1.5 Flash
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    if (text) return { text, provider: 'Gemini' };
+  } catch (err: any) {
+    console.error('Gemini Flash error:', err.message);
   }
 
-  if (!text) {
-    throw new Error("No AI provider returned output");
-  }
-
-  return { text, provider: usedProvider };
+  throw new Error('All AI providers failed. Please check your API keys.');
 }
+
 
 // Extract JSON from AI response
 function extractJSON(text: string): RoadmapStructure | null {
