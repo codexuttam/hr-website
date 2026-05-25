@@ -11,6 +11,8 @@ export default function AIInterviewPage() {
         experience: 'intermediate',
         techStack: '',
         duration: 15,
+        type: 'conversational' as const,
+        resumeText: '',
     });
 
     const handleStartInterview = () => {

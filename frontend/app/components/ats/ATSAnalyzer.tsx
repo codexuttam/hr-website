@@ -505,11 +505,6 @@ const ATSAnalyzer: React.FC = () => {
           const savedResult = await ATSResultService.saveATSResult(atsResultData);
           console.log('ATS result saved successfully:', savedResult);
 
-          // Reload stats to reflect the new analysis (with small delay to ensure DB is updated)
-          setTimeout(() => {
-            loadATSStats();
-          }, 500);
-
           setProcessingMessage('✅ Analysis completed and saved to your history!');
         } catch (saveError) {
           console.error('Failed to save ATS result:', saveError);
