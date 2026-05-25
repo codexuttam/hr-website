@@ -1,0 +1,24 @@
+{
+  "name": "evaluation-agent",
+  "version": "1.0.0",
+  "description": "LangChain + OpenAI code evaluation agent",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "python main.py",
+    "dev": "python main.py"
+  },
+  "dependencies": {
+    "@langchain/core":   "^0.3.0",
+    "@langchain/openai": "^0.3.0",
+    "body-parser":       "^2.2.2",
+    "cors":              "^2.8.6",
+    "dotenv":            "^17.4.2",
+    "express":           "^5.2.1",
+    "langchain":         "^0.3.0",
+    "zod":               "^3.23.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
