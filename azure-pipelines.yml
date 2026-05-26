@@ -1,76 +1,61 @@
 trigger:
   - main
 
-pool:
-  vmImage: 'ubuntu-latest'
+variables:
+  - name: dockerRegistryServiceConnection
+    value: 'BitlanceACRConnection'
+  - name: containerRegistry
+    value: 'bitlanceaiapp.azurecr.io'
+  - name: tag
+    value: '$(Build.BuildId)'
+  - name: vmImageName
+    value: 'ubuntu-latest'
 
 stages:
   - stage: Build
-    displayName: 'Build and Package'
+    displayName: Build and Push Stage
     jobs:
-      - job: BuildFrontend
-        displayName: 'Build Next.js Frontend'
+      - job: BuildAndPush
+        displayName: Build and Push Images
+        pool:
+          vmImage: $(vmImageName)
         steps:
-          - task: NodeTool@0
+          # 1. Build & Push Frontend (as a Docker container)
+          - task: Docker@2
+            displayName: "Build & Push Frontend"
             inputs:
-              versionSpec: '22.x'
-            displayName: 'Install Node.js'
+              command: buildAndPush
+              repository: 'hr-website-frontend'
+              dockerfile: '$(Build.SourcesDirectory)/frontend/Dockerfile'
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
+              arguments: |
+                --build-arg NEXT_PUBLIC_SUPABASE_URL=$(NEXT_PUBLIC_SUPABASE_URL)
+                --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=$(NEXT_PUBLIC_SUPABASE_ANON_KEY)
+                --build-arg SUPABASE_SERVICE_ROLE_KEY=$(SUPABASE_SERVICE_ROLE_KEY)
 
-          - script: |
-              cd frontend
-              npm ci
-              npm run build
-            displayName: 'npm install and build'
-            env:
-              NEXT_PUBLIC_SUPABASE_URL: $(NEXT_PUBLIC_SUPABASE_URL)
-              NEXT_PUBLIC_SUPABASE_ANON_KEY: $(NEXT_PUBLIC_SUPABASE_ANON_KEY)
-              SUPABASE_SERVICE_ROLE_KEY: $(SUPABASE_SERVICE_ROLE_KEY)
-            
-          - task: PublishPipelineArtifact@1
+          # 2. Build & Push Backend
+          - task: Docker@2
+            displayName: "Build & Push Backend"
             inputs:
-              targetPath: '$(System.DefaultWorkingDirectory)/frontend/.next'
-              artifact: 'frontend-build'
-              publishLocation: 'pipeline'
-            displayName: 'Publish Frontend Artifact'
+              command: buildAndPush
+              repository: 'hr-website-backend'
+              dockerfile: '$(Build.SourcesDirectory)/backend/Dockerfile'
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
 
-      - job: BuildBackend
-        displayName: 'Build Node.js Backend'
-        steps:
-          - task: NodeTool@0
+          # 3. Build & Push Agents
+          - task: Docker@2
+            displayName: "Build & Push Agents"
             inputs:
-              versionSpec: '22.x'
-            displayName: 'Install Node.js'
-
-          - script: |
-              cd backend
-              npm ci
-            displayName: 'npm install'
-            
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: '$(System.DefaultWorkingDirectory)/backend'
-              artifact: 'backend-build'
-              publishLocation: 'pipeline'
-            displayName: 'Publish Backend Artifact'
-
-      - job: BuildAgents
-        displayName: 'Build Python Backend (Agents)'
-        steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: '3.12'
-            displayName: 'Use Python 3.12'
-
-          - script: |
-              cd agents
-              python -m venv venv
-              source venv/bin/activate
-              pip install -r requirements.txt
-            displayName: 'Install Python dependencies'
-            
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: '$(System.DefaultWorkingDirectory)/agents'
-              artifact: 'agents-build'
-              publishLocation: 'pipeline'
-            displayName: 'Publish Agents Artifact'
+              command: buildAndPush
+              repository: 'hr-website-agents'
+              dockerfile: '$(Build.SourcesDirectory)/agents/Dockerfile'
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
