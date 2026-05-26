@@ -28,7 +28,7 @@ const ThemeToggleButton: React.FC = () => {
     <div className="flex items-center gap-2">
       <button
         onClick={handleToggle}
-        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 border border-gray-200 dark:border-gray-600"
+        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-1000 transition-all duration-200 border border-gray-200 dark:border-gray-600"
         aria-label="Toggle dark mode"
         title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
       >

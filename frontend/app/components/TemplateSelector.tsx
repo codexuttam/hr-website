@@ -10,16 +10,16 @@ interface TemplateSelectorProps {
 
 // 🎨 Template metadata
 const templates = [
-  { id: "classic" as ResumeTemplate, name: "Professional with Photo", preview: "/images/resume_templates-images-0.jpg", accent: "border-blue-400 hover:border-blue-600" },
-  { id: "modern" as ResumeTemplate, name: "Modern Executive", preview: "/images/resume_templates-images-1.jpg", accent: "border-purple-400 hover:border-purple-600" },
+  { id: "classic" as ResumeTemplate, name: "Professional with Photo", preview: "/images/resume_templates-images-0.jpg", accent: "border-gray-500 hover:border-blue-600" },
+  { id: "modern" as ResumeTemplate, name: "Modern Executive", preview: "/images/resume_templates-images-1.jpg", accent: "border-gray-500 hover:border-neutral-900" },
   { id: "minimal" as ResumeTemplate, name: "Minimal Professional", preview: "/images/resume_templates-images-2.jpg", accent: "border-gray-400 hover:border-gray-600" },
-  { id: "creative" as ResumeTemplate, name: "Creative Designer", preview: "/images/resume_templates-images-3.jpg", accent: "border-pink-400 hover:border-pink-600" },
-  { id: "executive" as ResumeTemplate, name: "Executive Premium", preview: "/images/resume_templates-images-4.jpg", accent: "border-indigo-400 hover:border-indigo-600" },
-  { id: "tech" as ResumeTemplate, name: "Tech Professional", preview: "/images/resume_templates-images-5.jpg", accent: "border-blue-500 hover:border-blue-700" },
+  { id: "creative" as ResumeTemplate, name: "Creative Designer", preview: "/images/resume_templates-images-3.jpg", accent: "border-zinc-500 hover:border-pink-600" },
+  { id: "executive" as ResumeTemplate, name: "Executive Premium", preview: "/images/resume_templates-images-4.jpg", accent: "border-gray-500 hover:border-black dark:text-white" },
+  { id: "tech" as ResumeTemplate, name: "Tech Professional", preview: "/images/resume_templates-images-5.jpg", accent: "border-black hover:border-blue-700" },
   { id: "academic" as ResumeTemplate, name: "Academic Scholar", preview: "/images/resume_templates-images-6.jpg", accent: "border-gray-500 hover:border-gray-700" },
-  { id: "designer" as ResumeTemplate, name: "Designer Portfolio", preview: "/images/resume_templates-images-7.jpg", accent: "border-pink-500 hover:border-pink-700" },
+  { id: "designer" as ResumeTemplate, name: "Designer Portfolio", preview: "/images/resume_templates-images-7.jpg", accent: "border-zinc-800 hover:border-pink-700" },
   { id: "startup" as ResumeTemplate, name: "Startup Dynamic", preview: "/images/resume_templates-images-8.jpg", accent: "border-green-500 hover:border-green-700" },
-  { id: "corporate" as ResumeTemplate, name: "Corporate Standard", preview: "/images/resume_templates-images-9.jpg", accent: "border-slate-500 hover:border-slate-700" },
+  { id: "corporate" as ResumeTemplate, name: "Corporate Standard", preview: "/images/resume_templates-images-9.jpg", accent: "border-neutral-500 hover:border-neutral-800" },
 ];
 
 const TemplateSelector: React.FC<TemplateSelectorProps> = ({
@@ -48,7 +48,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
             className={`border-2 rounded-xl overflow-hidden shadow-sm transition-all duration-200 hover:shadow-lg ${
               selectedTemplate === template.id
                 ? `${template.accent} border-opacity-100 scale-105`
-                : "border-gray-200 dark:border-slate-600 hover:border-gray-400"
+                : "border-gray-200 dark:border-neutral-600 hover:border-gray-400"
             }`}
           >
             <div className="w-full h-40 overflow-hidden">
@@ -59,7 +59,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
               />
             </div>
 
-            <div className="p-3 bg-white dark:bg-slate-800 text-center">
+            <div className="p-3 bg-white dark:bg-neutral-900 text-center">
               <h4 className="font-medium text-gray-900 dark:text-white">
                 {template.name}
               </h4>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import ThemeToggleButton from './ThemeToggleButton';
+
 import UserProfile from './auth/UserProfile';
 import { useAuth } from '../contexts/AuthContext';
 import { useRoleAccess } from '../hooks/useRoleAccess';
@@ -22,13 +22,13 @@ const NavLink: React.FC<{ href: string; children: React.ReactNode; icon?: React.
       href={href} 
       className={`group flex items-center gap-2 transition-all duration-200 px-3 py-2 rounded-xl text-sm font-semibold ${
         isActive 
-          ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-900/30 shadow-sm' 
-          : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20'
+          ? 'text-black dark:text-white dark:text-gray-500 bg-gray-100/80 dark:bg-zinc-900/30 shadow-sm' 
+          : 'text-gray-700 dark:text-gray-300 hover:text-black dark:text-white dark:hover:text-gray-500 hover:bg-gray-100/50 dark:hover:bg-zinc-900/20'
       }`}
     >
       {icon && (
         <span className={`transition-colors ${
-          isActive ? 'text-indigo-500 dark:text-indigo-400' : 'text-gray-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400'
+          isActive ? 'text-gray-1000 dark:text-gray-500' : 'text-gray-400 group-hover:text-gray-1000 dark:group-hover:text-gray-500'
         }`}>
           {icon}
         </span>
@@ -48,11 +48,11 @@ const MobileNavLink: React.FC<{ href: string; onClick?: () => void; children: Re
       onClick={onClick} 
       className={`flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-base font-medium transition-all ${
         isActive 
-          ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/40 border-l-4 border-indigo-500' 
-          : 'text-gray-600 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400'
+          ? 'text-black dark:text-white dark:text-gray-500 bg-gray-100 dark:bg-zinc-900/40 border-l-4 border-gray-1000' 
+          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-900/30 hover:text-black dark:text-white dark:hover:text-gray-500'
       }`}
     >
-      {icon && <span className={isActive ? 'text-indigo-500' : 'text-gray-400'}>{icon}</span>}
+      {icon && <span className={isActive ? 'text-gray-1000' : 'text-gray-400'}>{icon}</span>}
       {children}
     </Link>
   );
@@ -63,13 +63,13 @@ const DropdownNavLink: React.FC<{ children: React.ReactNode; isOpen: boolean; on
     onClick={onToggle}
     className={`group flex items-center gap-2 transition-colors duration-200 px-3 py-2 rounded-xl text-sm font-semibold ${
       isActive || isOpen
-        ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-900/20'
-        : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20'
+        ? 'text-black dark:text-white dark:text-gray-500 bg-gray-100/50 dark:bg-zinc-900/20'
+        : 'text-gray-700 dark:text-gray-300 hover:text-black dark:text-white dark:hover:text-gray-500 hover:bg-gray-100/50 dark:hover:bg-zinc-900/20'
     }`}
   >
-    {icon && <span className={`${isActive || isOpen ? 'text-indigo-500' : 'text-gray-400'} group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors`}>{icon}</span>}
+    {icon && <span className={`${isActive || isOpen ? 'text-gray-1000' : 'text-gray-400'} group-hover:text-gray-1000 dark:group-hover:text-gray-500 transition-colors`}>{icon}</span>}
     {children}
-    <ChevronDown className={`h-4 w-4 text-gray-400 group-hover:text-indigo-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+    <ChevronDown className={`h-4 w-4 text-gray-400 group-hover:text-gray-1000 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
   </button>
 );
 
@@ -83,19 +83,19 @@ const DropdownItem: React.FC<{ href: string; onClick?: () => void; children: Rea
       onClick={onClick}
       className={`group flex items-start gap-3 w-full text-left px-4 py-3 rounded-xl text-sm transition-all ${
         isActive
-          ? 'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400'
-          : 'text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30'
+          ? 'bg-gray-100 dark:bg-zinc-900/40 text-black dark:text-white dark:text-gray-500'
+          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-900/30'
       }`}
     >
       {icon && (
         <div className={`mt-0.5 transition-colors ${
-          isActive ? 'text-indigo-500' : 'text-gray-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400'
+          isActive ? 'text-gray-1000' : 'text-gray-400 group-hover:text-gray-1000 dark:group-hover:text-gray-500'
         }`}>
           {icon}
         </div>
       )}
       <div>
-        <div className={`font-semibold transition-colors ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'group-hover:text-indigo-600 dark:group-hover:text-indigo-400'}`}>{children}</div>
+        <div className={`font-semibold transition-colors ${isActive ? 'text-black dark:text-white dark:text-gray-500' : 'group-hover:text-black dark:text-white dark:group-hover:text-gray-500'}`}>{children}</div>
         {description && <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{description}</div>}
       </div>
     </Link>
@@ -130,15 +130,15 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl sticky top-0 z-50 border-b border-gray-200/50 dark:border-slate-800/50 shadow-sm">
+    <header className="bg-white/30 dark:bg-black/30 backdrop-blur-2xl border-b border-black/5 dark:border-white/5 backdrop-blur-xl sticky top-0 z-50 border-b border-gray-200/50 dark:border-neutral-900/50 shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-all duration-300 transform group-hover:scale-105">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-1000 to-neutral-900 flex items-center justify-center shadow-lg shadow-gray-1000/20 group-hover:shadow-gray-1000/40 transition-all duration-300 transform group-hover:scale-105">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
-              <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300">EduAI</span>
+              <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-black to-neutral-800 dark:from-white dark:to-neutral-300">EduAI</span>
             </Link>
           </div>
           
@@ -159,8 +159,8 @@ const Header: React.FC = () => {
                 </DropdownNavLink>
 
                 {careerDropdownOpen && (
-                  <div className="absolute left-0 mt-3 w-80 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-xl shadow-indigo-500/10 border border-gray-200/50 dark:border-slate-700/50 z-50 p-2 animate-fade-in-up">
-                    <div className="px-4 py-2 text-xs font-bold text-indigo-500 uppercase tracking-wider">Preparation</div>
+                  <div className="absolute left-0 mt-3 w-80 bg-white/90 dark:bg-black/80 backdrop-blur-xl/90 backdrop-blur-xl rounded-2xl shadow-xl shadow-gray-1000/10 border border-gray-200/50 dark:border-neutral-800/50 z-50 p-2 animate-fade-in-up">
+                    <div className="px-4 py-2 text-xs font-bold text-gray-1000 uppercase tracking-wider">Preparation</div>
                     <DropdownItem
                       href="/code-playground"
                       onClick={handleCareerToolClick}
@@ -186,7 +186,7 @@ const Header: React.FC = () => {
                       Placement Portal
                     </DropdownItem>
 
-                    <div className="px-4 py-2 mt-2 text-xs font-bold text-indigo-500 uppercase tracking-wider border-t border-gray-100 dark:border-slate-800">Resume & ATS</div>
+                    <div className="px-4 py-2 mt-2 text-xs font-bold text-gray-1000 uppercase tracking-wider border-t border-gray-100 dark:border-neutral-900">Resume & ATS</div>
                     <DropdownItem
                       href="/resume-builder"
                       onClick={handleCareerToolClick}
@@ -220,30 +220,23 @@ const Header: React.FC = () => {
               <NavLink href="/games" icon={<Gamepad2 className="w-4 h-4" />}>Games</NavLink>
               <NavLink href="/alumni" icon={<Users className="w-4 h-4" />}>Alumni</NavLink>
 
-              <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-slate-700 ml-4">
-                <ThemeToggleButton />
+              <div className="flex items-center gap-3">
 
                 {isAuthenticated ? (
                   <div className="flex items-center gap-3">
-                    <div className="hidden xl:flex items-center px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/50 rounded-lg">
-                      <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 mr-1.5">Credits:</span>
-                      <span className="text-sm font-bold text-emerald-700 dark:text-emerald-300">
-                        {user?.credits !== undefined ? user.credits : 0}
-                      </span>
-                    </div>
                     <UserProfile />
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
                     <Link
                       href="/login"
-                      className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-200"
+                      className="text-gray-700 dark:text-gray-300 hover:text-black dark:text-white dark:hover:text-gray-500 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-200"
                     >
                       Log in
                     </Link>
                     <Link
                       href="/register"
-                      className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700 shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all duration-200 transform hover:-translate-y-0.5"
+                      className="bg-black dark:text-white text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-zinc-900 shadow-md shadow-gray-1000/20 hover:shadow-gray-1000/40 transition-all duration-200 transform hover:-translate-y-0.5"
                     >
                       Sign up
                     </Link>
@@ -255,13 +248,12 @@ const Header: React.FC = () => {
 
           {/* Mobile menu button */}
           <div className="flex items-center gap-4 lg:hidden">
-            <ThemeToggleButton />
             {isAuthenticated && (
                <UserProfile />
             )}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-1000"
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -272,17 +264,17 @@ const Header: React.FC = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-slate-800/50 shadow-xl overflow-y-auto max-h-[calc(100vh-5rem)]">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white/95 dark:bg-black/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-neutral-900/50 shadow-xl overflow-y-auto max-h-[calc(100vh-5rem)]">
           <div className="px-4 pt-4 pb-8 space-y-2">
             <MobileNavLink href="/" onClick={handleMobileNavClick}>Home</MobileNavLink>
             {isAuthenticated && <MobileNavLink href="/dashboard" onClick={handleMobileNavClick}>Dashboard</MobileNavLink>}
 
             <div className="pt-4 pb-2">
-              <div className={`px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isCareerActive ? 'text-indigo-500' : 'text-gray-400'}`}>
+              <div className={`px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isCareerActive ? 'text-gray-1000' : 'text-gray-400'}`}>
                 <Briefcase className="w-4 h-4" /> Career Tools
               </div>
             </div>
-            <div className={`space-y-1 pl-4 border-l-2 ml-6 ${isCareerActive ? 'border-indigo-500' : 'border-gray-100 dark:border-slate-800'}`}>
+            <div className={`space-y-1 pl-4 border-l-2 ml-6 ${isCareerActive ? 'border-gray-1000' : 'border-gray-100 dark:border-neutral-900'}`}>
               <MobileNavLink href="/code-playground" onClick={handleMobileNavClick} icon={<Code className="w-5 h-5" />}>Coding Practice</MobileNavLink>
               <MobileNavLink href="/interview" onClick={handleMobileNavClick} icon={<UserCircle className="w-5 h-5" />}>Mock Interview</MobileNavLink>
               <MobileNavLink href="/drives" onClick={handleMobileNavClick} icon={<Rocket className="w-5 h-5" />}>Placement Portal</MobileNavLink>
@@ -303,12 +295,12 @@ const Header: React.FC = () => {
 
             {canAccessAdmin && (
               <>
-                <div className="pt-6 pb-2 border-t border-gray-100 dark:border-slate-800 mt-6">
-                  <div className={`px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isAdminActive ? 'text-indigo-500' : 'text-gray-400'}`}>
+                <div className="pt-6 pb-2 border-t border-gray-100 dark:border-neutral-900 mt-6">
+                  <div className={`px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isAdminActive ? 'text-gray-1000' : 'text-gray-400'}`}>
                     <Shield className="w-4 h-4" /> Admin Controls
                   </div>
                 </div>
-                <div className={`space-y-1 pl-4 border-l-2 ml-6 ${isAdminActive ? 'border-indigo-500' : 'border-indigo-100 dark:border-indigo-900'}`}>
+                <div className={`space-y-1 pl-4 border-l-2 ml-6 ${isAdminActive ? 'border-gray-1000' : 'border-gray-200 dark:border-zinc-900'}`}>
                   <MobileNavLink href="/quiz/admin" onClick={handleMobileNavClick} icon={<Target className="w-5 h-5" />}>Quiz Admin</MobileNavLink>
                   <MobileNavLink href="/admin/users" onClick={handleMobileNavClick} icon={<Users className="w-5 h-5" />}>User Management</MobileNavLink>
                   <MobileNavLink href="/dashboard" onClick={handleMobileNavClick} icon={<BarChart className="w-5 h-5" />}>Admin Dashboard</MobileNavLink>
@@ -318,18 +310,18 @@ const Header: React.FC = () => {
             )}
 
             {!isAuthenticated && (
-              <div className="pt-6 mt-6 border-t border-gray-100 dark:border-slate-800 grid grid-cols-2 gap-4">
+              <div className="pt-6 mt-6 border-t border-gray-100 dark:border-neutral-900 grid grid-cols-2 gap-4">
                 <Link
                   href="/login"
                   onClick={handleMobileNavClick}
-                  className="flex items-center justify-center bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white px-4 py-3 rounded-xl font-semibold"
+                  className="flex items-center justify-center bg-gray-100 dark:bg-neutral-900 text-gray-900 dark:text-white px-4 py-3 rounded-xl font-semibold"
                 >
                   Log in
                 </Link>
                 <Link
                   href="/register"
                   onClick={handleMobileNavClick}
-                  className="flex items-center justify-center bg-indigo-600 text-white px-4 py-3 rounded-xl font-semibold shadow-md"
+                  className="flex items-center justify-center bg-black dark:text-white text-white px-4 py-3 rounded-xl font-semibold shadow-md"
                 >
                   Sign up
                 </Link>

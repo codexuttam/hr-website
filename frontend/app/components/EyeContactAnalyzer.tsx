@@ -153,8 +153,8 @@ const EyeContactAnalyzer = React.forwardRef<EyeContactRef, {}>((props, ref) => {
             <div className="absolute top-6 left-6 flex flex-col gap-2 z-10">
                 <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md border transition-all duration-300 ${
                     stats.isLookingAtCamera 
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' 
-                    : 'bg-rose-500/10 border-rose-500/30 text-rose-500'
+                    ? 'bg-black/10 border-black/30 text-black' 
+                    : 'bg-black/10 border-black/30 text-black'
                 }`}>
                     {stats.isLookingAtCamera ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
                     <span className="text-[10px] font-black uppercase tracking-widest leading-none">
@@ -162,10 +162,10 @@ const EyeContactAnalyzer = React.forwardRef<EyeContactRef, {}>((props, ref) => {
                     </span>
                 </div>
                 
-                <div className="bg-slate-900/60 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-3">
-                    <Target className="h-4 w-4 text-indigo-400" />
+                <div className="bg-black/80 backdrop-blur-xl/60 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-3">
+                    <Target className="h-4 w-4 text-gray-500" />
                     <div>
-                        <div className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Attention Score</div>
+                        <div className="text-[8px] font-bold text-neutral-400 uppercase tracking-widest leading-none mb-1">Attention Score</div>
                         <div className="text-sm font-black text-white font-mono leading-none">{stats.percentage.toFixed(1)}%</div>
                     </div>
                 </div>

@@ -14,7 +14,7 @@ const Dashboard: React.FC<DashboardProps> = ({ navigateTo }) => {
     switch (role) {
       case 'admin': return 'bg-red-100 text-red-800 border-red-200';
       case 'mentor': return 'bg-green-100 text-green-800 border-green-200';
-      case 'recruiter': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'recruiter': return 'bg-gray-200 text-purple-800 border-gray-300';
       default: return 'bg-blue-100 text-blue-800 border-blue-200';
     }
   };
@@ -81,7 +81,7 @@ const Dashboard: React.FC<DashboardProps> = ({ navigateTo }) => {
               </div>
             </div>
             <div className="hidden md:block">
-              <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-2xl">
+              <div className="w-20 h-20 bg-black dark:bg-white rounded-full flex items-center justify-center text-white font-bold text-2xl">
                 {user.name.charAt(0).toUpperCase()}
               </div>
             </div>

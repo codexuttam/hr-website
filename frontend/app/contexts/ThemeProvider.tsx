@@ -13,7 +13,7 @@ const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     if (savedTheme) {
       return savedTheme === "dark";
     }
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return false;
   });
 
   const toggleTheme = () => {

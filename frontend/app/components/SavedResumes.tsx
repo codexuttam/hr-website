@@ -69,7 +69,7 @@ const SavedResumes: React.FC<SavedResumesProps> = ({ onLoadResume, onCreateNew }
       <div className="flex items-center justify-center p-8">
         <div className="flex items-center gap-3">
           <div className="w-6 h-6 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-gray-600 dark:text-gray-300">Loading your resumes...</span>
+          <span className="text-gray-700 dark:text-gray-300">Loading your resumes...</span>
         </div>
       </div>
     );
@@ -100,14 +100,14 @@ const SavedResumes: React.FC<SavedResumesProps> = ({ onLoadResume, onCreateNew }
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Resumes</h2>
-          <p className="text-gray-600 dark:text-gray-300 mt-1">
+          <p className="text-gray-700 dark:text-gray-300 mt-1">
             {resumes.length} {resumes.length === 1 ? 'resume' : 'resumes'} saved
           </p>
         </div>
         {onCreateNew && (
           <button
             onClick={onCreateNew}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-sm"
+            className="px-6 py-3 bg-black dark:bg-white hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-sm"
           >
             + Create New Resume
           </button>
@@ -122,11 +122,11 @@ const SavedResumes: React.FC<SavedResumesProps> = ({ onLoadResume, onCreateNew }
             </svg>
           </div>
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No resumes yet</h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">Create your first resume to get started</p>
+          <p className="text-gray-700 dark:text-gray-300 mb-6">Create your first resume to get started</p>
           {onCreateNew && (
             <button
               onClick={onCreateNew}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+              className="px-6 py-3 bg-black dark:bg-white hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
             >
               Create Your First Resume
             </button>
@@ -145,7 +145,7 @@ const SavedResumes: React.FC<SavedResumesProps> = ({ onLoadResume, onCreateNew }
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-1 truncate">
                       {resume.resume_name}
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
                       {getTemplateNames()[resume.template_id] || `Template ${resume.template_id + 1}`}
                     </p>
                   </div>
@@ -169,7 +169,7 @@ const SavedResumes: React.FC<SavedResumesProps> = ({ onLoadResume, onCreateNew }
                   {onLoadResume && (
                     <button
                       onClick={() => onLoadResume(resume)}
-                      className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                      className="flex-1 px-4 py-2 bg-black dark:bg-white hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
                     >
                       Open
                     </button>
@@ -194,7 +194,7 @@ const SavedResumes: React.FC<SavedResumesProps> = ({ onLoadResume, onCreateNew }
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Delete Resume
             </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
+            <p className="text-gray-700 dark:text-gray-300 mb-6">
               Are you sure you want to delete this resume? This action cannot be undone.
             </p>
             <div className="flex gap-3 justify-end">

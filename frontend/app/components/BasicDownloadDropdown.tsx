@@ -89,7 +89,7 @@ const BasicDownloadDropdown: React.FC<BasicDownloadDropdownProps> = ({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
         </svg>
       ),
-      color: 'text-blue-600',
+      color: 'text-black dark:text-white',
     },
     {
       id: 'doc',
@@ -123,7 +123,7 @@ const BasicDownloadDropdown: React.FC<BasicDownloadDropdownProps> = ({
         className={`w-full py-3 rounded-lg transition flex items-center justify-center ${
           isGeneratingPDF || isLoading !== null
             ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-indigo-600 hover:bg-indigo-700'
+            : 'bg-black dark:text-white hover:bg-zinc-900'
         } text-white`}
       >
         {isGeneratingPDF || isLoading ? (

@@ -135,7 +135,7 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 h-full flex flex-col">
+    <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-6 h-full flex flex-col">
       <div className="flex items-center justify-between mb-6 shrink-0">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
           🤖 AI Resume Suggestions
@@ -143,7 +143,7 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
         <button
           onClick={handleGenerateSuggestions}
           disabled={isLoading}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+          className="px-4 py-2 bg-black dark:text-white text-white rounded-lg hover:bg-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
         >
           {isLoading ? 'Analyzing...' : 'Analyze'}
         </button>
@@ -158,21 +158,21 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
       {suggestions ? (
         <div className="space-y-6 overflow-y-auto custom-scrollbar pr-2">
           {/* Overall Score */}
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-700 dark:to-slate-600 p-4 rounded-lg">
+          <div className="bg-gradient-to-r from-gray-100 to-gray-100 dark:from-neutral-800 dark:to-neutral-600 p-4 rounded-lg">
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-gray-900 dark:text-white">
                 Resume Score
               </span>
               <div className="flex items-center">
-                <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                <span className="text-2xl font-bold text-black dark:text-white dark:text-gray-500">
                   {suggestions.overallScore}
                 </span>
-                <span className="text-gray-600 dark:text-gray-300 ml-1 text-sm">/100</span>
+                <span className="text-gray-700 dark:text-gray-300 ml-1 text-sm">/100</span>
               </div>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
               <div
-                className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+                className="bg-black dark:text-white h-2 rounded-full transition-all duration-300"
                 style={{ width: `${suggestions.overallScore}%` }}
               ></div>
             </div>
@@ -211,7 +211,7 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
                           <span className="italic">"{suggestion.currentText}"</span>
                         </div>
                       )}
-                      <div className="text-xs bg-white dark:bg-slate-700 p-2 rounded border border-black/5 dark:border-white/10">
+                      <div className="text-xs bg-white dark:bg-neutral-800 p-2 rounded border border-black/5 dark:border-white/10">
                         <span className="font-semibold opacity-70 block mb-0.5">Suggested:</span>
                         <span>"{suggestion.suggestedText}"</span>
                       </div>
@@ -245,7 +245,7 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ resumeData, onApplySugges
               </h3>
               <div className="flex flex-wrap gap-2">
                 {suggestions.keywordRecommendations.map((keyword, index) => (
-                  <div key={index} className="bg-blue-50 dark:bg-slate-700 px-2 py-1.5 rounded text-xs border border-blue-100 dark:border-slate-600">
+                  <div key={index} className="bg-blue-50 dark:bg-neutral-800 px-2 py-1.5 rounded text-xs border border-blue-100 dark:border-neutral-600">
                     <div className="flex items-center gap-1.5">
                       <span className="font-medium text-blue-900 dark:text-blue-300">
                         {keyword.keyword}

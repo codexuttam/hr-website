@@ -14,7 +14,7 @@ interface FeatureCardProps {
 const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, href, colorClass }) => (
   <Link
     href={href}
-    className="group relative flex flex-col justify-between bg-white/60 dark:bg-slate-800/60 backdrop-blur-lg p-8 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+    className="group relative flex flex-col justify-between bg-white/40 dark:bg-black/40 backdrop-blur-lg p-8 rounded-3xl border border-black/10 dark:border-white/10 hover:shadow-xl hover:shadow-gray-1000/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
   >
     <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${colorClass} opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition-opacity duration-300 transform translate-x-10 -translate-y-10`}></div>
     
@@ -22,11 +22,11 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, hre
       <div className={`flex items-center justify-center h-14 w-14 rounded-2xl bg-gradient-to-br ${colorClass} text-white mb-6 shadow-md transform group-hover:scale-110 transition-transform duration-300`}>
         {icon}
       </div>
-      <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">{title}</h3>
-      <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{description}</p>
+      <h3 className="text-2xl font-bold text-black dark:text-white mb-3 tracking-tight">{title}</h3>
+      <p className="text-gray-700 dark:text-gray-400 leading-relaxed">{description}</p>
     </div>
     
-    <div className="mt-6 flex items-center text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500">
+    <div className="mt-6 flex items-center text-sm font-semibold text-black dark:text-white dark:text-gray-500 group-hover:text-gray-1000">
       Explore Feature
       <svg className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -42,68 +42,68 @@ const Features: React.FC = () => {
       title: 'Resume Builder',
       description: 'AI-powered resume builder with ATS optimization and multiple templates.',
       href: '/resume-builder',
-      colorClass: 'from-blue-500 to-indigo-600'
+      colorClass: 'from-black to-black dark:text-white'
     },
     {
       icon: <IconATS />,
       title: 'ATS Score Checker',
       description: 'Optimize your resume for ATS systems and check compatibility scores.',
       href: '/ats-tools',
-      colorClass: 'from-emerald-400 to-teal-500'
+      colorClass: 'from-gray-500 to-black'
     },
     {
       icon: <IconPlacement />,
       title: 'Placement Preparation',
       description: 'Company-wise previous year questions, preparation kits and placement guidance.',
       href: '/games',
-      colorClass: 'from-orange-400 to-rose-500'
+      colorClass: 'from-gray-500 to-black'
     },
     {
       icon: <IconCode />,
       title: 'Code IDE',
       description: 'Online coding environment with multiple programming languages.',
       href: '/code-playground',
-      colorClass: 'from-purple-500 to-fuchsia-600'
+      colorClass: 'from-gray-1000 to-black'
     },
     {
       icon: <IconPlanner />,
       title: 'Time Planner',
       description: 'Smart timetable planner with progress tracking and reminders.',
       href: '/dashboard',
-      colorClass: 'from-cyan-400 to-blue-500'
+      colorClass: 'from-gray-500 to-black'
     },
     {
       icon: <IconGames />,
       title: 'Brain Games',
       description: 'Puzzles, reasoning ability games and mental exercises.',
       href: '/games',
-      colorClass: 'from-pink-400 to-rose-500'
+      colorClass: 'from-zinc-500 to-black'
     },
     {
       icon: <IconInterview />,
       title: 'Mock Interview',
       description: 'AI-powered mock interviews with real-time feedback.',
       href: '/interview',
-      colorClass: 'from-indigo-400 to-violet-600'
+      colorClass: 'from-gray-500 to-black'
     },
     {
       icon: <IconMentor />,
       title: 'AI Mentor',
       description: '24/7 AI mentor support and personalized guidance.',
       href: '/coach',
-      colorClass: 'from-amber-400 to-orange-500'
+      colorClass: 'from-gray-500 to-black'
     }
   ];
 
   return (
-    <section id="features" className="py-24 sm:py-32 relative bg-slate-50 dark:bg-slate-900/50">
+    <section id="features" className="py-24 sm:py-32 relative bg-neutral-50 dark:bg-black/80 backdrop-blur-xl/50">
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 tracking-wide uppercase mb-3">Power Up Your Career</h2>
-          <h3 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">Complete Education Ecosystem</h3>
-          <p className="mt-6 text-xl text-gray-600 dark:text-gray-400">
+          <h2 className="text-sm font-semibold text-black dark:text-white dark:text-gray-500 tracking-wide uppercase mb-3">Power Up Your Career</h2>
+          <h3 className="text-4xl sm:text-5xl font-extrabold text-black dark:text-white tracking-tight">Complete Education Ecosystem</h3>
+          <p className="mt-6 text-xl text-gray-700 dark:text-gray-400">
             A comprehensive platform built with AI automation that fulfills every student's need, from learning to getting hired.
           </p>
         </div>

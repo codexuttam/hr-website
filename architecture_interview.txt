@@ -1,0 +1,106 @@
+Architecture Review
+
+  What Already Exists
+
+  Your diagram describes a system that is largely already built:
+
+  ┌──────────────────┬───────────────┬────────────────────────────────────────────────────┐
+  │      Layer       │    Diagram    │                      Reality                       │
+  ├──────────────────┼───────────────┼────────────────────────────────────────────────────┤
+  │ Frontend         │ React/Next.js │ ConversationalInterviewInterface.tsx ✅            │
+  ├──────────────────┼───────────────┼────────────────────────────────────────────────────┤
+  │ Speech-to-Text   │ Sarvam STT    │ sarvam_service.speech_to_text() ✅                 │
+  ├──────────────────┼───────────────┼────────────────────────────────────────────────────┤
+  │ LLM              │ OpenAI        │ conversation_agent._call_openai() (gpt-4o-mini) ✅ │
+  ├──────────────────┼───────────────┼────────────────────────────────────────────────────┤
+  │ Text-to-Speech   │ Sarvam TTS    │ sarvam_service.text_to_speech() ✅                 │
+  ├──────────────────┼───────────────┼────────────────────────────────────────────────────┤
+  │ Backend          │ FastAPI       │ agents/main.py on port 5001 ✅                     │
+  ├──────────────────┼───────────────┼────────────────────────────────────────────────────┤
+  │ Database         │ Supabase      │ Used for feedback/results ✅                       │
+  ├──────────────────┼───────────────┼────────────────────────────────────────────────────┤
+  │ WebRTC/WebSocket │ Streaming     │ Not implemented ❌                                 │
+  ├──────────────────┼───────────────┼────────────────────────────────────────────────────┤
+  │ Redis            │ Session state │ Using in-memory dict (_sessions) ❌                │
+  └──────────────────┴───────────────┴────────────────────────────────────────────────────┘
+
+  ---
+  The Current Flow (HTTP request/response)
+
+  User speaks → MediaRecorder buffers silence → base64 encode →
+  HTTP POST → Sarvam STT → OpenAI → Sarvam TTS → base64 WAV →
+  HTTP response → browser plays audio
+
+  Round-trip latency per turn: ~4–7 seconds
+  - 1.5s silence detection timeout (SILENCE_AFTER_MS)
+  - ~1.0s Sarvam STT (batch API)
+  - ~1.5s OpenAI gpt-4o-mini
+  - ~0.5s Sarvam TTS
+  - HTTP overhead each turn
+
+  ---
+  WebSocket vs WebRTC — The Real Trade-off
+
+  WebRTC is the right choice when you need peer-to-peer media (video calls, P2P audio). For an AI interview server, it requires a media server (LiveKit, Janus,      
+  Mediasoup), STUN/TURN infrastructure, and SDP negotiation — this is essentially what Vapi already gives you as a managed service. Building raw WebRTC from scratch 
+  for a server-side AI pipeline is high complexity with marginal gain over WebSocket.
+
+  WebSocket is the right choice here. It gives you:
+  - Persistent connection (no HTTP handshake per turn)
+  - Bidirectional streaming: audio chunks browser→server, TTS chunks server→browser
+  - Server-side end-of-speech detection (eliminates the 1.5s client-side silence wait)
+  - Streaming TTS playback (first audio chunk plays while rest generates)
+
+  ---
+  What a WebSocket Upgrade Actually Changes
+
+  New flow with WebSocket:
+  ws://agents:5001/ws/interview/{session_id}
+    ↑ audio chunks (PCM/webm) arrive as binary frames while user speaks
+    ↓ server detects speech end → runs STT → LLM → TTS
+    ↓ TTS audio chunks streamed back as binary frames → browser plays progressively
+
+  Latency reduction: ~4–7s → ~2–3.5s per turn
+  - Silence detection moves server-side (can use energy/VAD on stream)
+  - TTS starts playing before full generation completes
+  - Connection stays open across turns
+
+  ---
+  Redis — When You Actually Need It
+
+  Right now _sessions is an in-memory dict. This works fine for a single server process. Redis becomes necessary when:
+  1. You run multiple FastAPI workers (uvicorn --workers 4) — different sessions could land on different workers
+  2. You deploy to multiple server instances (horizontal scaling)
+  3. You want session persistence across server restarts
+
+  For local dev and a single-server deploy, Redis is optional. Worth adding before production scaling.
+
+  ---
+  Recommended Phased Plan
+
+  Phase 1 — Quick latency wins (1–2 days) (no architecture change)
+  - Reduce SILENCE_AFTER_MS from 1500ms → 800ms in ConversationalInterviewInterface.tsx
+  - Switch OpenAI from gpt-4o-mini to a faster model with streaming, or enable streaming response and start TTS on first sentence
+
+  Phase 2 — WebSocket upgrade (3–5 days)
+  - Add websockets to FastAPI (websockets + fastapi.WebSocket)
+  - New endpoint: ws /api/interview/conversation/ws/{session_id}
+  - Frontend switches from MediaRecorder + HTTP to AudioWorkletProcessor + WebSocket binary frames
+  - Server-side end-of-speech detection using energy threshold on incoming chunks
+  - Stream TTS audio back as binary WAV chunks → AudioContext.decodeAudioData for gapless playback
+
+  Phase 3 — Redis session store (1 day)
+  - Replace _sessions dict with Redis (redis.asyncio)
+  - Serialize session JSON to Redis with TTL
+  - Allows multi-worker FastAPI and zero-downtime deploys
+
+  ---
+  One Structural Concern
+
+  The SARVAM_API_KEY key in sarvam_service.py is read at module import time (line 6). If the env var isn't set when the module loads, it's None forever — even if you
+   set it later. The check inside each function handles it, but the constant SARVAM_API_KEY won't update. Not a blocker, just worth making it os.getenv(...) inside  
+  the function or using a settings object.
+
+  ---
+  Bottom line: Your AI pipeline is solid and already matches the diagram. The WebSocket upgrade is the highest-value change — it cuts turn latency in half and makes 
+  the conversation feel natural. Want me to start building Phase 2?

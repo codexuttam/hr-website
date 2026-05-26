@@ -2,7 +2,7 @@ import base64
 import logging
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 
 from interviewer.question_generator import generate_questions
@@ -177,3 +177,104 @@ async def conversation_end(req: EndRequest):
         "success":    True,
         "transcript": transcript,
     }
+
+
+# ════════════════════════════════════════════════════════════════════
+# 3. WEBSOCKET — real-time interview turns (STT → LLM → TTS)
+# ════════════════════════════════════════════════════════════════════
+
+@router.websocket("/interview/ws/{session_id}")
+async def ws_interview(websocket: WebSocket, session_id: str):
+    """
+    Persistent WebSocket for all turn-by-turn conversation after session start.
+
+    Client → server message types:
+      {"type": "audio_turn", "audio": "<base64>", "format": "webm|ogg"}
+      {"type": "text_turn",  "text": "<string>"}   # timeout / no-response
+      {"type": "ping"}
+
+    Server → client message types:
+      {"type": "status",      "status": "transcribing|thinking|speaking"}
+      {"type": "transcribed", "text": "<user transcript>"}
+      {"type": "ai_turn",     "text": "...", "audio": "<base64 WAV>", "turn_count": N}
+      {"type": "error",       "message": "..."}
+      {"type": "pong"}
+    """
+    await websocket.accept()
+
+    session = get_session(session_id)
+    if not session:
+        await websocket.close(code=4004, reason="Session not found or expired")
+        return
+
+    logger.info("WS connected: session=%s", session_id)
+
+    try:
+        while True:
+            msg = await websocket.receive_json()
+            msg_type = msg.get("type")
+
+            if msg_type == "audio_turn":
+                await _ws_audio_turn(websocket, session_id, msg)
+            elif msg_type == "text_turn":
+                await _ws_text_turn(websocket, session_id, msg.get("text", ""))
+            elif msg_type == "ping":
+                await websocket.send_json({"type": "pong"})
+
+    except WebSocketDisconnect:
+        logger.info("WS disconnected: session=%s", session_id)
+    except Exception as exc:
+        logger.exception("WS error session=%s: %s", session_id, exc)
+        try:
+            await websocket.send_json({"type": "error", "message": "Internal server error"})
+        except Exception:
+            pass
+
+
+async def _ws_audio_turn(websocket: WebSocket, session_id: str, msg: dict) -> None:
+    audio_b64    = msg.get("audio", "")
+    audio_format = msg.get("format", "webm")
+
+    await websocket.send_json({"type": "status", "status": "transcribing"})
+    try:
+        audio_bytes = base64.b64decode(audio_b64)
+        user_text   = await speech_to_text(audio_bytes, audio_format)
+    except Exception as exc:
+        logger.warning("WS STT failed session=%s: %s", session_id, exc)
+        await websocket.send_json({"type": "error", "message": "Could not understand audio. Please speak clearly."})
+        return
+
+    # Send transcript immediately — client shows it before AI responds
+    await websocket.send_json({"type": "transcribed", "text": user_text})
+
+    await _ws_llm_tts(websocket, session_id, user_text)
+
+
+async def _ws_text_turn(websocket: WebSocket, session_id: str, user_text: str) -> None:
+    await _ws_llm_tts(websocket, session_id, user_text)
+
+
+async def _ws_llm_tts(websocket: WebSocket, session_id: str, user_text: str) -> None:
+    await websocket.send_json({"type": "status", "status": "thinking"})
+    try:
+        ai_response = await process_turn(session_id, user_text)
+    except Exception as exc:
+        logger.exception("WS LLM failed session=%s: %s", session_id, exc)
+        await websocket.send_json({"type": "error", "message": "AI response failed."})
+        return
+
+    await websocket.send_json({"type": "status", "status": "speaking"})
+    try:
+        audio_out = await text_to_speech(ai_response)
+    except Exception as exc:
+        logger.exception("WS TTS failed session=%s: %s", session_id, exc)
+        await websocket.send_json({"type": "error", "message": "Audio generation failed."})
+        return
+
+    session = get_session(session_id)
+    await websocket.send_json({
+        "type":       "ai_turn",
+        "text":       ai_response,
+        "audio":      audio_out,
+        "turn_count": session["turn_count"] if session else 0,
+    })

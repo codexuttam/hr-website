@@ -69,8 +69,12 @@ const UserProfile: React.FC = () => {
                 {/* <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{user.email}</p> */}
               </div>
             </div>
-            <div className="mt-2">
+            <div className="mt-3 flex items-center justify-between">
               <RoleBadge role={user.role} size="sm" />
+              <div className="flex items-center px-2 py-1 bg-gray-100 dark:bg-neutral-800 border border-black/10 dark:border-white/10 rounded-md text-xs">
+                 <span className="font-medium text-black dark:text-gray-400 mr-1.5">Credits:</span>
+                 <span className="font-bold text-black dark:text-white">{user.credits !== undefined ? user.credits : 0}</span>
+              </div>
             </div>
           </div>
 
