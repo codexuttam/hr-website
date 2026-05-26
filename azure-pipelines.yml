@@ -1,0 +1,52 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    displayName: 'Build and Package'
+    jobs:
+      - job: BuildFrontend
+        displayName: 'Build Next.js Frontend'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '20.x'
+            displayName: 'Install Node.js'
+
+          - script: |
+              cd frontend
+              npm ci
+              npm run build
+            displayName: 'npm install and build'
+            
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/frontend/.next'
+              artifact: 'frontend-build'
+              publishLocation: 'pipeline'
+            displayName: 'Publish Frontend Artifact'
+
+      - job: BuildAgents
+        displayName: 'Build Python Backend (Agents)'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.12'
+            displayName: 'Use Python 3.12'
+
+          - script: |
+              cd agents
+              python -m venv venv
+              source venv/bin/activate
+              pip install -r requirements.txt
+            displayName: 'Install Python dependencies'
+            
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/agents'
+              artifact: 'agents-build'
+              publishLocation: 'pipeline'
+            displayName: 'Publish Agents Artifact'
