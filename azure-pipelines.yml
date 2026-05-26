@@ -13,7 +13,7 @@ stages:
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: '20.x'
+              versionSpec: '22.x'
             displayName: 'Install Node.js'
 
           - script: |
@@ -28,6 +28,26 @@ stages:
               artifact: 'frontend-build'
               publishLocation: 'pipeline'
             displayName: 'Publish Frontend Artifact'
+
+      - job: BuildBackend
+        displayName: 'Build Node.js Backend'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '22.x'
+            displayName: 'Install Node.js'
+
+          - script: |
+              cd backend
+              npm ci
+            displayName: 'npm install'
+            
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/backend'
+              artifact: 'backend-build'
+              publishLocation: 'pipeline'
+            displayName: 'Publish Backend Artifact'
 
       - job: BuildAgents
         displayName: 'Build Python Backend (Agents)'
