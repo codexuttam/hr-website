@@ -85,6 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // ---------- INITIAL SESSION & LISTENER ----------
   useEffect(() => {
     let isMounted = true;
+    let subscription: { unsubscribe: () => void } | null = null;
 
     const initializeAuth = async () => {
       try {
@@ -104,42 +105,50 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    initializeAuth();
+    // Fire-and-forget — errors already handled inside
+    initializeAuth().catch((err) =>
+      console.error('[Auth] Unexpected initializeAuth rejection:', err)
+    );
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event: AuthChangeEvent, session: Session | null) => {
-        if (!isMounted) return;
+    // Wrap in try-catch: if Supabase is misconfigured this throws synchronously
+    // and would otherwise bubble straight to the AuthErrorBoundary
+    try {
+      const { data } = supabase.auth.onAuthStateChange(
+        async (event: AuthChangeEvent, session: Session | null) => {
+          if (!isMounted) return;
 
-        // Token refresh & initial session: no extra work needed
-        if (event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') return;
+          if (event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') return;
 
-        if (event === 'SIGNED_OUT') {
-          setUser(null);
-          return;
-        }
-
-        if (event === 'SIGNED_IN') {
-          // login() already called loadUserProfile — skip the duplicate call
-          if (skipNextSignIn.current) {
-            skipNextSignIn.current = false;
+          if (event === 'SIGNED_OUT') {
+            setUser(null);
             return;
           }
-          if (session?.user) await loadUserProfile(session.user);
-          return;
-        }
 
-        // Any other event (USER_UPDATED, etc.)
-        if (session?.user) {
-          await loadUserProfile(session.user);
-        } else {
-          setUser(null);
+          if (event === 'SIGNED_IN') {
+            if (skipNextSignIn.current) {
+              skipNextSignIn.current = false;
+              return;
+            }
+            if (session?.user) await loadUserProfile(session.user);
+            return;
+          }
+
+          if (session?.user) {
+            await loadUserProfile(session.user);
+          } else {
+            setUser(null);
+          }
         }
-      }
-    );
+      );
+      subscription = data.subscription;
+    } catch (err: any) {
+      console.error('[Auth] onAuthStateChange setup failed:', err.message);
+      // Auth listener couldn't be set up — app still works, just no live session updates
+    }
 
     return () => {
       isMounted = false;
-      subscription.unsubscribe();
+      subscription?.unsubscribe();
     };
   }, []);
 
