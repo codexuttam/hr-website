@@ -46,7 +46,8 @@ export const supabase = new Proxy({} as SupabaseClient, {
       }
       return () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } });
     }
-    return (client as unknown as Record<string | symbol, unknown>)[prop as string | symbol];
+    const value = (client as unknown as Record<string | symbol, unknown>)[prop as string | symbol];
+    return typeof value === 'function' ? value.bind(client) : value;
   },
 });
 
@@ -71,12 +72,21 @@ export function createSupabaseAdmin(): SupabaseClient {
   });
 }
 
+let _supabaseAdmin: SupabaseClient | null = null;
+function getCachedSupabaseAdmin() {
+  if (_supabaseAdmin) return _supabaseAdmin;
+  _supabaseAdmin = createSupabaseAdmin();
+  return _supabaseAdmin;
+}
+
 /**
  * Backward-compatible named export — all existing `import { supabaseAdmin }` imports still work.
  * Admin client is only instantiated on first property access (runtime, inside API handlers).
  */
 export const supabaseAdmin = new Proxy({} as SupabaseClient, {
   get(_target, prop) {
-    return (createSupabaseAdmin() as unknown as Record<string | symbol, unknown>)[prop as string | symbol];
+    const client = getCachedSupabaseAdmin();
+    const value = (client as unknown as Record<string | symbol, unknown>)[prop as string | symbol];
+    return typeof value === 'function' ? value.bind(client) : value;
   },
 });
