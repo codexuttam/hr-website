@@ -30,11 +30,11 @@ function createSupabaseClient() {
 // ─── GET /api/ats-results/[id] ────────────────────────────────────────────────
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     console.log('Fetching ATS result with ID:', id);
 
@@ -109,11 +109,11 @@ export async function GET(
 // ─── DELETE /api/ats-results/[id] ────────────────────────────────────────────
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const atsId = parseInt(id, 10);
     if (isNaN(atsId)) {
