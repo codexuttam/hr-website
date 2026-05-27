@@ -8,11 +8,15 @@ RUN npm ci
 COPY . .
 
 # Only NEXT_PUBLIC_* variables are needed at build time (they're inlined into the JS bundle).
-# SUPABASE_SERVICE_ROLE_KEY is a server-side secret — it must NOT be baked into the image.
+# Server-side secrets must NOT be baked into the image — pass them at runtime instead.
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG NEXT_PUBLIC_API_BASE_URL
+ARG NEXT_PUBLIC_GOOGLE_AI_API_KEY
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_GOOGLE_AI_API_KEY=$NEXT_PUBLIC_GOOGLE_AI_API_KEY
 
 RUN npm run build
 
