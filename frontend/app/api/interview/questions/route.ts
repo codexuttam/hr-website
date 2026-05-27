@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+export const runtime = 'nodejs';
+
 const openaiKey = process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 const geminiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || process.env.GOOGLE_AI_API_KEY;
-const genAI = geminiKey ? new GoogleGenerativeAI(geminiKey) : null;
 
 async function callOpenAI(prompt: string): Promise<string> {
     if (!openaiKey) throw new Error('OpenAI API key not configured');
@@ -18,6 +19,7 @@ async function callOpenAI(prompt: string): Promise<string> {
 }
 
 async function callGemini(prompt: string): Promise<string> {
+    const genAI = geminiKey ? new GoogleGenerativeAI(geminiKey) : null;
     if (!genAI) throw new Error('Gemini not configured');
     for (const model of ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-pro']) {
         try {

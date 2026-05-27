@@ -6,16 +6,13 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
 import { RoadmapInput, RoadmapStructure } from "@/types/roadmap";
 
-// OpenAI — primary provider
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || '' });
-
-// Gemini — fallback provider
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || '');
+export const runtime = 'nodejs';
 
 async function callAI(prompt: string): Promise<{ text: string; provider: string }> {
   // 1. Try OpenAI first
   if (process.env.OPENAI_API_KEY) {
     try {
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
@@ -29,13 +26,17 @@ async function callAI(prompt: string): Promise<{ text: string; provider: string 
   }
 
   // 2. Fallback: Gemini 1.5 Flash
-  try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-    if (text) return { text, provider: 'Gemini' };
-  } catch (err: any) {
-    console.error('Gemini Flash error:', err.message);
+  const geminiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY;
+  if (geminiKey) {
+    try {
+      const genAI = new GoogleGenerativeAI(geminiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
+      if (text) return { text, provider: 'Gemini' };
+    } catch (err: any) {
+      console.error('Gemini Flash error:', err.message);
+    }
   }
 
   throw new Error('All AI providers failed. Please check your API keys.');

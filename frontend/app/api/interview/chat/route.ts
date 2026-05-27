@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+export const runtime = 'nodejs';
+
 // API Keys
 const openaiKey = process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 const geminiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || process.env.GOOGLE_AI_API_KEY;
-const genAI = geminiKey ? new GoogleGenerativeAI(geminiKey) : null;
 
 // Helper function to call OpenAI
 async function callOpenAI(prompt: string): Promise<string> {
@@ -36,6 +37,7 @@ async function callOpenAI(prompt: string): Promise<string> {
 // Helper function to call Gemini
 // Helper function to call Gemini with model fallbacks
 async function callGemini(prompt: string): Promise<string> {
+    const genAI = geminiKey ? new GoogleGenerativeAI(geminiKey) : null;
     if (!genAI) throw new Error('Gemini API key not configured');
     
     // Try multiple models - each has separate quota

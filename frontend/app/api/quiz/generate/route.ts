@@ -3,11 +3,8 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import OpenAI from 'openai';
 import { supabase } from '@/lib/supabase';
 
-// Init AI
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || '');
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
-});
+export const runtime = 'nodejs';
+
 
 type AIProvider = 'openai' | 'gemini' | 'auto';
 
@@ -126,9 +123,13 @@ async function generateQuizWithAI(
   let text = '';
   let usedProvider = '';
 
+  const openaiApiKey = process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+  const geminiApiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY;
+
   /* ---------------- Try OPENAI ---------------- */
-  if ((provider === 'openai' || provider === 'auto') && openai.apiKey) {
+  if ((provider === 'openai' || provider === 'auto') && openaiApiKey) {
     try {
+      const openai = new OpenAI({ apiKey: openaiApiKey });
       const completion = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [
@@ -155,6 +156,8 @@ async function generateQuizWithAI(
   /* ---------------- Try GEMINI ---------------- */
   if (!text && (provider === 'auto' || provider === 'gemini')) {
     try {
+      if (!geminiApiKey) throw new Error('NEXT_PUBLIC_GOOGLE_AI_API_KEY not set');
+      const genAI = new GoogleGenerativeAI(geminiApiKey);
       const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
       const result = await model.generateContent(finalPrompt);
       const response = result.response;

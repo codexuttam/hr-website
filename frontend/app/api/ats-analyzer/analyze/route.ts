@@ -2,14 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@supabase/supabase-js';
 
-// API Keys
+export const runtime = 'nodejs';
+
+// API Keys — read at call-time only, never at module load
 const openaiKey = process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 const geminiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY || process.env.GOOGLE_AI_API_KEY;
-const genAI = geminiKey ? new GoogleGenerativeAI(geminiKey) : null;
-
-// Initialize Supabase admin client for credit updates
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // Helper function to call OpenAI
 async function callOpenAI(prompt: string): Promise<string> {
@@ -40,6 +37,7 @@ async function callOpenAI(prompt: string): Promise<string> {
 
 // Helper function to call Gemini
 async function callGemini(prompt: string): Promise<string | null> {
+    const genAI = geminiKey ? new GoogleGenerativeAI(geminiKey) : null;
     if (!genAI) return null;
     
     const models = ['gemini-2.0-flash', 'gemini-1.5-pro-latest', 'gemini-pro'];
@@ -64,8 +62,10 @@ export async function POST(request: NextRequest) {
 
     // Credit Check Logic
     if (userId) {
-      if (!supabaseServiceKey) {
-        console.warn('SUPABASE_SERVICE_ROLE_KEY is missing, skipping credit check');
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (!supabaseUrl || !supabaseServiceKey) {
+        console.warn('Supabase env vars missing, skipping credit check');
       } else {
         const supabase = createClient(supabaseUrl, supabaseServiceKey);
         
