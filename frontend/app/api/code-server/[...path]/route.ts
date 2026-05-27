@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const CODE_SERVER_URL = process.env.CODE_SERVER_URL || 'http://localhost:5000';
+const CODE_SERVER_URL = process.env.CODE_SERVER_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 
 async function proxy(req: NextRequest, params: Promise<{ path: string[] }>) {
   const { path } = await params;
