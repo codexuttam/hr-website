@@ -20,11 +20,11 @@ stages:
         pool:
           vmImage: $(vmImageName)
         steps:
-          # 1. Build & Push Frontend (as a Docker container)
+          # 1. Build Frontend (as a Docker container)
           - task: Docker@2
-            displayName: "Build & Push Frontend"
+            displayName: "Build Frontend"
             inputs:
-              command: buildAndPush
+              command: build
               repository: 'hr-website-frontend'
               dockerfile: '$(Build.SourcesDirectory)/frontend/Dockerfile'
               containerRegistry: $(dockerRegistryServiceConnection)
@@ -32,6 +32,17 @@ stages:
                 $(tag)
                 latest
               arguments: '--build-arg NEXT_PUBLIC_SUPABASE_URL=$(NEXT_PUBLIC_SUPABASE_URL) --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=$(NEXT_PUBLIC_SUPABASE_ANON_KEY) --build-arg NEXT_PUBLIC_API_BASE_URL=$(NEXT_PUBLIC_API_BASE_URL) --build-arg NEXT_PUBLIC_GOOGLE_AI_API_KEY=$(NEXT_PUBLIC_GOOGLE_AI_API_KEY)'
+
+          # 1b. Push Frontend
+          - task: Docker@2
+            displayName: "Push Frontend"
+            inputs:
+              command: push
+              repository: 'hr-website-frontend'
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
 
           # 2. Build & Push Backend
           - task: Docker@2
