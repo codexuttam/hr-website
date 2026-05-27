@@ -1,13 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '../../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+export const runtime = 'nodejs';
+
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl) {
+    throw new Error('Missing environment variable: NEXT_PUBLIC_SUPABASE_URL');
+  }
+  if (!supabaseServiceRoleKey) {
+    throw new Error('Missing environment variable: SUPABASE_SERVICE_ROLE_KEY');
+  }
+
+  return createClient(supabaseUrl, supabaseServiceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const resumeId = searchParams.get('resumeId');
     const userId = searchParams.get('userId');
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
+    const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const offset = parseInt(searchParams.get('offset') || '0', 10);
+
+    // Create client inside the handler — safe at runtime
+    const supabase = createSupabaseClient();
 
     let query = supabase
       .from('ats_results')
@@ -33,7 +57,7 @@ export async function GET(request: NextRequest) {
 
     // Filter by resume ID if provided
     if (resumeId) {
-      query = query.eq('resume_id', parseInt(resumeId));
+      query = query.eq('resume_id', parseInt(resumeId, 10));
     }
 
     // Filter by user ID — fetch their resume IDs first, then filter directly
@@ -41,9 +65,9 @@ export async function GET(request: NextRequest) {
       const { data: userResumes } = await supabase
         .from('resumes')
         .select('resume_id')
-        .eq('user_id', parseInt(userId));
+        .eq('user_id', parseInt(userId, 10));
 
-      const resumeIds = (userResumes || []).map((r: any) => r.resume_id);
+      const resumeIds = (userResumes || []).map((r: { resume_id: number }) => r.resume_id);
 
       if (resumeIds.length === 0) {
         return NextResponse.json({ success: true, atsResults: [], total: 0, limit, offset });
@@ -55,12 +79,12 @@ export async function GET(request: NextRequest) {
     const { data, error, count } = await query;
 
     if (error) {
-      console.error('Supabase error:', error);
+      console.error('Supabase error fetching ATS results:', error);
       return NextResponse.json(
-        { 
+        {
           error: 'Failed to fetch ATS results from database',
           details: error.message,
-          code: error.code 
+          code: error.code,
         },
         { status: 500 }
       );
@@ -71,15 +95,14 @@ export async function GET(request: NextRequest) {
       atsResults: data || [],
       total: count || 0,
       limit,
-      offset
+      offset,
     });
-
   } catch (error) {
-    console.error('Error fetching ATS results:', error);
+    console.error('Error in GET /api/ats-results/list:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
