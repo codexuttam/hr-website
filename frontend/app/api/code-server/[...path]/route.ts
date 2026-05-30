@@ -5,6 +5,7 @@ const CODE_SERVER_URL = process.env.CODE_SERVER_URL || process.env.NEXT_PUBLIC_A
 async function proxy(req: NextRequest, params: Promise<{ path: string[] }>) {
   const { path } = await params;
   const upstream = `${CODE_SERVER_URL}/api/${path.join('/')}`;
+  console.log('[proxy] upstream:', upstream);
 
   const init: RequestInit = {
     method: req.method,
@@ -23,7 +24,10 @@ async function proxy(req: NextRequest, params: Promise<{ path: string[] }>) {
 
 export async function GET(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
   try { return await proxy(req, ctx.params); }
-  catch (err: any) { return NextResponse.json({ error: err.message }, { status: 502 }); }
+  catch (err: any) { 
+    console.error('[proxy GET error]', err);
+    return NextResponse.json({ error: err.message }, { status: 502 }); 
+  }
 }
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
