@@ -3,23 +3,29 @@ const { supabase } = require('../db/supabase');
 
 const router = Router();
 
-// GET /api/submissions?studentUid=...&studentEmail=...&problemId=...&limit=20
+// GET /api/submissions?studentUid=...&studentEmail=...&studentName=...&search=...&problemId=...&limit=20
 router.get('/', async (req, res) => {
-  const { studentUid, studentEmail, problemId, limit = 20 } = req.query;
+  const { studentUid, studentEmail, studentName, search, problemId, limit = 20 } = req.query;
 
-  let resolvedUid = studentUid;
+  let resolvedUids = null;
 
-  // 1. If email is provided, resolve it to a UID
-  if (studentEmail) {
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('user_uid')
-      .eq('email', studentEmail)
-      .maybeSingle();
-    
+  // 1. Resolve student UID from email, name, or general search query
+  if (studentEmail || studentName || search) {
+    let userQuery = supabase.from('users').select('user_id');
+
+    if (search) {
+      userQuery = userQuery.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
+    } else {
+      if (studentEmail) userQuery = userQuery.eq('email', studentEmail);
+      if (studentName) userQuery = userQuery.ilike('name', `%${studentName}%`);
+    }
+
+    const { data: usersData, error: userError } = await userQuery;
     if (userError) return res.status(500).json({ error: userError.message });
-    if (!userData) return res.json({ submissions: [] }); // Email not found
-    resolvedUid = userData.user_uid;
+    if (!usersData || usersData.length === 0) return res.json({ submissions: [] }); // No matching users found
+
+    resolvedUids = usersData.map(u => String(u.user_id)).filter(Boolean);
+    if (resolvedUids.length === 0) return res.json({ submissions: [] });
   }
 
   // 2. Build the submissions query
@@ -29,14 +35,39 @@ router.get('/', async (req, res) => {
     .order('submitted_at', { ascending: false })
     .limit(Number(limit));
 
-  if (resolvedUid) query = query.eq('student_uid', resolvedUid);
-  if (problemId)   query = query.eq('problem_id', problemId);
+  if (studentUid) {
+    query = query.eq('student_uid', studentUid);
+  } else if (resolvedUids) {
+    query = query.in('student_uid', resolvedUids);
+  }
+
+  if (problemId) query = query.eq('problem_id', problemId);
 
   const { data, error } = await query;
   if (error) return res.status(500).json({ error: error.message });
 
-  // 3. (Optional) Enhance with user info if possible
-  // If we had a foreign key, we'd do it in the join. For now, let's just return what we have.
+  // 3. Enhance submissions list with user profile info (name and email)
+  if (data && data.length > 0) {
+    const uids = [...new Set(data.map(s => Number(s.student_uid)).filter(Boolean))];
+    if (uids.length > 0) {
+      const { data: users, error: usersError } = await supabase
+        .from('users')
+        .select('user_id, name, email')
+        .in('user_id', uids);
+
+      if (!usersError && users) {
+        const userMap = {};
+        users.forEach(u => {
+          userMap[String(u.user_id)] = u;
+        });
+
+        data.forEach(s => {
+          s.user = userMap[s.student_uid] || { name: 'Unknown Student', email: '' };
+        });
+      }
+    }
+  }
+
   res.json({ submissions: data });
 });
 
@@ -49,6 +80,19 @@ router.get('/:id', async (req, res) => {
     .single();
 
   if (error || !data) return res.status(404).json({ error: 'Submission not found' });
+
+  // Also fetch and attach user details to the single submission
+  if (data.student_uid) {
+    const { data: userData } = await supabase
+      .from('users')
+      .select('name, email')
+      .eq('user_id', Number(data.student_uid))
+      .maybeSingle();
+
+    if (userData) {
+      data.user = userData;
+    }
+  }
 
   res.json({ submission: data });
 });
