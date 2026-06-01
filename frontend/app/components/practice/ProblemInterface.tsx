@@ -39,6 +39,11 @@ const ProblemInterface: React.FC<ProblemInterfaceProps> = ({ problem }) => {
     setCode(problem.initialCode[newLang] || '');
   };
 
+  React.useEffect(() => {
+    setCode(problem.initialCode[language] || '');
+  }, [problem.id]);
+
+
   const callSubmit = async (isRun: boolean) => {
     const setter = isRun ? setIsRunning : setIsSubmitting;
     setter(true);

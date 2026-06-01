@@ -134,15 +134,15 @@ export default function CodeChallengePage() {
               setReport(mapSubmissionData(fullSub));
               setLeftTab('report'); // Automatically open report tab to show previous feedback
             } else {
-              setCode(p.starter_code?.['python'] ?? '');
+              setCode(p.starter_code?.[language] ?? p.starter_code?.['python'] ?? '');
               setReport(null);
             }
           } else {
-            setCode(p.starter_code?.['python'] ?? '');
+            setCode(p.starter_code?.[language] ?? p.starter_code?.['python'] ?? '');
             setReport(null);
           }
         } else {
-          setCode(p.starter_code?.['python'] ?? '');
+          setCode(p.starter_code?.[language] ?? p.starter_code?.['python'] ?? '');
           setReport(null);
         }
       } catch (e: any) {

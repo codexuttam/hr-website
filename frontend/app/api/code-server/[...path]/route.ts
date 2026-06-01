@@ -4,7 +4,8 @@ const CODE_SERVER_URL = process.env.CODE_SERVER_URL || process.env.NEXT_PUBLIC_A
 
 async function proxy(req: NextRequest, params: Promise<{ path: string[] }>) {
   const { path } = await params;
-  const upstream = `${CODE_SERVER_URL}/api/${path.join('/')}`;
+  const search = req.nextUrl.search;
+  const upstream = `${CODE_SERVER_URL}/api/${path.join('/')}${search}`;
   console.log('[proxy] upstream:', upstream);
 
   const init: RequestInit = {
