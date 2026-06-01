@@ -104,6 +104,8 @@ export default function RegisterPage() {
                             email: formData.email,
                             name: formData.fullName,
                             role: 'student',
+                            user_uid: authData.user.id,
+                            credits: 50,
                         }
                     ]);
 

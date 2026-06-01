@@ -15,6 +15,7 @@ import {
   Bot
 } from "lucide-react";
 import Link from "next/link";
+import QuizPreviewModal from "@/components/admin/QuizPreviewModal";
 
 // AI Generation types
 type AIGenerationMode = "topic" | "company" | "custom";
@@ -30,6 +31,8 @@ export default function AiGeneratorPage() {
     const [aiProvider, setAiProvider] = useState<'auto' | 'openai' | 'gemini'>("auto");
     const [aiGenerating, setAiGenerating] = useState(false);
     const [aiQuizTitle, setAiQuizTitle] = useState("");
+    const [lastGeneratedQuiz, setLastGeneratedQuiz] = useState<{ quiz_id: number; title: string } | null>(null);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
     async function handleAIGenerate() {
         if (aiModeType === "topic" && !aiTopic.trim()) {
@@ -69,7 +72,16 @@ export default function AiGeneratorPage() {
             setAiCompanyList([]);
             setAiCustomPrompt("");
             setAiQuizTitle("");
-            alert("✨ Assessment synchronized successfully.");
+            
+            if (json.quiz) {
+                setLastGeneratedQuiz({
+                    quiz_id: json.quiz.quiz_id,
+                    title: json.quiz.title
+                });
+                setIsPreviewOpen(true);
+            } else {
+                alert("✨ Assessment synchronized successfully.");
+            }
 
         } catch (err: any) {
             console.error(err);
@@ -105,6 +117,35 @@ export default function AiGeneratorPage() {
                         <p className="text-slate-500 text-sm font-medium">Harness large language models for assessment creation</p>
                     </div>
                 </div>
+
+                {/* Success Banner */}
+                {lastGeneratedQuiz && (
+                    <div className="mb-8 p-6 bg-teal-500/10 border border-teal-500/20 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-2xl bg-teal-500/20 flex items-center justify-center text-teal-400">
+                                <Sparkles className="h-5 w-5 animate-pulse" />
+                            </div>
+                            <div>
+                                <h4 className="text-white font-bold text-base">Quiz Generated Successfully!</h4>
+                                <p className="text-xs text-slate-400">"{lastGeneratedQuiz.title}" has been successfully created and synchronized.</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setIsPreviewOpen(true)}
+                                className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-teal-950 text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-teal-500/20"
+                            >
+                                View Generated Quiz
+                            </button>
+                            <button
+                                onClick={() => setLastGeneratedQuiz(null)}
+                                className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white text-xs font-bold rounded-xl transition-all"
+                            >
+                                Dismiss
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Main Panel */}
                 <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
@@ -300,6 +341,15 @@ export default function AiGeneratorPage() {
                     </div>
                 </div>
             </div>
+
+            {lastGeneratedQuiz && (
+                <QuizPreviewModal
+                    quizId={lastGeneratedQuiz.quiz_id}
+                    quizTitle={lastGeneratedQuiz.title}
+                    isOpen={isPreviewOpen}
+                    onClose={() => setIsPreviewOpen(false)}
+                />
+            )}
         </div>
     );
 }

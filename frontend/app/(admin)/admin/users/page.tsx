@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase';
 
 interface User {
     user_id: string | number;
+    user_uid?: string;
     name: string;
     email: string;
     role: 'student' | 'instructor' | 'admin';
@@ -298,7 +299,8 @@ const UserManagementPage: React.FC = () => {
                 .from('quiz_assignments')
                 .insert({
                     quiz_id: parseInt(selectedQuizId),
-                    user_id: selectedUserForQuiz.user_id,
+                    user_id: parseInt(String(selectedUserForQuiz.user_id)),
+                    user_id_uuid: selectedUserForQuiz.user_uid || null,
                     status: 'assigned',
                     assigned_at: new Date().toISOString()
                 });
