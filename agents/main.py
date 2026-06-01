@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routes.evaluate  import router as evaluate_router
 from routes.interview import router as interview_router
+from routes.quiz      import router as quiz_router
 
 app = FastAPI(title="HR Agents", version="2.0.0")
 
@@ -20,6 +21,7 @@ app.add_middleware(
 
 app.include_router(evaluate_router,  prefix="/api")
 app.include_router(interview_router, prefix="/api")
+app.include_router(quiz_router,      prefix="/api")
 
 
 @app.get("/api/health")

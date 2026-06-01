@@ -196,21 +196,37 @@ export async function POST(request: NextRequest) {
       numQuestions = 5,
       difficulty = 'medium',
       provider = 'auto',
-      companies = [],        // NEW
-      customPrompt = ''      // NEW
+      companies = [],
+      customPrompt = '',
+      mode = 'topic',
+      title = ''
     } = body;
 
-    // Build dynamic prompt
-    const finalPrompt = buildFinalPrompt(
-      topic,
-      companies,
-      customPrompt,
-      numQuestions,
-      difficulty
-    );
+    // Call the Python agent backend
+    const agentsUrl = process.env.NEXT_PUBLIC_AGENTS_URL || 'http://localhost:5001';
+    const response = await fetch(`${agentsUrl}/api/quiz/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        mode: mode || (companies.length > 0 ? 'company' : 'topic'),
+        topic,
+        companies,
+        customPrompt,
+        numQuestions: parseInt(numQuestions),
+        difficulty,
+        provider,
+        title
+      }),
+    });
 
-    // Generate content
-    const quizData = await generateQuizWithAI(finalPrompt, provider);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Agent server error: ${errorText}`);
+    }
+
+    const quizData = await response.json();
 
     // Insert quiz into DB
     const { data: quiz, error: quizError } = await supabase
@@ -250,7 +266,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: `Quiz created with ${insertedQ.length} questions.`,
       quiz: quiz,
-      aiProvider: quizData.usedProvider,
+      aiProvider: 'Agent (Perplexity/OpenAI)',
     });
 
   } catch (e: any) {
