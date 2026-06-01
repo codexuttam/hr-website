@@ -78,6 +78,7 @@ function AdminProblemsContent() {
 
   // Filter state
   const [subFilterEmail, setSubFilterEmail] = useState('');
+  const [subSearchInput, setSubSearchInput] = useState('');
   const [subFilterProblemId, setSubFilterProblemId] = useState<string>('');
 
   const searchParams = useSearchParams();
@@ -96,7 +97,6 @@ function AdminProblemsContent() {
     const p = searchParams.get('panel');
     if (p === 'submissions') {
       setPanel('submissions');
-      fetchSubmissions();
     }
   }, [searchParams]);
 
@@ -135,23 +135,21 @@ function AdminProblemsContent() {
 
   const openSubmissions = async (id: string | null = null, title: string | null = null) => {
     setSubsProblemId(id);
-    if (id) setSubFilterProblemId(id);
+    setSubFilterProblemId(id || '');
     if (title) setSubsProblemTitle(title);
     setSelectedSubId(null);
     setSelectedSubData(null);
+    setSubSearchInput('');
+    setSubFilterEmail('');
     setPanel('submissions');
-    fetchSubmissions(id, subFilterEmail);
   };
 
-  const fetchSubmissions = async (pId: string | null = null, email: string | null = null) => {
+  const fetchSubmissions = async () => {
     setLoadingSubs(true);
     try {
-      const problemParam = pId || subFilterProblemId;
-      const emailParam = email || subFilterEmail;
-      
       let url = `${API}/submissions?limit=50`;
-      if (problemParam) url += `&problemId=${problemParam}`;
-      if (emailParam) url += `&studentEmail=${encodeURIComponent(emailParam)}`;
+      if (subFilterProblemId) url += `&problemId=${subFilterProblemId}`;
+      if (subFilterEmail) url += `&search=${encodeURIComponent(subFilterEmail)}`;
       
       const res = await fetch(url);
       const data = await res.json();
@@ -162,6 +160,21 @@ function AdminProblemsContent() {
       setLoadingSubs(false);
     }
   };
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSubFilterEmail(subSearchInput);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [subSearchInput]);
+
+  // Auto-fetch submissions when filters change
+  useEffect(() => {
+    if (panel === 'submissions') {
+      fetchSubmissions();
+    }
+  }, [subFilterEmail, subFilterProblemId, panel]);
 
   const viewFullSubmission = async (subId: string) => {
     setSelectedSubId(subId);
@@ -518,7 +531,7 @@ function AdminProblemsContent() {
                     )}
                   </p>
                 </div>
-                <button onClick={() => { setPanel('list'); setSubsProblemId(null); setSubFilterProblemId(''); setSubFilterEmail(''); }} className="text-slate-500 hover:text-slate-300 bg-slate-800/50 p-2 rounded-lg">
+                <button onClick={() => { setPanel('list'); setSubsProblemId(null); setSubFilterProblemId(''); setSubFilterEmail(''); setSubSearchInput(''); }} className="text-slate-500 hover:text-slate-300 bg-slate-800/50 p-2 rounded-lg">
                   <X className="h-4 w-4" />
                 </button>
               </div>
@@ -530,10 +543,9 @@ function AdminProblemsContent() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
                     <input 
                       type="text"
-                      placeholder="Filter by Student Email..."
-                      value={subFilterEmail}
-                      onChange={(e) => setSubFilterEmail(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && fetchSubmissions()}
+                      placeholder="Filter by Student Name or Email..."
+                      value={subSearchInput}
+                      onChange={(e) => setSubSearchInput(e.target.value)}
                       className="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                     />
                   </div>
@@ -578,8 +590,8 @@ function AdminProblemsContent() {
                           <span className={`px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wide border ${selectedSubData?.verdict === 'Accepted' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
                             {selectedSubData?.verdict}
                           </span>
-                          <span className="text-xs text-slate-500 font-mono" title={selectedSubData?.student_uid}>
-                            Student UID: {selectedSubData?.student_uid?.slice(0,8)}...
+                          <span className="text-xs text-slate-400 font-medium" title={`UID: ${selectedSubData?.student_uid}`}>
+                            {selectedSubData?.user?.name || 'Unknown Student'} ({selectedSubData?.user?.email || selectedSubData?.student_uid?.slice(0, 8)})
                           </span>
                         </div>
                         
@@ -607,7 +619,9 @@ function AdminProblemsContent() {
                   {problemSubmissions.length === 0 ? (
                     <div className="text-center py-12 border border-slate-800 border-dashed rounded-xl bg-slate-900/30">
                       <History className="w-8 h-8 text-slate-600 mx-auto mb-3" />
-                      <p className="text-slate-400 text-sm font-medium">No submissions recorded yet.</p>
+                      <p className="text-slate-400 text-sm font-medium">
+                        {subSearchInput ? "User not found or no matching submissions." : "No submissions recorded yet."}
+                      </p>
                     </div>
                   ) : problemSubmissions.map(sub => (
                     <div 
@@ -617,7 +631,9 @@ function AdminProblemsContent() {
                     >
                       <div>
                         <div className="text-sm font-bold text-slate-200 group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                           <span title={sub.student_uid}>User: {sub.student_uid.slice(0, 12)}...</span>
+                           <span title={`${sub.user?.name || 'Unknown Student'} (${sub.user?.email || sub.student_uid})`}>
+                             {sub.user?.name || `User: ${sub.student_uid.slice(0, 8)}...`}
+                           </span>
                            {sub.problems && (
                               <span className="text-[10px] font-medium bg-slate-700 text-slate-400 px-1.5 py-0.5 rounded">
                                 {sub.problems.title}
