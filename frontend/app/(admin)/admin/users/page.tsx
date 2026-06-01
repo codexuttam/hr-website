@@ -300,7 +300,6 @@ const UserManagementPage: React.FC = () => {
                 .insert({
                     quiz_id: parseInt(selectedQuizId),
                     user_id: parseInt(String(selectedUserForQuiz.user_id)),
-                    user_id_uuid: selectedUserForQuiz.user_uid || null,
                     status: 'assigned',
                     assigned_at: new Date().toISOString()
                 });

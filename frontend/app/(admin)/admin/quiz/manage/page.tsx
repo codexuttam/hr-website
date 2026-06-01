@@ -330,7 +330,6 @@ function QuizItem({ quiz, onDelete, onRefresh }: { quiz: Quiz; onDelete: (quizId
                 return {
                     quiz_id: quiz.quiz_id,
                     user_id: student ? student.user_id : null,
-                    user_id_uuid: uid,
                     assigned_at: new Date().toISOString(),
                     status: "assigned",
                 };
