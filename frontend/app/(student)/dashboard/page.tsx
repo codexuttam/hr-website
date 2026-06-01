@@ -109,7 +109,7 @@ const DashboardPage = async () => {
   const dashboardUser = {
     ...fullUser,
     ...profile, // Overlay profile data (credits, role, name)
-    user_id: user.id // We are consistently using UUIDs now
+    user_id: publicUserId || user.id
   };
 
   return (
