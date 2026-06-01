@@ -16,9 +16,11 @@ import {
   LayoutDashboard,
   Filter,
   BarChart3,
-  Users
+  Users,
+  Eye
 } from "lucide-react";
 import Link from "next/link";
+import QuizPreviewModal from "@/components/admin/QuizPreviewModal";
 
 type Quiz = { quiz_id: number; title: string; description?: string };
 
@@ -292,6 +294,7 @@ function LeaderboardPanel() {
 
 function QuizItem({ quiz, onDelete, onRefresh }: { quiz: Quiz; onDelete: (quizId: number) => void; onRefresh: () => void }) {
     const [showShareModal, setShowShareModal] = useState(false);
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [students, setStudents] = useState<any[]>([]);
     const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
@@ -301,7 +304,7 @@ function QuizItem({ quiz, onDelete, onRefresh }: { quiz: Quiz; onDelete: (quizId
         try {
             const { data, error } = await supabase
                 .from("users")
-                .select("user_uid, name, email")
+                .select("user_id, user_uid, name, email")
                 .eq("role", "student")
                 .order("name");
 
@@ -322,19 +325,24 @@ function QuizItem({ quiz, onDelete, onRefresh }: { quiz: Quiz; onDelete: (quizId
         if (selectedStudents.length === 0) return;
         setLoading(true);
         try {
-            const assignments = selectedStudents.map((uid) => ({
-                quiz_id: quiz.quiz_id,
-                user_id: uid, // Use user_uid for consistency with schema
-                assigned_at: new Date().toISOString(),
-                status: "assigned",
-            }));
+            const assignments = selectedStudents.map((uid) => {
+                const student = students.find((s) => s.user_uid === uid);
+                return {
+                    quiz_id: quiz.quiz_id,
+                    user_id: student ? student.user_id : null,
+                    assigned_at: new Date().toISOString(),
+                    status: "assigned",
+                };
+            }).filter(a => a.user_id !== null);
 
             const { error } = await supabase
                 .from("quiz_assignments")
                 .upsert(assignments, { onConflict: "quiz_id,user_id" });
 
             if (error) throw error;
+            alert("✨ Assessment assigned successfully!");
             setShowShareModal(false);
+            setSelectedStudents([]);
         } catch (err) {
             console.error(err);
             alert("Failed to share quiz");
@@ -364,7 +372,7 @@ function QuizItem({ quiz, onDelete, onRefresh }: { quiz: Quiz; onDelete: (quizId
                     <p className="text-xs text-slate-500 line-clamp-2 mt-2 leading-relaxed">{quiz.description || "No assessment description available."}</p>
                 </div>
 
-                <div className="flex gap-3 relative">
+                <div className="flex gap-2 relative">
                     <button
                         onClick={() => {
                             setShowShareModal(true);
@@ -372,11 +380,17 @@ function QuizItem({ quiz, onDelete, onRefresh }: { quiz: Quiz; onDelete: (quizId
                         }}
                         className="flex-1 py-2 bg-indigo-500/10 hover:bg-indigo-500 text-indigo-400 hover:text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 border border-indigo-500/20"
                     >
-                        <Share2 className="h-3.5 w-3.5" /> Assign to Students
+                        <Share2 className="h-3.5 w-3.5" /> Assign
+                    </button>
+                    <button
+                        onClick={() => setShowPreviewModal(true)}
+                        className="py-2 px-3 bg-teal-500/10 hover:bg-teal-500 text-teal-400 hover:text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 border border-teal-500/20 animate-pulse-subtle"
+                    >
+                        <Eye className="h-3.5 w-3.5" /> Preview
                     </button>
                     <button
                         onClick={() => onDelete(quiz.quiz_id)}
-                        className="w-10 h-10 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-xl transition-all flex items-center justify-center border border-red-500/20"
+                        className="w-10 h-10 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-xl transition-all flex items-center justify-center border border-red-500/20 flex-shrink-0"
                     >
                         <Trash2 className="h-4 w-4" />
                     </button>
@@ -460,6 +474,13 @@ function QuizItem({ quiz, onDelete, onRefresh }: { quiz: Quiz; onDelete: (quizId
                     </div>
                 </div>
             )}
+
+            <QuizPreviewModal
+                quizId={quiz.quiz_id}
+                quizTitle={quiz.title}
+                isOpen={showPreviewModal}
+                onClose={() => setShowPreviewModal(false)}
+            />
         </>
     );
 }
