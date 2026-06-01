@@ -340,6 +340,7 @@ function QuizItem({ quiz, onDelete, onRefresh }: { quiz: Quiz; onDelete: (quizId
                 .upsert(assignments, { onConflict: "quiz_id,user_id" });
 
             if (error) throw error;
+            alert("✨ Assessment assigned successfully!");
             setShowShareModal(false);
             setSelectedStudents([]);
         } catch (err) {
