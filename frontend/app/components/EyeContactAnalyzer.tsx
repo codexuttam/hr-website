@@ -171,6 +171,18 @@ const EyeContactAnalyzer = React.forwardRef<EyeContactRef, {}>((props, ref) => {
                 </div>
             </div>
 
+            {/* Stay Stable Warning Popup */}
+            {!stats.isLookingAtCamera && trackingRef.current.totalFrames > 30 && (
+                <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                    <div className="bg-rose-600/90 text-white px-6 py-4 rounded-3xl shadow-[0_0_40px_rgba(225,29,72,0.4)] backdrop-blur-md font-bold text-lg flex flex-col items-center gap-2 animate-bounce border border-rose-400/50">
+                        <EyeOff className="h-8 w-8 text-rose-200" />
+                        <span className="tracking-wide">STAY STABLE</span>
+                        <span className="text-xs font-medium text-rose-200 text-center uppercase tracking-widest">Please face the camera directly</span>
+                    </div>
+                </div>
+            )}
+
+
             <style jsx>{`
                 .mirror {
                     transform: scaleX(-1);

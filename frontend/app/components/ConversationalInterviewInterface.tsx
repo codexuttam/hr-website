@@ -589,7 +589,7 @@ export default function ConversationalInterviewInterface({ config, onExit }: Pro
                                 className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-white dark:bg-black/80 backdrop-blur-xl border border-gray-200 dark:border-neutral-900 text-neutral-500 hover:text-black hover:border-rose-200 dark:hover:border-rose-900 font-bold text-sm transition-all shadow-sm"
                             >
                                 <StopCircle className="h-4 w-4" />
-                                End &amp; Get Feedback
+                                End &amp; Submit Interview
                             </button>
                         )}
                         {phase === 'error' && (
